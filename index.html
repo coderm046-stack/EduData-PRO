@@ -2199,13 +2199,20 @@
             if (!error) { supabaseReady = true; return true; }
             supabaseReady = false;
             console.error('Supabase upsert error:', error);
-            showToast('Sync error: ' + (error.message || error.toString()), '#EF4444');
+            return 'Supabase error: ' + (error.message || JSON.stringify(error));
         } catch (e) {
             supabaseReady = false;
             console.error('Supabase sync exception:', e);
-            showToast('Sync exception: ' + (e.message || e.toString()), '#EF4444');
+            return 'Sync exception: ' + (e.message || e.toString());
         }
-        return false;
+    }
+
+    function finalToast(msg, isError) {
+        const t = document.getElementById('toast');
+        t.textContent = msg;
+        t.style.background = isError ? '#EF4444' : '#10B981';
+        t.style.display = 'block';
+        setTimeout(() => t.style.display = 'none', 5000);
     }
 
     // ── Auth (local username/password — no email, no Supabase Auth) ──
@@ -2497,9 +2504,12 @@
             if (record[f] !== undefined) record[f] = normaliseDropdownValue(f, record[f]);
         });
         db.push(record);
-        try { localStorage.setItem('eduDB_v4_final', JSON.stringify(db)); } catch(e) { showToast('Storage full! Export backup and clear data.','#EF4444'); }
-        const cloudOk = await syncToCloud();
-        resetApp(); showToast(cloudOk ? '✅ Saved!' : '✅ Saved (offline)'); updateDashboard();
+        try { localStorage.setItem('eduDB_v4_final', JSON.stringify(db)); } catch(e) { finalToast('Storage full! Export backup and clear data.', true); }
+        const syncResult = await syncToCloud();
+        resetApp();
+        if (syncResult === true) { finalToast('✅ Saved!', false); }
+        else { finalToast('✅ Saved locally — ' + syncResult, true); }
+        updateDashboard();
     }
     function resetApp() {
         document.getElementById('studentForm').reset();
@@ -2598,9 +2608,12 @@
             db[index][f] = normFields.includes(f) ? normaliseDropdownValue(f, raw) : raw;
         });
         db[index].photo = document.getElementById('photoBase64').value;
-        try { localStorage.setItem('eduDB_v4_final', JSON.stringify(db)); } catch(e) { showToast('Storage full! Export backup and clear data.','#EF4444'); }
-        const cloudOk = await syncToCloud();
-        resetApp(); showToast(cloudOk ? '✅ Updated!' : '✅ Updated (offline)'); updateDashboard();
+        try { localStorage.setItem('eduDB_v4_final', JSON.stringify(db)); } catch(e) { finalToast('Storage full! Export backup and clear data.', true); }
+        const syncResult = await syncToCloud();
+        resetApp();
+        if (syncResult === true) { finalToast('✅ Updated!', false); }
+        else { finalToast('✅ Updated locally — ' + syncResult, true); }
+        updateDashboard();
     }
     function handleDelete(id) {
         if (!confirm('Delete this student record?')) return;
