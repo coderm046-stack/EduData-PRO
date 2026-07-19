@@ -2178,7 +2178,12 @@
         try {
             const { error } = await supabaseClient.from('students').upsert(db);
             if (!error) return true;
-        } catch (e) {}
+            console.error('Supabase upsert error:', error);
+            showToast('Sync error: ' + error.message, '#EF4444');
+        } catch (e) {
+            console.error('Supabase sync exception:', e);
+            showToast('Sync exception: ' + e.message, '#EF4444');
+        }
         return false;
     }
 
