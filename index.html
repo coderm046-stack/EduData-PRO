@@ -1553,13 +1553,13 @@
             <button id="authSignupTab" onclick="switchAuthTab('signup')">Sign Up</button>
         </div>
         <div id="authLoginForm">
-            <input type="email" id="loginEmail" placeholder="Email address" autocomplete="email">
+            <input type="text" id="loginUsername" placeholder="Username" autocomplete="username">
             <input type="password" id="loginPassword" placeholder="Password" autocomplete="current-password">
             <button class="auth-btn" onclick="handleLogin()"><i class="fa-solid fa-right-to-bracket"></i> Login</button>
         </div>
         <div id="authSignupForm" style="display:none;">
-            <input type="email" id="signupEmail" placeholder="Email address" autocomplete="email">
-            <input type="password" id="signupPassword" placeholder="Password (min 6 characters)" autocomplete="new-password">
+            <input type="text" id="signupUsername" placeholder="Choose a username" autocomplete="username">
+            <input type="password" id="signupPassword" placeholder="Password (min 4 characters)" autocomplete="new-password">
             <button class="auth-btn" onclick="handleSignup()"><i class="fa-solid fa-user-plus"></i> Create Account</button>
         </div>
         <p id="authError" class="auth-error"></p>
@@ -2162,9 +2162,8 @@
 
     async function loadFromSupabase() {
         try {
-            const { data: { user } } = await supabaseClient.auth.getUser();
-            if (!user) return false;
-            const { data, error } = await supabaseClient.from('students').select('*').eq('user_id', user.id);
+            if (!currentUser) return false;
+            const { data, error } = await supabaseClient.from('students').select('*').eq('user_id', currentUser);
             if (!error && data) {
                 db = data.sort((a, b) => a.id - b.id);
                 localStorage.setItem('eduDB_v4_final', JSON.stringify(db));
@@ -2183,40 +2182,57 @@
         return false;
     }
 
-    // ── Auth ──
-    async function handleLogin() {
-        const email = document.getElementById('loginEmail').value.trim();
+    // ── Auth (local username/password — no email, no Supabase Auth) ──
+    function getUsers() {
+        return JSON.parse(localStorage.getItem('eduUsers')) || {};
+    }
+    function saveUsers(users) {
+        localStorage.setItem('eduUsers', JSON.stringify(users));
+    }
+    let currentUser = localStorage.getItem('eduCurrentUser') || '';
+
+    function handleLogin() {
+        const username = document.getElementById('loginUsername').value.trim().toLowerCase();
         const password = document.getElementById('loginPassword').value;
-        if (!email || !password) { showAuthError('Enter email and password.'); return; }
-        const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
-        if (error) { showAuthError(error.message); return; }
+        if (!username || !password) { showAuthError('Enter username and password.'); return; }
+        const users = getUsers();
+        if (!users[username]) { showAuthError('User not found. Sign up first.'); return; }
+        if (users[username] !== password) { showAuthError('Wrong password.'); return; }
+        currentUser = username;
+        localStorage.setItem('eduCurrentUser', currentUser);
         document.getElementById('authError').style.display = 'none';
-        await onAuthSuccess();
+        onAuthSuccess();
     }
 
-    async function handleSignup() {
-        const email = document.getElementById('signupEmail').value.trim();
+    function handleSignup() {
+        const username = document.getElementById('signupUsername').value.trim().toLowerCase();
         const password = document.getElementById('signupPassword').value;
-        if (!email || !password) { showAuthError('Enter email and password.'); return; }
-        if (password.length < 6) { showAuthError('Password must be at least 6 characters.'); return; }
-        const { error } = await supabaseClient.auth.signUp({ email, password });
-        if (error) { showAuthError(error.message); return; }
+        if (!username || !password) { showAuthError('Enter username and password.'); return; }
+        if (username.length < 3) { showAuthError('Username must be at least 3 characters.'); return; }
+        if (password.length < 4) { showAuthError('Password must be at least 4 characters.'); return; }
+        const users = getUsers();
+        if (users[username]) { showAuthError('Username already taken. Choose another.'); return; }
+        users[username] = password;
+        saveUsers(users);
+        currentUser = username;
+        localStorage.setItem('eduCurrentUser', currentUser);
         document.getElementById('authError').style.display = 'none';
-        switchAuthTab('login');
-        showAuthError('Confirmation email sent! Check your inbox, then login.', '#10B981');
+        showAuthError('Account created! Logging in...', '#10B981');
+        setTimeout(() => onAuthSuccess(), 300);
     }
 
-    async function handleLogout() {
-        await supabaseClient.auth.signOut();
+    function handleLogout() {
+        currentUser = '';
+        localStorage.removeItem('eduCurrentUser');
         db = [];
         localStorage.removeItem('eduDB_v4_final');
         location.reload();
     }
 
-    async function onAuthSuccess() {
+    function onAuthSuccess() {
         document.getElementById('authPanel').style.display = 'none';
         document.getElementById('appContainer').style.display = 'block';
-        await loadFromSupabase();
+        loadFromSupabase();
         fixExistingData();
         document.getElementById('ACADEMIC_YEAR').value = getCurrentAcademicYear();
         updateDashboard();
@@ -2242,12 +2258,12 @@
         const y = d.getFullYear();
         return d.getMonth() >= 3 ? `${y}-${y+1}` : `${y-1}-${y}`;
     }
-    window.addEventListener('load', async () => {
-        const { data: { user } } = await supabaseClient.auth.getUser();
-        if (user) {
+    window.addEventListener('load', () => {
+        currentUser = localStorage.getItem('eduCurrentUser') || '';
+        if (currentUser) {
             document.getElementById('authPanel').style.display = 'none';
             document.getElementById('appContainer').style.display = 'block';
-            await loadFromSupabase();
+            loadFromSupabase();
             fixExistingData();
             document.getElementById('ACADEMIC_YEAR').value = getCurrentAcademicYear();
             updateDashboard();
@@ -2442,8 +2458,7 @@
             showToast('Warning: Roll No already exists in this class/division!', '#F59E0B');
         }
         const record = { id: Date.now(), photo: document.getElementById('photoBase64').value };
-        const { data: { user } } = await supabaseClient.auth.getUser();
-        record.user_id = user?.id || '';
+        record.user_id = currentUser;
         FIELDS.forEach(f => { if (document.getElementById(f)) record[f] = document.getElementById(f).value; });
         if (!record['ROLL_NO'] || record['ROLL_NO'] === '') {
             record['ROLL_NO'] = (Math.max(0, ...db.map(s => parseInt(s.ROLL_NO) || 0)) + 1).toString();
