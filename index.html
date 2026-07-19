@@ -1156,7 +1156,7 @@
         .dash-bold { font-weight:700; }
         .badge { padding:2px 8px; border-radius:99px; font-size:0.75rem; font-weight:700; display:inline-block; }
         .row-select { cursor:pointer; width:18px; height:18px; accent-color:var(--primary); }
-        #selectAll { width:18px; height:18px; accent-color:var(--primary); cursor:pointer; }
+        #selectAll { width:18px; height:18px; min-height:18px; accent-color:var(--primary); cursor:pointer; }
         .row-selected { background: #DBEAFE !important; outline: 2px solid var(--primary); outline-offset: -2px; border-radius:4px; }
         .badge-orphan-yes { background:#fef3c7; color:#92400e; }
         .badge-orphan-no { background:#f0fdf4; color:#166534; }
@@ -1869,7 +1869,7 @@
                 <table id="summaryTable" style="min-width:3300px;width:100%;border-collapse:collapse;font-size:0.8rem;">
                     <thead>
                         <tr>
-                            <th style="width:40px"><input type="checkbox" id="selectAll" onchange="toggleSelectAll(this)"></th>
+                            <th style="width:40px"><input type="checkbox" id="selectAll" onclick="toggleSelectAll(this)"></th>
                             <th>#</th>
                             <th>Class</th>
                             <th>Div</th>
@@ -1916,6 +1916,7 @@
                 </table>
             </div>
             <p id="tableCount"></p>
+            <p id="selectedCount" style="margin:4px 0 0 0;font-size:0.78rem;color:var(--primary);font-weight:600;"></p>
             <div id="paginationControls" style="display:flex;justify-content:center;align-items:center;gap:12px;margin-top:12px;font-size:0.85rem;font-weight:600;">
                 <button onclick="changePage(-1)" style="min-height:36px;padding:6px 16px;background:var(--primary);color:white;border:none;border-radius:var(--radius-sm);cursor:pointer;width:auto;font-family:'DM Sans',sans-serif;font-weight:600;">&laquo; Previous</button>
                 <span id="pageInfo" style="color:var(--text-secondary);"></span>
@@ -2181,12 +2182,31 @@
             if (!currentUser) return false;
             await checkSupabase();
             if (!supabaseReady) throw new Error('Supabase not reachable');
-            const { data, error } = await supabaseClient.from('students').select('*').eq('user_id', currentUser);
-            if (!error && data) {
+
+            let { data, error } = await supabaseClient.from('students').select('*').eq('user_id', currentUser);
+            if (!error && data && data.length) {
                 db = data.sort((a, b) => a.id - b.id);
                 localStorage.setItem('eduDB_v4_final', JSON.stringify(db));
                 return true;
             }
+
+            /* Recovery: fetch orphaned records (null or empty user_id) and tag with current user */
+            if (!error) {
+                const { data: nulls, error: err1 } = await supabaseClient.from('students').select('*').is('user_id', null);
+                const { data: empties, error: err2 } = await supabaseClient.from('students').select('*').eq('user_id', '');
+                if (!err1 && !err2) {
+                    const orphaned = [...(nulls||[]), ...(empties||[])];
+                    if (orphaned.length) {
+                        orphaned.forEach(r => r.user_id = currentUser);
+                        await supabaseClient.from('students').upsert(orphaned);
+                        db = orphaned.sort((a, b) => a.id - b.id);
+                        localStorage.setItem('eduDB_v4_final', JSON.stringify(db));
+                        showToast(`🔄 Recovered ${orphaned.length} orphaned record${orphaned.length>1?'s':''} from cloud`, '#065F46');
+                        return true;
+                    }
+                }
+            }
+
             if (error) console.error('loadFromSupabase error:', error);
         } catch (e) { console.error('loadFromSupabase exception:', e); }
         db = JSON.parse(localStorage.getItem('eduDB_v4_final')) || [];
@@ -2262,11 +2282,11 @@
         location.reload();
     }
 
-    function onAuthSuccess() {
+    async function onAuthSuccess() {
         document.getElementById('authPanel').style.display = 'none';
         document.getElementById('appContainer').style.display = 'block';
-        loadFromSupabase();
-        fixExistingData();
+        await loadFromSupabase();
+        await fixExistingData();
         document.getElementById('ACADEMIC_YEAR').value = getCurrentAcademicYear();
         updateDashboard();
     }
@@ -2291,7 +2311,7 @@
         const y = d.getFullYear();
         return d.getMonth() >= 3 ? `${y}-${y+1}` : `${y-1}-${y}`;
     }
-    window.addEventListener('load', () => {
+    window.addEventListener('load', async () => {
         currentUser = localStorage.getItem('eduCurrentUser') || '';
         if (currentUser) {
             document.getElementById('authPanel').style.display = 'none';
@@ -2300,8 +2320,8 @@
                 document.getElementById('cloudStatus').textContent = ready ? '☁️' : '⚠️';
                 document.getElementById('cloudStatus').title = ready ? 'Cloud connected' : 'Cloud offline';
             });
-            loadFromSupabase();
-            fixExistingData();
+            await loadFromSupabase();
+            await fixExistingData();
             document.getElementById('ACADEMIC_YEAR').value = getCurrentAcademicYear();
             updateDashboard();
         }
@@ -2739,7 +2759,8 @@
                 rows.forEach((row, i) => {
                     const record = {
                         id   : Date.now() + i * 7 + Math.floor(Math.random()*999),
-                        photo: ''
+                        photo: '',
+                        user_id: currentUser
                     };
                     let hasData = false;
 
@@ -2806,11 +2827,12 @@
     }
 
     /* ---- */
-    function fixExistingData() {
+    async function fixExistingData() {
         let changed = 0;
         const normFields = ['GENDER','HOSTEL_STUDENT','ORPHAN','VOC_STATUS','VOC_CURRENT_YR','CLASS','APL_BPL','BLOOD_GROUP','DIVISION','ACADEMIC_YEAR'];
         const ynFields = ['HOSTEL_STUDENT','ORPHAN','VOC_STATUS','VOC_CURRENT_YR'];
         db.forEach(s => {
+            if (!s.user_id) { s.user_id = currentUser; changed++; }
             FIELDS.forEach(f => {
                 if (s[f] === undefined) { s[f] = ''; changed++; }
             });
@@ -2832,7 +2854,7 @@
         });
         if (changed > 0) {
             try { localStorage.setItem('eduDB_v4_final', JSON.stringify(db)); } catch(e) { showToast('Storage full! Export backup and clear data.','#EF4444'); }
-            supabaseClient.from('students').upsert(db);
+            await supabaseClient.from('students').upsert(db);
             console.log(`Fixed ${changed} fields in existing data.`);
         }
     }
@@ -2975,6 +2997,12 @@
         populateVocSubjectFilter();
         const allFilteredIds = new Set(rows.map(r => r.id));
         document.getElementById('selectAll').checked = allFilteredIds.size > 0 && [...allFilteredIds].every(id => selectedIds.has(id));
+        const sel = document.getElementById('selectedCount');
+        if (selectedIds.size) {
+            sel.textContent = `✓ ${selectedIds.size} record${selectedIds.size>1?'s':''} selected for bulk action`;
+        } else {
+            sel.textContent = '';
+        }
         updateSummaryStats();
     }
 
@@ -3436,7 +3464,7 @@
                 if (!confirm(`Restore ${data.length} records? This will REPLACE all current data (${db.length} records).`)) return;
 
                 db = data;
-                fixExistingData();
+                await fixExistingData();
                 try { localStorage.setItem('eduDB_v4_final', JSON.stringify(db)); } catch(err) {
                     showToast('Storage full! Export backup and clear data.', '#EF4444'); return;
                 }
