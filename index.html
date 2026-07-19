@@ -1575,6 +1575,7 @@
             <button class="header-btn" onclick="downloadBackup()" title="Download JSON backup"><i class="fa-solid fa-download"></i> Backup</button>
             <button class="header-btn" onclick="restoreBackup()" title="Restore from JSON backup"><i class="fa-solid fa-upload"></i> Restore</button>
             <button class="header-btn" onclick="handleLogout()" title="Logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
+            <span id="cloudStatus" style="font-size:0.85rem;" title="Checking cloud...">⏳</span>
             <span class="header-badge">v 3.0</span>
         </div>
     </header>
@@ -2160,16 +2161,34 @@
     const { createClient: createSupabaseClient } = supabase;
     const supabaseClient = createSupabaseClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+    // ── Supabase Connectivity Check ──
+    let supabaseReady = false;
+    async function checkSupabase() {
+        try {
+            const { error } = await supabaseClient.from('students').select('id').limit(1);
+            supabaseReady = !error;
+            if (error) console.error('Supabase init check error:', error);
+            return supabaseReady;
+        } catch (e) {
+            console.error('Supabase init check exception:', e);
+            supabaseReady = false;
+            return false;
+        }
+    }
+
     async function loadFromSupabase() {
         try {
             if (!currentUser) return false;
+            await checkSupabase();
+            if (!supabaseReady) throw new Error('Supabase not reachable');
             const { data, error } = await supabaseClient.from('students').select('*').eq('user_id', currentUser);
             if (!error && data) {
                 db = data.sort((a, b) => a.id - b.id);
                 localStorage.setItem('eduDB_v4_final', JSON.stringify(db));
                 return true;
             }
-        } catch (e) {}
+            if (error) console.error('loadFromSupabase error:', error);
+        } catch (e) { console.error('loadFromSupabase exception:', e); }
         db = JSON.parse(localStorage.getItem('eduDB_v4_final')) || [];
         return false;
     }
@@ -2177,12 +2196,14 @@
     async function syncToCloud() {
         try {
             const { error } = await supabaseClient.from('students').upsert(db);
-            if (!error) return true;
+            if (!error) { supabaseReady = true; return true; }
+            supabaseReady = false;
             console.error('Supabase upsert error:', error);
-            showToast('Sync error: ' + error.message, '#EF4444');
+            showToast('Sync error: ' + (error.message || error.toString()), '#EF4444');
         } catch (e) {
+            supabaseReady = false;
             console.error('Supabase sync exception:', e);
-            showToast('Sync exception: ' + e.message, '#EF4444');
+            showToast('Sync exception: ' + (e.message || e.toString()), '#EF4444');
         }
         return false;
     }
@@ -2268,6 +2289,10 @@
         if (currentUser) {
             document.getElementById('authPanel').style.display = 'none';
             document.getElementById('appContainer').style.display = 'block';
+            checkSupabase().then(ready => {
+                document.getElementById('cloudStatus').textContent = ready ? '☁️' : '⚠️';
+                document.getElementById('cloudStatus').title = ready ? 'Cloud connected' : 'Cloud offline';
+            });
             loadFromSupabase();
             fixExistingData();
             document.getElementById('ACADEMIC_YEAR').value = getCurrentAcademicYear();

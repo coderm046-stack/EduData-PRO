@@ -1,4 +1,4 @@
-const CACHE_NAME = 'edu-data-v3.2';
+const CACHE_NAME = 'edu-data-v4.0';
 
 const ASSETS = [
   './',
@@ -8,7 +8,8 @@ const ASSETS = [
   './icon-192.png',
   'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css',
   'https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js',
-  'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js'
+  'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js',
+  'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2'
 ];
 
 // Install Service Worker and Cache Assets
