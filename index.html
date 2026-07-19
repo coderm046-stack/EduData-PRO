@@ -353,6 +353,9 @@
         .section-vocational { background: #F0F9FF; }
         .section-vocational .section-title { color: #0C4A6E; background: #E0F2FE; }
 
+        body.dark-mode .auth-card input { background: #1E293B; border-color: #334155; color: #F1F5F9; }
+        body.dark-mode .auth-card .auth-tabs { background: #0F172A; }
+        body.dark-mode .auth-card .auth-tabs button.active { background: #1E293B; color: #60A5FA; }
         body.dark-mode .section-academic { background: #0F1A2E; }
         body.dark-mode .section-academic .section-title { color: #93C5FD; background: #1E3A5F; }
         body.dark-mode .section-personal { background: #1E1B2E; }
@@ -1334,6 +1337,104 @@
 
 
         /* ---- */
+        /* ── Auth Panel ── */
+        #authPanel {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .auth-card {
+            background: var(--surface);
+            width: 100%;
+            max-width: 400px;
+            border-radius: var(--radius-lg);
+            padding: 32px 28px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-lg);
+        }
+        .auth-card h2 {
+            font-family: 'Sora', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-align: center;
+            margin: 0 0 4px 0;
+        }
+        .auth-card .auth-sub {
+            text-align: center;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+        .auth-card input {
+            width: 100%;
+            min-height: 44px;
+            padding: 10px 14px;
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-size: 0.9rem;
+            font-family: 'DM Sans', sans-serif;
+            background: var(--surface);
+            color: var(--text-primary);
+            margin-bottom: 12px;
+            transition: border-color 0.18s;
+        }
+        .auth-card input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(26,63,171,0.10);
+        }
+        .auth-card .auth-btn {
+            width: 100%;
+            min-height: 48px;
+            border: none;
+            border-radius: var(--radius-md);
+            background: var(--primary);
+            color: white;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: opacity 0.15s;
+            margin-top: 4px;
+        }
+        .auth-card .auth-btn:hover { opacity: 0.92; }
+        .auth-card .auth-tabs {
+            display: flex;
+            background: var(--bg);
+            border-radius: var(--radius-md);
+            padding: 4px;
+            margin-bottom: 20px;
+            gap: 4px;
+        }
+        .auth-card .auth-tabs button {
+            flex: 1;
+            min-height: 38px;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 600;
+            font-size: 0.82rem;
+            cursor: pointer;
+            color: var(--text-secondary);
+            background: transparent;
+            transition: all 0.2s;
+        }
+        .auth-card .auth-tabs button.active {
+            background: var(--surface);
+            color: var(--primary);
+            box-shadow: var(--shadow-sm);
+        }
+        .auth-card .auth-error {
+            font-size: 0.78rem;
+            color: var(--error);
+            text-align: center;
+            margin-top: 10px;
+            display: none;
+        }
+
         #printArea { display:none; }
 
         @media print {
@@ -1442,13 +1543,38 @@
 </head>
 <body>
 
-<div>
+<!-- Auth Panel -->
+<div id="authPanel">
+    <div class="auth-card">
+        <h2>🎓 EduData PRO</h2>
+        <p class="auth-sub">Teacher Login</p>
+        <div class="auth-tabs">
+            <button class="active" id="authLoginTab" onclick="switchAuthTab('login')">Login</button>
+            <button id="authSignupTab" onclick="switchAuthTab('signup')">Sign Up</button>
+        </div>
+        <div id="authLoginForm">
+            <input type="email" id="loginEmail" placeholder="Email address" autocomplete="email">
+            <input type="password" id="loginPassword" placeholder="Password" autocomplete="current-password">
+            <button class="auth-btn" onclick="handleLogin()"><i class="fa-solid fa-right-to-bracket"></i> Login</button>
+        </div>
+        <div id="authSignupForm" style="display:none;">
+            <input type="email" id="signupEmail" placeholder="Email address" autocomplete="email">
+            <input type="password" id="signupPassword" placeholder="Password (min 6 characters)" autocomplete="new-password">
+            <button class="auth-btn" onclick="handleSignup()"><i class="fa-solid fa-user-plus"></i> Create Account</button>
+        </div>
+        <p id="authError" class="auth-error"></p>
+    </div>
+</div>
+
+<!-- Main App -->
+<div id="appContainer" style="display:none;">
     <header>
         <h2>🎓 EduData</h2>
         <div style="display:flex;align-items:center;gap:6px;">
             <button class="header-btn" onclick="toggleDarkMode()" id="darkModeToggle" title="Toggle dark/light mode" style="padding:5px 10px;"><i class="fa-solid fa-moon"></i></button>
             <button class="header-btn" onclick="downloadBackup()" title="Download JSON backup"><i class="fa-solid fa-download"></i> Backup</button>
             <button class="header-btn" onclick="restoreBackup()" title="Restore from JSON backup"><i class="fa-solid fa-upload"></i> Restore</button>
+            <button class="header-btn" onclick="handleLogout()" title="Logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
             <span class="header-badge">v 3.0</span>
         </div>
     </header>
@@ -1902,7 +2028,7 @@
 
     </div><!-- end #tab-dashboard -->
 
-</div><!-- end main wrapper -->
+</div><!-- end #appContainer -->
 
 <!-- printArea: hidden normally, shown only during print -->
 <div id="printArea"></div>
@@ -2036,8 +2162,10 @@
 
     async function loadFromSupabase() {
         try {
-            const { data, error } = await supabaseClient.from('students').select('*');
-            if (!error && data && data.length) {
+            const { data: { user } } = await supabaseClient.auth.getUser();
+            if (!user) return false;
+            const { data, error } = await supabaseClient.from('students').select('*').eq('user_id', user.id);
+            if (!error && data) {
                 db = data.sort((a, b) => a.id - b.id);
                 localStorage.setItem('eduDB_v4_final', JSON.stringify(db));
                 return true;
@@ -2055,16 +2183,75 @@
         return false;
     }
 
+    // ── Auth ──
+    async function handleLogin() {
+        const email = document.getElementById('loginEmail').value.trim();
+        const password = document.getElementById('loginPassword').value;
+        if (!email || !password) { showAuthError('Enter email and password.'); return; }
+        const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
+        if (error) { showAuthError(error.message); return; }
+        document.getElementById('authError').style.display = 'none';
+        await onAuthSuccess();
+    }
+
+    async function handleSignup() {
+        const email = document.getElementById('signupEmail').value.trim();
+        const password = document.getElementById('signupPassword').value;
+        if (!email || !password) { showAuthError('Enter email and password.'); return; }
+        if (password.length < 6) { showAuthError('Password must be at least 6 characters.'); return; }
+        const { error } = await supabaseClient.auth.signUp({ email, password });
+        if (error) { showAuthError(error.message); return; }
+        document.getElementById('authError').style.display = 'none';
+        switchAuthTab('login');
+        showAuthError('Confirmation email sent! Check your inbox, then login.', '#10B981');
+    }
+
+    async function handleLogout() {
+        await supabaseClient.auth.signOut();
+        db = [];
+        localStorage.removeItem('eduDB_v4_final');
+        location.reload();
+    }
+
+    async function onAuthSuccess() {
+        document.getElementById('authPanel').style.display = 'none';
+        document.getElementById('appContainer').style.display = 'block';
+        await loadFromSupabase();
+        fixExistingData();
+        document.getElementById('ACADEMIC_YEAR').value = getCurrentAcademicYear();
+        updateDashboard();
+    }
+
+    function switchAuthTab(tab) {
+        document.getElementById('authLoginForm').style.display = tab === 'login' ? 'block' : 'none';
+        document.getElementById('authSignupForm').style.display = tab === 'login' ? 'none' : 'block';
+        document.getElementById('authLoginTab').classList.toggle('active', tab === 'login');
+        document.getElementById('authSignupTab').classList.toggle('active', tab === 'signup');
+        document.getElementById('authError').style.display = 'none';
+    }
+
+    function showAuthError(msg, color) {
+        const el = document.getElementById('authError');
+        el.textContent = msg;
+        el.style.color = color || 'var(--error)';
+        el.style.display = 'block';
+    }
+
     function getCurrentAcademicYear() {
         const d = new Date();
         const y = d.getFullYear();
         return d.getMonth() >= 3 ? `${y}-${y+1}` : `${y-1}-${y}`;
     }
     window.addEventListener('load', async () => {
-        await loadFromSupabase();
-        fixExistingData();
-        document.getElementById('ACADEMIC_YEAR').value = getCurrentAcademicYear();
-        updateDashboard();
+        const { data: { user } } = await supabaseClient.auth.getUser();
+        if (user) {
+            document.getElementById('authPanel').style.display = 'none';
+            document.getElementById('appContainer').style.display = 'block';
+            await loadFromSupabase();
+            fixExistingData();
+            document.getElementById('ACADEMIC_YEAR').value = getCurrentAcademicYear();
+            updateDashboard();
+        }
     });
 
     /* ── Helpers ── */
@@ -2255,6 +2442,8 @@
             showToast('Warning: Roll No already exists in this class/division!', '#F59E0B');
         }
         const record = { id: Date.now(), photo: document.getElementById('photoBase64').value };
+        const { data: { user } } = await supabaseClient.auth.getUser();
+        record.user_id = user?.id || '';
         FIELDS.forEach(f => { if (document.getElementById(f)) record[f] = document.getElementById(f).value; });
         if (!record['ROLL_NO'] || record['ROLL_NO'] === '') {
             record['ROLL_NO'] = (Math.max(0, ...db.map(s => parseInt(s.ROLL_NO) || 0)) + 1).toString();
