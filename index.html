@@ -1859,6 +1859,8 @@
                 </select>
                 <button onclick="clearTableFilters()" class="filter-clear-btn"><i class="fa-solid fa-xmark"></i> Clear</button>
                 <button onclick="openColumnSelector()" class="filter-clear-btn" style="background:var(--btn-print);"><i class="fa-solid fa-print"></i> Print / Export</button>
+                <button onclick="selectAllFiltered()" class="filter-clear-btn" style="background:var(--primary);color:#fff;" title="Select all records matching current filters"><i class="fa-solid fa-check-double"></i> Select All</button>
+                <button onclick="clearSelection()" class="filter-clear-btn" style="background:var(--text-secondary);" title="Clear current selection"><i class="fa-solid fa-square-xmark"></i> Clear Selection</button>
                 <button onclick="deleteSelected()" class="filter-clear-btn" style="background:var(--error);"><i class="fa-solid fa-trash"></i> Delete Selected</button>
                 <button onclick="bulkEdit()" class="filter-clear-btn" style="background:var(--warning);"><i class="fa-solid fa-pen"></i> Bulk Edit</button>
                 <button onclick="autoAllotRollNumbers()" class="filter-clear-btn" style="background:var(--primary);color:#fff;"><i class="fa-solid fa-sort-numeric-down"></i> Auto Allot Roll No</button>
@@ -2199,7 +2201,12 @@
                     if (orphaned.length) {
                         orphaned.forEach(r => r.user_id = currentUser);
                         await supabaseClient.from('students').upsert(orphaned);
-                        db = orphaned.sort((a, b) => a.id - b.id);
+                        const mainData = data || [];
+                        const merged = [...mainData, ...orphaned];
+                        const uniqueById = [];
+                        const seen = new Set();
+                        merged.forEach(r => { if (!seen.has(r.id)) { seen.add(r.id); uniqueById.push(r); } });
+                        db = uniqueById.sort((a, b) => a.id - b.id);
                         localStorage.setItem('eduDB_v4_final', JSON.stringify(db));
                         showToast(`🔄 Recovered ${orphaned.length} orphaned record${orphaned.length>1?'s':''} from cloud`, '#065F46');
                         return true;
@@ -2215,7 +2222,12 @@
 
     async function syncToCloud() {
         try {
-            const { error } = await supabaseClient.from('students').upsert(db);
+            const cleanList = db.map(r => {
+                const clean = { ...r };
+                if (!clean.user_id) clean.user_id = currentUser;
+                return clean;
+            });
+            const { error } = await supabaseClient.from('students').upsert(cleanList);
             if (!error) { supabaseReady = true; return true; }
             supabaseReady = false;
             console.error('Supabase upsert error:', error);
@@ -2635,18 +2647,21 @@
         else { finalToast('✅ Updated locally — ' + syncResult, true); }
         updateDashboard();
     }
-    function handleDelete(id) {
+    async function handleDelete(id) {
         if (!confirm('Delete this student record?')) return;
         db = db.filter(s => s.id !== id);
-        supabaseClient.from('students').delete().eq('id', id);
         try { localStorage.setItem('eduDB_v4_final', JSON.stringify(db)); } catch(e) { showToast('Storage full! Export backup and clear data.','#EF4444'); }
+        const { error } = await supabaseClient.from('students').delete().eq('id', id);
+        if (error) console.error('Supabase delete error:', error);
         performSearch(); updateDashboard();
     }
-    function wipeDatabase() {
+    async function wipeDatabase() {
         const code = Math.floor(1000 + Math.random()*9000);
         if (prompt(`Enter ${code} to confirm wiping ALL data:`) == code) {
-            db = []; supabaseClient.from('students').delete().neq('id', 0);
+            db = [];
             try { localStorage.setItem('eduDB_v4_final', JSON.stringify(db)); } catch(e) { showToast('Storage full! Export backup and clear data.','#EF4444'); }
+            const { error } = await supabaseClient.from('students').delete().neq('id', 0);
+            if (error) console.error('Supabase wipe error:', error);
             showToast('🗑️ All data wiped','#EF4444'); updateDashboard();
         }
     }
@@ -2854,7 +2869,8 @@
         });
         if (changed > 0) {
             try { localStorage.setItem('eduDB_v4_final', JSON.stringify(db)); } catch(e) { showToast('Storage full! Export backup and clear data.','#EF4444'); }
-            await supabaseClient.from('students').upsert(db);
+            const { error: fixErr } = await supabaseClient.from('students').upsert(db);
+            if (fixErr) console.error('Supabase fixExistingData upsert error:', fixErr);
             console.log(`Fixed ${changed} fields in existing data.`);
         }
     }
@@ -3468,11 +3484,19 @@
                 try { localStorage.setItem('eduDB_v4_final', JSON.stringify(db)); } catch(err) {
                     showToast('Storage full! Export backup and clear data.', '#EF4444'); return;
                 }
-                await supabaseClient.from('students').delete().neq('id', 0);
-                await supabaseClient.from('students').insert(db);
+                const { error: insErr } = await supabaseClient.from('students').upsert(db);
+                if (insErr) console.error('Supabase restore upsert error:', insErr);
+                const importedIds = new Set(db.map(r => r.id));
+                const { data: staleRows } = await supabaseClient.from('students').select('id');
+                const staleIds = (staleRows||[]).map(r => r.id).filter(id => !importedIds.has(id));
+                if (staleIds.length) {
+                    const { error: staleErr } = await supabaseClient.from('students').delete().in('id', staleIds);
+                    if (staleErr) console.error('Supabase restore stale delete error:', staleErr);
+                }
                 updateDashboard();
                 showToast(`✅ Restored ${db.length} records from backup!`, '#065F46');
             } catch(err) {
+                console.error(err);
                 showToast('❌ Restore failed: Invalid JSON file.', '#EF4444');
             }
         };
@@ -3502,7 +3526,7 @@
     }
 
     /* ---- Auto Allot Roll Numbers ---- */
-    function autoAllotRollNumbers() {
+    async function autoAllotRollNumbers() {
         if (!db.length) { showToast('No records to allot!','#F59E0B'); return; }
         if (!confirm('This will reassign all roll numbers (Female A-Z first, then Male A-Z) per Class+Division. Continue?')) return;
 
@@ -3526,7 +3550,8 @@
         });
 
         try { localStorage.setItem('eduDB_v4_final', JSON.stringify(db)); } catch(e) { showToast('Storage full! Export backup and clear data.','#EF4444'); }
-        supabaseClient.from('students').upsert(db);
+        const { error: allotErr } = await supabaseClient.from('students').upsert(db);
+        if (allotErr) console.error('Supabase auto-allot upsert error:', allotErr);
         renderClassTable();
         updateDashboard();
         showToast('Roll numbers allotted successfully!');
@@ -3542,14 +3567,29 @@
         }
         renderClassTable();
     }
-    function deleteSelected() {
+    function selectAllFiltered() {
+        const rows = getFilteredRows();
+        if (!rows.length) { showToast('No records match current filters!','#F59E0B'); return; }
+        rows.forEach(r => selectedIds.add(r.id));
+        renderClassTable();
+        showToast(`Selected ${rows.length} record${rows.length>1?'s':''} for bulk action`);
+    }
+    function clearSelection() {
+        if (!selectedIds.size) { showToast('No records selected.','#94A3B8'); return; }
+        const count = selectedIds.size;
+        selectedIds.clear();
+        renderClassTable();
+        showToast(`Cleared ${count} selection${count>1?'s':''}`, '#94A3B8');
+    }
+    async function deleteSelected() {
         const ids = [...selectedIds];
         if (!ids.length) { showToast('No records selected!','#F59E0B'); return; }
         if (!confirm(`Delete ${ids.length} selected record${ids.length>1?'s':''}?`)) return;
         db = db.filter(s => !ids.includes(s.id));
         selectedIds.clear();
-        supabaseClient.from('students').delete().in('id', ids);
         try { localStorage.setItem('eduDB_v4_final', JSON.stringify(db)); } catch(e) { showToast('Storage full! Export backup and clear data.','#EF4444'); }
+        const { error: delErr } = await supabaseClient.from('students').delete().in('id', ids);
+        if (delErr) console.error('Supabase bulk delete error:', delErr);
         renderClassTable(); updateDashboard(); showToast(`Deleted ${ids.length} record${ids.length>1?'s':''}!`);
     }
     function bulkEdit() {
@@ -3557,7 +3597,7 @@
         if (!ids.length) { showToast('No records selected!','#F59E0B'); return; }
         document.getElementById('bulkEditModal').style.display = 'flex';
     }
-    function applyBulkEdit() {
+    async function applyBulkEdit() {
         const ids = [...selectedIds];
         const fields = ['CLASS','DIVISION','ACADEMIC_YEAR','GENDER','APL_BPL','HOSTEL_STUDENT','ORPHAN','VOC_CURRENT_YR','VOC_NAME_CURRENT','DOA'];
         let changed = 0;
@@ -3570,7 +3610,8 @@
         });
         if (!changed) { showToast('No changes applied (select values to change).','#F59E0B'); return; }
         try { localStorage.setItem('eduDB_v4_final', JSON.stringify(db)); } catch(e) { showToast('Storage full! Export backup and clear data.','#EF4444'); }
-        supabaseClient.from('students').upsert(db);
+        const { error: bulkErr } = await supabaseClient.from('students').upsert(db);
+        if (bulkErr) console.error('Supabase bulk edit upsert error:', bulkErr);
         document.getElementById('bulkEditModal').style.display = 'none';
         renderClassTable(); updateDashboard(); showToast(`Updated ${changed} fields across ${ids.length} records!`);
     }
