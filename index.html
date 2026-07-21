@@ -27,29 +27,7 @@
 </head>
 <body>
 
-<div id="authPanel">
-    <div class="auth-card">
-        <h2>🎓 EduData PRO</h2>
-        <p class="auth-sub">Teacher Login</p>
-        <div class="auth-tabs">
-            <button class="active" id="authLoginTab" onclick="switchAuthTab('login')">Login</button>
-            <button id="authSignupTab" onclick="switchAuthTab('signup')">Sign Up</button>
-        </div>
-        <div id="authLoginForm">
-            <input type="text" id="loginUsername" placeholder="Username" autocomplete="username">
-            <input type="password" id="loginPassword" placeholder="Password" autocomplete="current-password">
-            <button class="auth-btn" onclick="handleLogin()"><i class="fa-solid fa-right-to-bracket"></i> Login</button>
-        </div>
-        <div id="authSignupForm" style="display:none;">
-            <input type="text" id="signupUsername" placeholder="Choose a username" autocomplete="username">
-            <input type="password" id="signupPassword" placeholder="Password (min 4 characters)" autocomplete="new-password">
-            <button class="auth-btn" onclick="handleSignup()"><i class="fa-solid fa-user-plus"></i> Create Account</button>
-        </div>
-        <p id="authError" class="auth-error"></p>
-    </div>
-</div>
-
-<div id="appContainer" style="display:none;">
+<div id="appContainer">
     <header>
         <h2>🎓 EduData</h2>
         <div style="display:flex;align-items:center;gap:6px;">
@@ -58,7 +36,6 @@
             <button class="header-btn" onclick="toggleDarkMode()" id="darkModeToggle" title="Toggle dark/light mode" style="padding:5px 10px;"><i class="fa-solid fa-moon"></i></button>
             <button class="header-btn" onclick="downloadBackup()" title="Download JSON backup"><i class="fa-solid fa-download"></i> Backup</button>
             <button class="header-btn" onclick="restoreBackup()" title="Restore from JSON backup"><i class="fa-solid fa-upload"></i> Restore</button>
-            <button class="header-btn" onclick="handleLogout()" title="Logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
             <span class="header-badge">v 3.0</span>
         </div>
     </header>

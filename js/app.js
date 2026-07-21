@@ -1,6 +1,5 @@
 import { FIELDS, getCurrentAcademicYear, normaliseDropdownValue, showToast, toggleSection, toggleVoc, NORM_FIELDS, YN_FIELDS, formatDate } from './utils.js';
 import { loadAll, syncToLocalStorage, migrateFromLocalStorage, upsertMany, setupBackup, hasBackupHandle, restoreFromDiskFile, saveBackupToDisk } from './db.js';
-import { getCurrentUser, setAuthCallback, isLoggedIn, handleLogin, handleSignup, handleLogout, switchAuthTab } from './auth.js';
 import { setDb, getDb, resetApp, handleSave, handleUpdate, handleDelete, wipeDatabase, openSearch, closeSearch, performSearch, startEdit, printRecord, printAll, previewImage, startCamera, closeCamera, switchCamera, capturePhoto } from './form.js';
 import { renderClassTable, changePage, onYearFilterChange, updateSummaryStats, clearTableFilters, toggleRowSelect, toggleSelectAll, selectAllFiltered, clearSelection, deleteSelected, openBulkEdit, applyBulkEdit, autoAllotRollNumbers } from './table.js';
 import { renderDashboard } from './dashboard.js';
@@ -38,6 +37,8 @@ function fixExistingData() {
 }
 
 export async function initApp() {
+    localStorage.removeItem('eduCurrentUser');
+    localStorage.removeItem('eduUsers');
     let db = await loadAll();
     let restored = false;
     if (!db.length) {
@@ -62,7 +63,6 @@ export async function initApp() {
     if (db.length) {
         saveBackupToDisk(db).catch(() => {});
     }
-    document.getElementById('authPanel').style.display = 'none';
     document.getElementById('appContainer').style.display = 'block';
     document.getElementById('ACADEMIC_YEAR').value = getCurrentAcademicYear();
     updateDashboard();
@@ -86,9 +86,6 @@ window.setupBackupHandler = async function() {
 };
 
 window.addEventListener('load', async () => {
-    const currentUser = localStorage.getItem('eduCurrentUser') || '';
-    setAuthCallback(initApp);
-
     document.querySelectorAll('.up').forEach(el =>
         el.addEventListener('input', () => el.value = el.value.toUpperCase())
     );
@@ -100,9 +97,7 @@ window.addEventListener('load', async () => {
         document.getElementById('darkModeToggle').innerHTML = '<i class="fa-solid fa-sun"></i>';
         document.querySelector('meta[name="theme-color"]').content = '#0F172A';
     }
-    if (currentUser) {
-        await initApp();
-    }
+    await initApp();
 });
 
 export function setFormDirty(v) { formDirty = v; }
@@ -183,8 +178,4 @@ window.switchTab = switchTab;
 window.toggleDarkMode = toggleDarkMode;
 window.toggleSection = toggleSection;
 window.toggleVoc = toggleVoc;
-window.handleLogin = handleLogin;
-window.handleSignup = handleSignup;
-window.handleLogout = handleLogout;
-window.switchAuthTab = switchAuthTab;
 window.setupBackupHandler = window.setupBackupHandler;

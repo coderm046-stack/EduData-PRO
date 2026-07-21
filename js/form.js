@@ -1,6 +1,5 @@
 import { FIELDS, getCurrentAcademicYear, normaliseDropdownValue, setSelectValue, showToast, toggleVoc, NORM_FIELDS, YN_FIELDS } from './utils.js';
 import { saveRecord, deleteRecord, loadAll, syncToLocalStorage, saveBackupToDisk } from './db.js';
-import { getCurrentUser } from './auth.js';
 import { updateDashboard, setFormDirty, switchTab } from './app.js';
 
 let db = [];
