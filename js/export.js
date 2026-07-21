@@ -1,5 +1,5 @@
 import { FIELDS, COLUMN_MAP, formatDate, esc, showToast, getFilteredRows, DATE_FIELDS, normaliseDropdownValue } from './utils.js';
-import { getDb, setDb } from './form.js';
+import { getDb, setDb, getSelectedIds } from './form.js';
 import { updateDashboard } from './app.js';
 
 let selectedCols = new Set(COLUMN_MAP.map(c => c.field));
@@ -219,15 +219,14 @@ function getExportRows() {
     const rows = getFilteredRows(db);
     const cb = document.getElementById('exportSelectedOnly');
     if (!cb || !cb.checked) return rows;
-    const ids = [...document.getElementById('selectedCount').dataset?.ids || []];
+    const ids = [...getSelectedIds()];
     return rows.filter(s => ids.includes(s.id));
 }
 
 export function previewSelectedColumns() {
     const cols = getSelectedColumns();
     if (!cols.length) { showToast('Select at least one column!','#F59E0B'); return; }
-    let db = getDb();
-    const rows = getFilteredRows(db);
+    const rows = getExportRows();
     if (!rows.length) { showToast('No data to preview!','#F59E0B'); return; }
     const yearVal = document.getElementById('tbl-year').value;
     const yearLabel = yearVal ? yearVal : 'All Years';
@@ -252,8 +251,7 @@ export function printSelectedColumns() {
     closePreview();
     const cols = getSelectedColumns();
     if (!cols.length) { showToast('Select at least one column!','#F59E0B'); return; }
-    let db = getDb();
-    const rows = getFilteredRows(db);
+    const rows = getExportRows();
     if (!rows.length) { showToast('No data to print!','#F59E0B'); return; }
     const yearVal = document.getElementById('tbl-year').value;
     const yearLabel = yearVal ? yearVal : 'All Years';
@@ -278,8 +276,7 @@ export function exportSelectedColumns() {
     closePreview();
     const cols = getSelectedColumns();
     if (!cols.length) { showToast('Select at least one column!','#F59E0B'); return; }
-    let db = getDb();
-    const rows = getFilteredRows(db);
+    const rows = getExportRows();
     if (!rows.length) { showToast('No data to export!','#F59E0B'); return; }
     const exportData = rows.map(r => {
         const row = {};

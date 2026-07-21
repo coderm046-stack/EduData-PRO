@@ -11,7 +11,6 @@ function openDB() {
             const db = e.target.result;
             if (!db.objectStoreNames.contains(STORE_NAME)) {
                 const store = db.createObjectStore(STORE_NAME, { keyPath: 'id' });
-                store.createIndex('user_id', 'user_id', { unique: false });
                 store.createIndex('CLASS', 'CLASS', { unique: false });
                 store.createIndex('ACADEMIC_YEAR', 'ACADEMIC_YEAR', { unique: false });
             }
