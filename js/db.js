@@ -108,6 +108,7 @@ export async function saveBackupToDisk(data) {
         const writable = await fileHandle.createWritable({ keepExistingData: false });
         await writable.write(JSON.stringify(data, null, 2));
         await writable.close();
+        window.dispatchEvent(new CustomEvent('backup-written'));
         return true;
     } catch (e) {
         console.warn('Disk backup failed:', e);

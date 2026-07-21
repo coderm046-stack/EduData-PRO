@@ -60,10 +60,8 @@ export async function initApp() {
     }
     setDb(db);
     fixExistingData();
-    if (db.length) {
-        saveBackupToDisk(db).catch(() => {});
-    }
     document.getElementById('appContainer').style.display = 'block';
+    updateBackupStatus();
     document.getElementById('ACADEMIC_YEAR').value = getCurrentAcademicYear();
     updateDashboard();
     updateBackupStatus();
@@ -98,6 +96,7 @@ window.addEventListener('load', async () => {
         document.querySelector('meta[name="theme-color"]').content = '#0F172A';
     }
     await initApp();
+    window.addEventListener('backup-written', updateBackupStatus);
 });
 
 export function setFormDirty(v) { formDirty = v; }
