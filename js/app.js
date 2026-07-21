@@ -59,7 +59,7 @@ export async function initApp() {
     }
     setDb(db);
     fixExistingData();
-    if (db.length && !restored) {
+    if (db.length) {
         saveBackupToDisk(db).catch(() => {});
     }
     document.getElementById('authPanel').style.display = 'none';
