@@ -152,6 +152,7 @@ window.switchCamera = switchCamera;
 window.capturePhoto = capturePhoto;
 window.resetApp = resetApp;
 window.renderClassTable = renderClassTable;
+window.renderDashboard = renderDashboard;
 window.changePage = changePage;
 window.onYearFilterChange = onYearFilterChange;
 window.clearTableFilters = clearTableFilters;
