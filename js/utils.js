@@ -119,6 +119,7 @@ export function getFilteredRows(db) {
     const fYear   = document.getElementById('tbl-year').value;
     const fGender = document.getElementById('tbl-gender').value;
     const fVocCur = document.getElementById('tbl-voc-current').value;
+    const fVocSub = document.getElementById('tbl-voc-subject-current').value;
     const fOrphan = document.getElementById('tbl-orphan').value;
     const fHostel = document.getElementById('tbl-hostel').value;
     const fApl    = document.getElementById('tbl-aplbpl').value;
@@ -128,6 +129,7 @@ export function getFilteredRows(db) {
         if (fYear   && s.ACADEMIC_YEAR !== fYear)   return false;
         if (fGender && s.GENDER        !== fGender) return false;
         if (fVocCur && s.VOC_CURRENT_YR !== fVocCur) return false;
+        if (fVocSub && s.VOC_NAME_CURRENT !== fVocSub) return false;
         if (fOrphan && s.ORPHAN        !== fOrphan) return false;
         if (fHostel && (fHostel === 'Yes') !== (s.HOSTEL_STUDENT === 'Yes')) return false;
         if (fApl    && s.APL_BPL       !== fApl)    return false;

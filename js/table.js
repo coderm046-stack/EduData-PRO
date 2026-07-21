@@ -8,7 +8,7 @@ const PAGE_SIZE = 50;
 let lastFilterKey = '';
 
 function getFilterKey() {
-    return ['tbl-class','tbl-div','tbl-year','tbl-gender','tbl-voc-current','tbl-orphan','tbl-hostel','tbl-aplbpl']
+    return ['tbl-class','tbl-div','tbl-year','tbl-gender','tbl-voc-current','tbl-voc-subject-current','tbl-orphan','tbl-hostel','tbl-aplbpl']
         .map(id => document.getElementById(id).value).join('|');
 }
 
@@ -23,6 +23,7 @@ export function renderClassTable() {
     const fYear   = document.getElementById('tbl-year').value;
     const fGender = document.getElementById('tbl-gender').value;
     const fVocCur = document.getElementById('tbl-voc-current').value;
+    const fVocSub = document.getElementById('tbl-voc-subject-current').value;
     const fOrphan = document.getElementById('tbl-orphan').value;
     const fHostel = document.getElementById('tbl-hostel').value;
     const fApl    = document.getElementById('tbl-aplbpl').value;
@@ -33,6 +34,7 @@ export function renderClassTable() {
         if (fYear   && s.ACADEMIC_YEAR !== fYear)   return false;
         if (fGender && s.GENDER        !== fGender) return false;
         if (fVocCur && s.VOC_CURRENT_YR !== fVocCur) return false;
+        if (fVocSub && s.VOC_NAME_CURRENT !== fVocSub) return false;
         if (fOrphan && s.ORPHAN        !== fOrphan) return false;
         if (fHostel && (fHostel==='Yes') !== (s.HOSTEL_STUDENT==='Yes')) return false;
         if (fApl    && s.APL_BPL       !== fApl)    return false;
@@ -92,11 +94,26 @@ export function renderClassTable() {
         rows.length ? `Showing ${startRow}-${endRow} of ${rows.length} (filtered from ${db.length} total)` : `No records match the selected filters.`;
     document.getElementById('pageInfo').textContent = `Page ${currentPage} of ${totalPages} (${rows.length} records)`;
     document.getElementById('paginationControls').style.display = rows.length > PAGE_SIZE ? 'flex' : 'none';
+    populateVocSubjectFilter();
     const allFilteredIds = new Set(rows.map(r => r.id));
     document.getElementById('selectAll').checked = allFilteredIds.size > 0 && [...allFilteredIds].every(id => selectedIds.has(id));
     const sel = document.getElementById('selectedCount');
     sel.textContent = selectedIds.size ? `✓ ${selectedIds.size} record${selectedIds.size>1?'s':''} selected for bulk action` : '';
     updateSummaryStats();
+}
+
+function populateVocSubjectFilter() {
+    let db = getDb();
+    const sel = document.getElementById('tbl-voc-subject-current');
+    if (!sel) return;
+    const currentVal = sel.value;
+    const subjects = [...new Set(
+        db.filter(s => s.VOC_CURRENT_YR === 'Yes' && s.VOC_NAME_CURRENT && s.VOC_NAME_CURRENT.trim())
+           .map(s => s.VOC_NAME_CURRENT.trim())
+    )].sort();
+    sel.innerHTML = '<option value="">Voc./Optional Sub.: All</option>'
+        + subjects.map(s => `<option value="${s.replace(/"/g,'&quot;')}">${esc(s)}</option>`).join('');
+    if (subjects.includes(currentVal)) sel.value = currentVal;
 }
 
 export function changePage(delta) {
@@ -135,7 +152,7 @@ function updateYearBadge() {
 }
 
 export function clearTableFilters() {
-    ['tbl-class','tbl-div','tbl-year','tbl-gender','tbl-voc-current','tbl-orphan','tbl-hostel','tbl-aplbpl']
+    ['tbl-class','tbl-div','tbl-year','tbl-gender','tbl-voc-current','tbl-voc-subject-current','tbl-orphan','tbl-hostel','tbl-aplbpl']
         .forEach(id => document.getElementById(id).value = '');
     document.getElementById('summaryYearFilter').value = '';
     updateSummaryStats();
