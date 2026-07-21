@@ -144,9 +144,9 @@ export function performSearch() {
             <strong>${esc(r.STUDENT_NAME||'-')}</strong> &nbsp;(Roll: ${esc(r.ROLL_NO||'-')})<br>
             Class: ${esc(r.CLASS||'-')} &nbsp;|&nbsp; Year: ${esc(r.ACADEMIC_YEAR||'-')}
             <div style="display:flex;gap:5px;margin-top:5px;">
-                <button style="flex:1;background:var(--warning);color:white;border:none;padding:8px;border-radius:5px;" onclick="import('./form.js').then(m => m.startEdit(${r.id}))">Edit</button>
-                <button style="flex:1;background:var(--primary);color:white;border:none;padding:8px;border-radius:5px;" onclick="import('./form.js').then(m => m.printRecord(${r.id}))">Print</button>
-                <button style="flex:1;background:var(--error);color:white;border:none;padding:8px;border-radius:5px;" onclick="import('./form.js').then(m => m.handleDelete(${r.id}))">Del</button>
+                <button style="flex:1;background:var(--warning);color:white;border:none;padding:8px;border-radius:5px;" onclick="import('./js/form.js').then(m => m.startEdit(${r.id}))">Edit</button>
+                <button style="flex:1;background:var(--primary);color:white;border:none;padding:8px;border-radius:5px;" onclick="import('./js/form.js').then(m => m.printRecord(${r.id}))">Print</button>
+                <button style="flex:1;background:var(--error);color:white;border:none;padding:8px;border-radius:5px;" onclick="import('./js/form.js').then(m => m.handleDelete(${r.id}))">Del</button>
             </div>
         </div>
     `).join('') || '<p class="search-empty">No records found.</p>';
