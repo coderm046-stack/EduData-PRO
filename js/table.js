@@ -69,7 +69,7 @@ export function renderClassTable() {
 
     document.getElementById('classTableBody').innerHTML = rows.length
         ? pageRows.map((r,i) => `
-            <tr class="${(i+(currentPage-1)*PAGE_SIZE)%2===0?'row-even':'row-odd'}" style="cursor:pointer;" onclick="import('./form.js').then(m => m.startEdit(${r.id}))">
+            <tr class="${(i+(currentPage-1)*PAGE_SIZE)%2===0?'row-even':'row-odd'}${selectedIds.has(r.id)?' row-selected':''}" style="cursor:pointer;" onclick="import('./form.js').then(m => m.startEdit(${r.id}))">
                 <td class="tbl-cell tbl-center"><input type="checkbox" class="row-select" value="${r.id}" ${selectedIds.has(r.id)?'checked':''} onclick="event.stopPropagation();toggleRowSelect(this,${r.id})"></td>
                 ${td((currentPage-1)*PAGE_SIZE+i+1,true)}
                 ${td(r.CLASS,true)} ${td(r.DIVISION,true)} ${td(r.ROLL_NO,true)} ${td(r.GR_NO,true)}
