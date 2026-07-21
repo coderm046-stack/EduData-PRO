@@ -9,7 +9,7 @@ export function exportToExcel() {
     if (!db.length) { showToast('No data to export!','#F59E0B'); return; }
     const exportData = db.map(s => {
         const row = {};
-        FIELDS.forEach(f => row[f] = DATE_FIELDS.includes(f) ? formatDate(s[f]) : (s[f]||''));
+        COLUMN_MAP.forEach(c => row[c.label] = DATE_FIELDS.includes(c.field) ? formatDate(s[c.field]) : (s[c.field]||''));
         return row;
     });
     const ws = XLSX.utils.json_to_sheet(exportData);
@@ -24,7 +24,7 @@ export function exportFilteredData() {
     if (!rows.length) { showToast('No records match current filters!','#F59E0B'); return; }
     const exportData = rows.map(s => {
         const row = {};
-        FIELDS.forEach(f => row[f] = DATE_FIELDS.includes(f) ? formatDate(s[f]) : (s[f]||''));
+        COLUMN_MAP.forEach(c => row[c.label] = DATE_FIELDS.includes(c.field) ? formatDate(s[c.field]) : (s[c.field]||''));
         return row;
     });
     const ws = XLSX.utils.json_to_sheet(exportData);
@@ -39,10 +39,10 @@ export function exportFilteredData() {
 export function exportToCSV() {
     let db = getDb();
     if (!db.length) { showToast('No data to export!','#F59E0B'); return; }
-    const headers = FIELDS.join(',');
+    const headers = COLUMN_MAP.map(c => c.label).join(',');
     const csvRows = db.map(s => {
-        return FIELDS.map(f => {
-            let val = DATE_FIELDS.includes(f) ? formatDate(s[f]) : (s[f]||'');
+        return COLUMN_MAP.map(c => {
+            let val = DATE_FIELDS.includes(c.field) ? formatDate(s[c.field]) : (s[c.field]||'');
             val = String(val).replace(/"/g,'""').replace(/\r?\n|\r/g,' ');
             return `"${val}"`;
         }).join(',');
