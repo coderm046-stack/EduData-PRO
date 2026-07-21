@@ -10,16 +10,11 @@ window.__utils = { formatDate, FIELDS };
 let formDirty = false;
 
 export function updateDashboard() {
-    try {
-        document.getElementById('totalStudents').innerText = getDb().length;
-        document.getElementById('boys').innerText  = getDb().filter(s => s.GENDER==='Male').length;
-        document.getElementById('girls').innerText = getDb().filter(s => s.GENDER==='Female').length;
-        updateSummaryStats(); renderClassTable();
-        renderDashboard();
-    } catch(e) {
-        console.error('updateDashboard error:', e);
-        showToast('Error: ' + e.message, '#EF4444');
-    }
+    document.getElementById('totalStudents').innerText = getDb().length;
+    document.getElementById('boys').innerText  = getDb().filter(s => s.GENDER==='Male').length;
+    document.getElementById('girls').innerText = getDb().filter(s => s.GENDER==='Female').length;
+    updateSummaryStats(); renderClassTable();
+    renderDashboard();
 }
 
 function fixExistingData() {

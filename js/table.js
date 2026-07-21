@@ -1,6 +1,6 @@
 import { FIELDS, COLUMN_MAP, formatDate, esc, showToast, getFilteredRows, NORM_FIELDS, YN_FIELDS, DATE_FIELDS } from './utils.js';
 import { upsertMany, deleteMany, syncToLocalStorage, saveBackupToDisk } from './db.js';
-import { getDb, setSelectedIds } from './form.js';
+import { getDb, getSelectedIds, setSelectedIds } from './form.js';
 import { updateDashboard } from './app.js';
 
 let currentPage = 1;
@@ -13,7 +13,6 @@ function getFilterKey() {
 }
 
 export function renderClassTable() {
-    try {
     let db = getDb();
     if (typeof db === 'undefined') return;
     const newKey = getFilterKey();
@@ -104,10 +103,6 @@ export function renderClassTable() {
     const sel = document.getElementById('selectedCount');
     sel.textContent = selectedIds.size ? `✓ ${selectedIds.size} record${selectedIds.size>1?'s':''} selected for bulk action` : '';
     updateSummaryStats();
-    } catch(e) {
-        console.error('renderClassTable error:', e);
-        document.getElementById('classTableBody').innerHTML = `<tr><td colspan="41" style="color:red;padding:20px;text-align:center;">Error: ${e.message}</td></tr>`;
-    }
 }
 
 function populateVocSubjectFilter() {
