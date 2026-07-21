@@ -99,6 +99,29 @@ window.addEventListener('load', async () => {
     window.addEventListener('backup-written', updateBackupStatus);
 });
 
+let deferredPrompt = null;
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    const btn = document.getElementById('installBtn');
+    if (btn) btn.style.display = '';
+});
+window.addEventListener('appinstalled', () => {
+    const btn = document.getElementById('installBtn');
+    if (btn) btn.style.display = 'none';
+    deferredPrompt = null;
+});
+window.installApp = async function() {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    const result = await deferredPrompt.userChoice;
+    if (result.outcome === 'accepted') {
+        const btn = document.getElementById('installBtn');
+        if (btn) btn.style.display = 'none';
+    }
+    deferredPrompt = null;
+};
+
 export function setFormDirty(v) { formDirty = v; }
 
 export function switchTab(n) {

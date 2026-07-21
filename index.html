@@ -30,12 +30,13 @@
 <div id="appContainer">
     <header>
         <h2>🎓 EduData</h2>
-        <div style="display:flex;align-items:center;gap:6px;">
+        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
             <button class="header-btn" onclick="setupBackupHandler()" id="backupFolderBtn" title="Set auto-backup folder"><i class="fa-solid fa-folder-open"></i></button>
             <span id="backupStatus" class="backup-indicator" title="No backup folder set"></span>
             <button class="header-btn" onclick="toggleDarkMode()" id="darkModeToggle" title="Toggle dark/light mode" style="padding:5px 10px;"><i class="fa-solid fa-moon"></i></button>
-            <button class="header-btn" onclick="downloadBackup()" title="Download JSON backup"><i class="fa-solid fa-download"></i> Backup</button>
-            <button class="header-btn" onclick="restoreBackup()" title="Restore from JSON backup"><i class="fa-solid fa-upload"></i> Restore</button>
+            <button class="header-btn" onclick="downloadBackup()" title="Download JSON backup"><i class="fa-solid fa-download"></i></button>
+            <button class="header-btn" onclick="restoreBackup()" title="Restore from JSON backup"><i class="fa-solid fa-upload"></i></button>
+            <button class="header-btn" id="installBtn" style="display:none;" onclick="installApp()" title="Install EduData"><i class="fa-solid fa-download"></i> Install</button>
             <span class="header-badge">v 3.0</span>
         </div>
     </header>
