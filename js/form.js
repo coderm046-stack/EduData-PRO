@@ -1,7 +1,7 @@
 import { FIELDS, getCurrentAcademicYear, normaliseDropdownValue, setSelectValue, showToast, toggleVoc, NORM_FIELDS, YN_FIELDS } from './utils.js';
 import { saveRecord, deleteRecord, loadAll, syncToLocalStorage, saveBackupToDisk } from './db.js';
 import { getCurrentUser } from './auth.js';
-import { updateDashboard, setFormDirty } from './app.js';
+import { updateDashboard, setFormDirty, switchTab } from './app.js';
 
 let db = [];
 let selectedIds = new Set();
@@ -78,6 +78,7 @@ export function startEdit(id) {
         b.previousElementSibling.querySelector('.section-chevron')?.classList.add('open');
     });
     setFormDirty(false);
+    switchTab(1);
     closeSearch(); window.scrollTo(0, 0);
 }
 
