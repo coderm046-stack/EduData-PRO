@@ -13,6 +13,7 @@ function getFilterKey() {
 }
 
 export function renderClassTable() {
+    try {
     let db = getDb();
     if (typeof db === 'undefined') return;
     const newKey = getFilterKey();
@@ -103,6 +104,10 @@ export function renderClassTable() {
     const sel = document.getElementById('selectedCount');
     sel.textContent = selectedIds.size ? `✓ ${selectedIds.size} record${selectedIds.size>1?'s':''} selected for bulk action` : '';
     updateSummaryStats();
+    } catch(e) {
+        console.error('renderClassTable error:', e);
+        document.getElementById('classTableBody').innerHTML = `<tr><td colspan="41" style="color:red;padding:20px;text-align:center;">Error: ${e.message}</td></tr>`;
+    }
 }
 
 function populateVocSubjectFilter() {
