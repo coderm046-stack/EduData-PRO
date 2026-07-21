@@ -84,8 +84,6 @@ export async function handleImportFile(event) {
             FIELDS.forEach(f => { fieldMap[norm(f)] = f; });
             const aliases = {
                 'VOCSUBJECTCURRENT': 'VOC_NAME_CURRENT',
-                'VOCSUBJECTXTH': 'VOC_NAME',
-                'VOCATXTH': 'VOC_STATUS',
                 'VOCCURRENTYEARSSUBJECT': 'VOC_NAME_CURRENT',
                 'VOCSUBJECTCURRENTYEAR': 'VOC_NAME_CURRENT',
             };
@@ -118,12 +116,11 @@ export async function handleImportFile(event) {
                 });
 
                 FIELDS.forEach(f => { if (record[f] === undefined) record[f] = ''; });
-                ['HOSTEL_STUDENT','ORPHAN','VOC_STATUS','VOC_CURRENT_YR'].forEach(f => {
+                ['HOSTEL_STUDENT','ORPHAN','VOC_CURRENT_YR'].forEach(f => {
                     if (!record[f]) record[f] = 'No';
                 });
                 if (!record['APL_BPL']) record['APL_BPL'] = 'APL';
                 if (record['VOC_NAME_CURRENT'] && record['VOC_CURRENT_YR'] === 'No') record['VOC_CURRENT_YR'] = 'Yes';
-                if (record['VOC_NAME'] && record['VOC_STATUS'] === 'No') record['VOC_STATUS'] = 'Yes';
 
                 if (hasData) { imported++; pendingRecords.push(record); }
                 else { skipped++; }

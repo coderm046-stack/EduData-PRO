@@ -6,7 +6,7 @@ export const FIELDS = [
     "BANK_ACC","BANK_NAME","IFSC","PEN","APAAR",
     "HOSTEL_STUDENT","BLOOD_GROUP","HEIGHT","WEIGHT",
     "PERCENTAGE","DISTANCE","ORPHAN","APL_BPL",
-    "REMARK","VOC_STATUS","VOC_CURRENT_YR","VOC_NAME","VOC_NAME_CURRENT"
+    "REMARK","VOC_CURRENT_YR","VOC_NAME_CURRENT"
 ];
 
 export const COLUMN_MAP = [
@@ -27,8 +27,8 @@ export const COLUMN_MAP = [
     { field: 'PERCENTAGE', label: 'Last Class %' }, { field: 'DISTANCE', label: 'Distance' },
     { field: 'ORPHAN', label: 'Orphan' }, { field: 'HOSTEL_STUDENT', label: 'Hostel' },
     { field: 'APL_BPL', label: 'APL/BPL' }, { field: 'REMARK', label: 'Remark' },
-    { field: 'VOC_STATUS', label: 'Voc. at Xth' }, { field: 'VOC_CURRENT_YR', label: 'Voc. Current Yr' },
-    { field: 'VOC_NAME', label: 'Voc Subject (Xth)' }, { field: 'VOC_NAME_CURRENT', label: 'Voc Subject (Current)' },
+    { field: 'VOC_CURRENT_YR', label: 'Voc. Current Yr' },
+    { field: 'VOC_NAME_CURRENT', label: 'Voc Subject' },
     { field: 'ACADEMIC_YEAR', label: 'Acad. Year' }
 ];
 
@@ -56,7 +56,7 @@ export function normaliseDropdownValue(field, raw) {
         if (['FEMALE','F','GIRL','2'].includes(v)) return 'Female';
         return raw||'';
     }
-    const ynF = ['HOSTEL_STUDENT','ORPHAN','VOC_STATUS','VOC_CURRENT_YR'];
+    const ynF = ['HOSTEL_STUDENT','ORPHAN','VOC_CURRENT_YR'];
     if (ynF.includes(field)) {
         if (['YES','Y','TRUE','1'].includes(v)) return 'Yes';
         if (['NO','N','FALSE','0',''].includes(v)||!v) return 'No';
@@ -108,7 +108,6 @@ export function toggleSection(el) {
 }
 
 export function toggleVoc() {
-    document.getElementById('vocBox').style.display = document.getElementById('VOC_STATUS').value === 'Yes' ? 'block' : 'none';
     document.getElementById('vocBoxCurrent').style.display = document.getElementById('VOC_CURRENT_YR').value === 'Yes' ? 'block' : 'none';
 }
 
@@ -119,9 +118,7 @@ export function getFilteredRows(db) {
     const fDiv    = document.getElementById('tbl-div').value;
     const fYear   = document.getElementById('tbl-year').value;
     const fGender = document.getElementById('tbl-gender').value;
-    const fVoc    = document.getElementById('tbl-voc').value;
     const fVocCur = document.getElementById('tbl-voc-current').value;
-    const fVocSub = document.getElementById('tbl-voc-subject-current').value;
     const fOrphan = document.getElementById('tbl-orphan').value;
     const fHostel = document.getElementById('tbl-hostel').value;
     const fApl    = document.getElementById('tbl-aplbpl').value;
@@ -130,9 +127,7 @@ export function getFilteredRows(db) {
         if (fDiv    && s.DIVISION       !== fDiv)    return false;
         if (fYear   && s.ACADEMIC_YEAR !== fYear)   return false;
         if (fGender && s.GENDER        !== fGender) return false;
-        if (fVoc    && s.VOC_STATUS    !== fVoc)    return false;
         if (fVocCur && s.VOC_CURRENT_YR !== fVocCur) return false;
-        if (fVocSub && s.VOC_NAME_CURRENT !== fVocSub) return false;
         if (fOrphan && s.ORPHAN        !== fOrphan) return false;
         if (fHostel && (fHostel === 'Yes') !== (s.HOSTEL_STUDENT === 'Yes')) return false;
         if (fApl    && s.APL_BPL       !== fApl)    return false;
@@ -140,5 +135,5 @@ export function getFilteredRows(db) {
     });
 }
 
-export const NORM_FIELDS = ['GENDER','HOSTEL_STUDENT','ORPHAN','VOC_STATUS','VOC_CURRENT_YR','CLASS','APL_BPL','BLOOD_GROUP','DIVISION','ACADEMIC_YEAR'];
-export const YN_FIELDS = ['HOSTEL_STUDENT','ORPHAN','VOC_STATUS','VOC_CURRENT_YR'];
+export const NORM_FIELDS = ['GENDER','HOSTEL_STUDENT','ORPHAN','VOC_CURRENT_YR','CLASS','APL_BPL','BLOOD_GROUP','DIVISION','ACADEMIC_YEAR'];
+export const YN_FIELDS = ['HOSTEL_STUDENT','ORPHAN','VOC_CURRENT_YR'];

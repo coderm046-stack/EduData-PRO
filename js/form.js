@@ -55,7 +55,7 @@ export async function handleSave() {
 
 export function startEdit(id) {
     const s = db.find(x => x.id === id);
-    const selectFields = ['CLASS','ACADEMIC_YEAR','DIVISION','GENDER','HOSTEL_STUDENT','BLOOD_GROUP','ORPHAN','APL_BPL','VOC_STATUS','VOC_CURRENT_YR'];
+    const selectFields = ['CLASS','ACADEMIC_YEAR','DIVISION','GENDER','HOSTEL_STUDENT','BLOOD_GROUP','ORPHAN','APL_BPL','VOC_CURRENT_YR'];
     FIELDS.forEach(f => {
         const el = document.getElementById(f);
         if (!el) return;

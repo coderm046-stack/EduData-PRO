@@ -173,10 +173,8 @@
                         <i class="fa-solid fa-chevron-down section-chevron open"></i>
                     </div>
                     <div class="section-body">
-                        <div class="field-group"><label>VOCATIONAL SUBJECT AT Xth?</label><select id="VOC_STATUS" onchange="toggleVoc()"><option value="No">No</option><option value="Yes">Yes</option></select></div>
                         <div class="field-group"><label>IS STUDENT OPTED THE VOCATIONAL / OPTIONAL SUBJECT FOR CURRENT YEAR?</label><select id="VOC_CURRENT_YR" onchange="toggleVoc()"><option value="No">No</option><option value="Yes">Yes</option></select></div>
-                        <div class="field-group" id="vocBox" style="display:none;"><label>NAME OF VOCATIONAL / OPTIONAL SUBJECT (AT Xth)</label><input type="text" id="VOC_NAME" class="up" placeholder="Enter Subject Name"></div>
-                        <div class="field-group" id="vocBoxCurrent" style="display:none;"><label>NAME OF VOCATIONAL / OPTIONAL SUBJECT (FOR CURRENT YEAR)</label><input type="text" id="VOC_NAME_CURRENT" class="up" placeholder="Enter Subject Name"></div>
+                        <div class="field-group" id="vocBoxCurrent" style="display:none;"><label>NAME OF VOCATIONAL / OPTIONAL SUBJECT</label><input type="text" id="VOC_NAME_CURRENT" class="up" placeholder="Enter Subject Name"></div>
                     </div>
                 </div>
                 <div class="btn-stack">
@@ -243,18 +241,10 @@
                     <option value="">All Gender</option>
                     <option>Male</option><option>Female</option>
                 </select>
-                <select id="tbl-voc"      onchange="renderClassTable()" class="filter-select">
-                    <option value="">Voc. Xth: All</option>
-                    <option value="Yes">Voc. Xth: Yes</option>
-                    <option value="No">Voc. Xth: No</option>
-                </select>
                 <select id="tbl-voc-current" onchange="renderClassTable()" class="filter-select">
                     <option value="">Voc. Current: All</option>
                     <option value="Yes">Voc. Current: Yes</option>
                     <option value="No">Voc. Current: No</option>
-                </select>
-                <select id="tbl-voc-subject-current" onchange="renderClassTable()" class="filter-select">
-                    <option value="">Voc Subject (Curr.): All</option>
                 </select>
                 <select id="tbl-orphan"   onchange="renderClassTable()" class="filter-select">
                     <option value="">Orphan: All</option>
@@ -287,7 +277,7 @@
                         <th>DOB</th><th>POB</th><th>Caste</th><th>Aadhar</th><th>Name on Aadhar</th><th>DOB on Aadhar</th><th>Father</th><th>Mother</th>
                         <th>Mobile 1</th><th>Mobile 2</th><th>Email</th><th>Address</th><th>Bank Acc</th><th>Bank Name</th><th>IFSC</th><th>PEN</th>
                         <th>APAAR</th><th>Blood Grp</th><th>Height</th><th>Weight</th><th>Last Class %</th><th>Distance</th><th>Orphan</th><th>Hostel</th>
-                        <th>APL/BPL</th><th>Remark</th><th>Voc. at Xth</th><th>Voc. Current Yr</th><th>Voc Subject (Xth)</th><th>Voc Subject (Current)</th><th>Acad. Year</th>
+                        <th>APL/BPL</th><th>Remark</th><th>Voc. Current Yr</th><th>Voc Subject</th><th>Acad. Year</th>
                     </tr></thead>
                     <tbody id="classTableBody"></tbody>
                 </table>

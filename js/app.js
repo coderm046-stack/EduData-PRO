@@ -30,7 +30,6 @@ function fixExistingData() {
         YN_FIELDS.forEach(f => { if (s[f] === '') { s[f] = 'No'; changed++; } });
         if (!s['APL_BPL']) { s['APL_BPL'] = 'APL'; changed++; }
         if (s['VOC_NAME_CURRENT'] && s['VOC_CURRENT_YR'] === 'No') { s['VOC_CURRENT_YR'] = 'Yes'; changed++; }
-        if (s['VOC_NAME'] && s['VOC_STATUS'] === 'No') { s['VOC_STATUS'] = 'Yes'; changed++; }
     });
     if (changed > 0) {
         try { localStorage.setItem('eduDB_v4_final', JSON.stringify(db)); upsertMany(db).catch(() => {}); } catch(e) { showToast('Storage full!','#EF4444'); }
