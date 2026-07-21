@@ -1,7 +1,7 @@
 import { FIELDS, getCurrentAcademicYear, normaliseDropdownValue, setSelectValue, showToast, toggleVoc, NORM_FIELDS, YN_FIELDS } from './utils.js';
 import { saveRecord, deleteRecord, loadAll, syncToLocalStorage, saveBackupToDisk } from './db.js';
 import { getCurrentUser } from './auth.js';
-import { updateDashboard } from './app.js';
+import { updateDashboard, setFormDirty } from './app.js';
 
 let db = [];
 let selectedIds = new Set();
@@ -24,6 +24,7 @@ export function resetApp() {
     toggleVoc();
     document.getElementById('saveBtn').style.display = 'flex';
     document.getElementById('updateBtn').style.display = 'none';
+    setFormDirty(false);
 }
 
 export async function handleSave() {
@@ -75,6 +76,7 @@ export function startEdit(id) {
         b.classList.remove('collapsed');
         b.previousElementSibling.querySelector('.section-chevron')?.classList.add('open');
     });
+    setFormDirty(false);
     closeSearch(); window.scrollTo(0, 0);
 }
 

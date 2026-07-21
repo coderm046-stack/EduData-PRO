@@ -105,6 +105,8 @@ window.addEventListener('load', async () => {
     }
 });
 
+export function setFormDirty(v) { formDirty = v; }
+
 export function switchTab(n) {
     if (formDirty && !confirm('You have unsaved changes. Discard?')) return;
     [1,2,3].forEach(i => {
