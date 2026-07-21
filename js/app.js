@@ -13,12 +13,8 @@ export function updateDashboard() {
     document.getElementById('totalStudents').innerText = getDb().length;
     document.getElementById('boys').innerText  = getDb().filter(s => s.GENDER==='Male').length;
     document.getElementById('girls').innerText = getDb().filter(s => s.GENDER==='Female').length;
-    if (document.getElementById('tab-summary').classList.contains('active')) {
-        updateSummaryStats(); renderClassTable();
-    }
-    if (document.getElementById('tab-dashboard').classList.contains('active')) {
-        renderDashboard();
-    }
+    updateSummaryStats(); renderClassTable();
+    renderDashboard();
 }
 
 function fixExistingData() {

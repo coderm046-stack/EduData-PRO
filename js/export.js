@@ -1,5 +1,6 @@
 import { FIELDS, COLUMN_MAP, formatDate, esc, showToast, getFilteredRows, DATE_FIELDS, normaliseDropdownValue } from './utils.js';
-import { getDb } from './form.js';
+import { getDb, setDb } from './form.js';
+import { updateDashboard } from './app.js';
 
 let selectedCols = new Set(COLUMN_MAP.map(c => c.field));
 
@@ -134,7 +135,6 @@ export async function handleImportFile(event) {
             const { upsertMany, syncToLocalStorage, saveBackupToDisk } = await import('./db.js');
             pendingRecords.forEach(r => db.push(r));
             try { await upsertMany(pendingRecords); await syncToLocalStorage(); saveBackupToDisk(db).catch(()=>{}); } catch(e) { showToast('Storage full!','#EF4444'); }
-            const { updateDashboard } = await import('./app.js');
             updateDashboard();
             const msg = skipped ? `✅ Imported ${imported} records (${skipped} blank rows skipped)` : `✅ Imported ${imported} records successfully!`;
             showToast(msg,'#065F46');
@@ -329,15 +329,14 @@ export async function handleRestoreFile(event) {
             if (!Array.isArray(data)) { showToast('Invalid backup file: expected an array of records.', '#EF4444'); return; }
             if (!data.length) { showToast('Backup file is empty.', '#F59E0B'); return; }
             if (!confirm(`Restore ${data.length} records? This will REPLACE all current data (${db.length} records).`)) return;
-            db = data;
             try {
                 const { clearAll, upsertMany, syncToLocalStorage, saveBackupToDisk } = await import('./db.js');
                 await clearAll();
-                await upsertMany(db);
+                await upsertMany(data);
                 await syncToLocalStorage();
-                saveBackupToDisk(db).catch(()=>{});
+                saveBackupToDisk(data).catch(()=>{});
             } catch(err) { showToast('Storage error!', '#EF4444'); return; }
-            const { updateDashboard } = await import('./app.js');
+            setDb(data);
             updateDashboard();
             showToast(`✅ Restored ${db.length} records from backup!`, '#065F46');
         } catch(err) {
