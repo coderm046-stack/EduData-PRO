@@ -169,12 +169,12 @@
                 </div>
                 <div class="form-section section-vocational">
                     <div class="section-title" onclick="toggleSection(this)">
-                        <span class="section-label"><i class="fa-solid fa-screwdriver-wrench"></i> Vocational / Optional Subject Info</span>
+                        <span class="section-label"><i class="fa-solid fa-screwdriver-wrench"></i> Vocational / Optional Subject</span>
                         <i class="fa-solid fa-chevron-down section-chevron open"></i>
                     </div>
                     <div class="section-body">
                         <div class="field-group"><label>IS STUDENT OPTED THE VOCATIONAL / OPTIONAL SUBJECT FOR CURRENT YEAR?</label><select id="VOC_CURRENT_YR" onchange="toggleVoc()"><option value="No">No</option><option value="Yes">Yes</option></select></div>
-                        <div class="field-group" id="vocBoxCurrent" style="display:none;"><label>NAME OF VOCATIONAL / OPTIONAL SUBJECT</label><input type="text" id="VOC_NAME_CURRENT" class="up" placeholder="Enter Subject Name"></div>
+                        <div class="field-group" id="vocBoxCurrent" style="display:none;"><label>VOCATIONAL / OPTIONAL SUBJECT</label><input type="text" id="VOC_NAME_CURRENT" class="up" placeholder="Enter Subject Name"></div>
                     </div>
                 </div>
                 <div class="btn-stack">
@@ -242,9 +242,9 @@
                     <option>Male</option><option>Female</option>
                 </select>
                 <select id="tbl-voc-current" onchange="renderClassTable()" class="filter-select">
-                    <option value="">Voc. Current: All</option>
-                    <option value="Yes">Voc. Current: Yes</option>
-                    <option value="No">Voc. Current: No</option>
+                    <option value="">Voc./Optional: All</option>
+                    <option value="Yes">Voc./Optional: Yes</option>
+                    <option value="No">Voc./Optional: No</option>
                 </select>
                 <select id="tbl-orphan"   onchange="renderClassTable()" class="filter-select">
                     <option value="">Orphan: All</option>
@@ -317,7 +317,7 @@
             <div class="sstat kpi-boys"><h3 id="d-boys">0</h3><p>Boys</p></div>
             <div class="sstat kpi-girls"><h3 id="d-girls">0</h3><p>Girls</p></div>
             <div class="sstat kpi-orphan"><h3 id="d-orphan">0</h3><p>Orphan</p></div>
-            <div class="sstat kpi-voc"><h3 id="d-voc">0</h3><p>Voc. (Current)</p></div>
+            <div class="sstat kpi-voc"><h3 id="d-voc">0</h3><p>Voc./Optional</p></div>
             <div class="sstat kpi-hostel"><h3 id="d-hostel">0</h3><p>Hostel</p></div>
             <div class="sstat kpi-bpl"><h3 id="d-bpl">0</h3><p>BPL</p></div>
         </div>
@@ -331,7 +331,7 @@
                         <th style="padding:10px 8px;border:1px solid var(--border);text-align:center;color:var(--primary);font-size:0.78rem;letter-spacing:0.4px;">Boys</th>
                         <th style="padding:10px 8px;border:1px solid var(--border);text-align:center;color:var(--primary);font-size:0.78rem;letter-spacing:0.4px;">Girls</th>
                         <th style="padding:10px 8px;border:1px solid var(--border);text-align:center;color:var(--primary);font-size:0.78rem;letter-spacing:0.4px;">Orphan</th>
-                        <th style="padding:10px 8px;border:1px solid var(--border);text-align:center;color:var(--primary);font-size:0.78rem;letter-spacing:0.4px;">Voc. (Curr.)</th>
+                        <th style="padding:10px 8px;border:1px solid var(--border);text-align:center;color:var(--primary);font-size:0.78rem;letter-spacing:0.4px;">Voc./Optional</th>
                         <th style="padding:10px 8px;border:1px solid var(--border);text-align:center;color:var(--primary);font-size:0.78rem;letter-spacing:0.4px;">Hostel</th>
                         <th style="padding:10px 8px;border:1px solid var(--border);text-align:center;color:var(--primary);font-size:0.78rem;letter-spacing:0.4px;">BPL</th>
                     </tr></thead>
@@ -342,7 +342,7 @@
         <div style="display:flex;gap:12px;flex-wrap:wrap;max-width:960px;margin:0 auto 15px auto;">
             <div class="summary-card" style="flex:1;min-width:240px;margin:0;"><h3 style="margin:0 0 14px 0;">Blood Group Distribution</h3><div id="d-blood"></div></div>
             <div class="summary-card" style="flex:1;min-width:240px;margin:0;"><h3 style="margin:0 0 14px 0;">APL vs BPL</h3><div id="d-aplbpl"></div></div>
-            <div class="summary-card" style="flex:1;min-width:240px;margin:0;"><h3 style="margin:0 0 14px 0;">Current Voc. Subjects</h3><div id="d-vocsubjects"></div></div>
+            <div class="summary-card" style="flex:1;min-width:240px;margin:0;"><h3 style="margin:0 0 14px 0;">Voc./Optional Subjects</h3><div id="d-vocsubjects"></div></div>
         </div>
         <div class="summary-card"><h3 style="margin:0 0 14px 0;">Class-wise Totals by Academic Year</h3><div style="overflow-x:auto;"><div id="d-cross-year"></div></div></div>
     </div>
@@ -436,8 +436,8 @@
             <div class="field-group"><label>APL/BPL</label><select id="bulk-APL_BPL"><option value="">No Change</option><option>APL</option><option>BPL</option></select></div>
             <div class="field-group"><label>HOSTEL</label><select id="bulk-HOSTEL_STUDENT"><option value="">No Change</option><option>Yes</option><option>No</option></select></div>
             <div class="field-group"><label>ORPHAN</label><select id="bulk-ORPHAN"><option value="">No Change</option><option>Yes</option><option>No</option></select></div>
-            <div class="field-group"><label>VOC. CURRENT YR</label><select id="bulk-VOC_CURRENT_YR"><option value="">No Change</option><option>Yes</option><option>No</option></select></div>
-            <div class="field-group" style="grid-column:span 2;"><label>VOC. CURRENT YEAR SUBJECT</label><input type="text" id="bulk-VOC_NAME_CURRENT" placeholder="e.g. Retail, Beauty & Wellness..." list="bulkVocSubjects"><datalist id="bulkVocSubjects"><option value="Retail"><option value="Beauty & Wellness"><option value="Information Technology"><option value="Agriculture"><option value="Healthcare"><option value="Tourism & Hospitality"><option value="Banking & Finance"><option value="Electronics"><option value="Food Processing"><option value="Apparel & Garment Making"><option value="Automobile"><option value="Construction"><option value="Media & Entertainment"><option value="Physical Education"><option value="Home Science"></datalist></div>
+            <div class="field-group"><label>VOC./OPTIONAL STATUS</label><select id="bulk-VOC_CURRENT_YR"><option value="">No Change</option><option>Yes</option><option>No</option></select></div>
+            <div class="field-group" style="grid-column:span 2;"><label>VOC./OPTIONAL SUB.</label><input type="text" id="bulk-VOC_NAME_CURRENT" placeholder="e.g. Retail, Beauty & Wellness..." list="bulkVocSubjects"><datalist id="bulkVocSubjects"><option value="Retail"><option value="Beauty & Wellness"><option value="Information Technology"><option value="Agriculture"><option value="Healthcare"><option value="Tourism & Hospitality"><option value="Banking & Finance"><option value="Electronics"><option value="Food Processing"><option value="Apparel & Garment Making"><option value="Automobile"><option value="Construction"><option value="Media & Entertainment"><option value="Physical Education"><option value="Home Science"></datalist></div>
             <div class="field-group" style="grid-column:span 2;"><label>DATE OF ADMISSION</label><input type="date" id="bulk-DOA"></div>
         </div>
         <div class="col-btn-stack" style="margin-top:16px;">
