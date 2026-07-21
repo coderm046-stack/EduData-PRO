@@ -237,6 +237,11 @@ export async function applyBulkEdit() {
         });
     });
     if (!changed) { showToast('No changes applied (select values to change).','#F59E0B'); return; }
+    db.forEach(s => {
+        if (!ids.includes(s.id)) return;
+        if (s.VOC_NAME_CURRENT && s.VOC_CURRENT_YR === 'No') { s.VOC_CURRENT_YR = 'Yes'; changed++; }
+        if (s.VOC_NAME && s.VOC_STATUS === 'No') { s.VOC_STATUS = 'Yes'; changed++; }
+    });
     try { await upsertMany(db.filter(s => ids.includes(s.id))); await syncToLocalStorage(); saveBackupToDisk(db).catch(()=>{}); } catch(e) { showToast('Storage error!','#EF4444'); }
     document.getElementById('bulkEditModal').style.display = 'none';
     renderClassTable(); updateDashboard(); showToast(`Updated ${changed} fields across ${ids.length} records!`);
