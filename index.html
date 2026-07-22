@@ -10,7 +10,7 @@
     <meta name="apple-mobile-web-app-title" content="EduData">
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
-    <title>EduData v3.0</title>
+    <title>EduData</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
@@ -29,15 +29,14 @@
 
 <div id="appContainer">
     <header>
-        <h2>🎓 EduData</h2>
-        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+        <h2>🎓 EduData <span class="header-subtitle">(School Database)</span></h2>
+        <div class="header-actions">
             <button class="header-btn" onclick="setupBackupHandler()" id="backupFolderBtn" title="Set auto-backup folder"><i class="fa-solid fa-folder-open"></i></button>
             <span id="backupStatus" class="backup-indicator" title="No backup folder set"></span>
             <button class="header-btn" onclick="toggleDarkMode()" id="darkModeToggle" title="Toggle dark/light mode" style="padding:5px 10px;"><i class="fa-solid fa-moon"></i></button>
             <button class="header-btn" onclick="downloadBackup()" title="Download JSON backup"><i class="fa-solid fa-download"></i></button>
             <button class="header-btn" onclick="restoreBackup()" title="Restore from JSON backup"><i class="fa-solid fa-upload"></i></button>
             <button class="header-btn" id="installBtn" style="display:none;" onclick="installApp()" title="Install EduData"><i class="fa-solid fa-download"></i> Install</button>
-            <span class="header-badge">v 3.0</span>
         </div>
     </header>
 
@@ -166,7 +165,6 @@
                 </div>
             </form>
         </div>
-        <p class="version-tag">Version 3.0 | 39 Fields</p>
     </div>
 
     <div class="tab-panel" id="tab-summary">

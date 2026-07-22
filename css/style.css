@@ -73,9 +73,23 @@ header {
     border-radius: var(--radius-lg);
     margin: 0 auto 16px auto;
     display: flex;
-    align-items: center;
-    justify-content: space-between;
+    flex-direction: column;
+    gap: 12px;
     box-shadow: var(--shadow-md);
+}
+
+header .header-subtitle {
+    font-size: 0.8rem;
+    font-weight: 400;
+    opacity: 0.85;
+    font-family: 'DM Sans', sans-serif;
+}
+
+header .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
 }
 
 header h2 {
@@ -575,13 +589,6 @@ button:active { transform: scale(0.98); }
     box-shadow: var(--shadow-lg);
 }
 
-.version-tag {
-    text-align: center;
-    font-size: 0.68rem;
-    color: var(--text-muted);
-    margin: 16px 0;
-    letter-spacing: 0.3px;
-}
 
 .filter-row {
     display: flex;
