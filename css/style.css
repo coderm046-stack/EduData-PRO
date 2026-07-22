@@ -340,6 +340,7 @@ header h2 {
 .header-btn .fa-sun { color: #F59E0B; }
 .header-btn .fa-download { color: #10B981; }
 .header-btn .fa-upload { color: #3B82F6; }
+.header-btn .fa-mobile-screen-button { color: #06B6D4; }
 
 .backup-indicator {
     font-size: 1.6rem;
