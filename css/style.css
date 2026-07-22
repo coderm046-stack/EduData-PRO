@@ -295,23 +295,27 @@ select {
 
 .form-section {
     grid-column: 1 / -1;
-    border-radius: 14px;
+    border-radius: var(--radius-md);
     margin-bottom: 18px;
     overflow: hidden;
     border: 1px solid var(--border);
-    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    background: var(--surface);
+    box-shadow: var(--shadow-sm);
 }
 
 .form-section .section-title {
     margin: 0;
-    padding: 12px 16px;
+    padding: 14px 16px;
     cursor: pointer;
     user-select: none;
     display: flex;
     align-items: center;
     justify-content: space-between;
     border-bottom: 1px solid var(--border);
-    font-size: 0.72rem;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+    background: var(--surface);
 }
 
 .form-section .section-title .section-label {
@@ -339,6 +343,7 @@ select {
     transition: max-height 0.35s ease, padding 0.35s ease;
     max-height: 3000px;
     overflow: hidden;
+    background: var(--primary-light);
 }
 
 .section-body.collapsed {
@@ -351,31 +356,31 @@ select {
     .section-body { grid-template-columns: 1fr; }
 }
 
-.section-academic { background: #F0F7FF; }
-.section-academic .section-title { color: #1E40AF; background: #DBEAFE; }
-.section-personal { background: #F5F3FF; }
-.section-personal .section-title { color: #5B21B6; background: #EDE9FE; }
-.section-contact { background: #ECFDF5; }
-.section-contact .section-title { color: #065F46; background: #D1FAE5; }
-.section-govt { background: #FFFBEB; }
-.section-govt .section-title { color: #92400E; background: #FEF3C7; }
-.section-medical { background: #FFF1F2; }
-.section-medical .section-title { color: #9F1239; background: #FFE4E6; }
-.section-vocational { background: #F0F9FF; }
-.section-vocational .section-title { color: #0C4A6E; background: #E0F2FE; }
+.section-academic { border-left: 4px solid #1E40AF; }
+.section-academic .section-title { color: #1E40AF; }
+.section-personal { border-left: 4px solid #5B21B6; }
+.section-personal .section-title { color: #5B21B6; }
+.section-contact { border-left: 4px solid #065F46; }
+.section-contact .section-title { color: #065F46; }
+.section-govt { border-left: 4px solid #92400E; }
+.section-govt .section-title { color: #92400E; }
+.section-medical { border-left: 4px solid #9F1239; }
+.section-medical .section-title { color: #9F1239; }
+.section-vocational { border-left: 4px solid #0C4A6E; }
+.section-vocational .section-title { color: #0C4A6E; }
 
-body.dark-mode .section-academic { background: #0F1A2E; }
-body.dark-mode .section-academic .section-title { color: #93C5FD; background: #1E3A5F; }
-body.dark-mode .section-personal { background: #1E1B2E; }
-body.dark-mode .section-personal .section-title { color: #C4B5FD; background: #3B2F6E; }
-body.dark-mode .section-contact { background: #0F2A1E; }
-body.dark-mode .section-contact .section-title { color: #6EE7B7; background: #1E4A3F; }
-body.dark-mode .section-govt { background: #2A2410; }
-body.dark-mode .section-govt .section-title { color: #FCD34D; background: #5A4A1E; }
-body.dark-mode .section-medical { background: #2A1418; }
-body.dark-mode .section-medical .section-title { color: #FDA4AF; background: #5A1A28; }
-body.dark-mode .section-vocational { background: #0F1A2E; }
-body.dark-mode .section-vocational .section-title { color: #7DD3FC; background: #1E3A5F; }
+body.dark-mode .section-academic { border-left-color: #93C5FD; }
+body.dark-mode .section-academic .section-title { color: #93C5FD; }
+body.dark-mode .section-personal { border-left-color: #C4B5FD; }
+body.dark-mode .section-personal .section-title { color: #C4B5FD; }
+body.dark-mode .section-contact { border-left-color: #6EE7B7; }
+body.dark-mode .section-contact .section-title { color: #6EE7B7; }
+body.dark-mode .section-govt { border-left-color: #FCD34D; }
+body.dark-mode .section-govt .section-title { color: #FCD34D; }
+body.dark-mode .section-medical { border-left-color: #FDA4AF; }
+body.dark-mode .section-medical .section-title { color: #FDA4AF; }
+body.dark-mode .section-vocational { border-left-color: #7DD3FC; }
+body.dark-mode .section-vocational .section-title { color: #7DD3FC; }
 
 .btn-stack { display: flex; flex-direction: column; gap: 10px; margin-top: 28px; }
 
