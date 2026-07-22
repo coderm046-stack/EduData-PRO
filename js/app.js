@@ -127,14 +127,14 @@ export function setFormDirty(v) { formDirty = v; }
 export function switchTab(n) {
     if (formDirty && !confirm('You have unsaved changes. Discard?')) return;
     [1,2,3].forEach(i => {
-        const ids = {1:'tab-form',2:'tab-summary',3:'tab-dashboard'};
+        const ids = {1:'tab-dashboard',2:'tab-form',3:'tab-summary'};
         document.getElementById(ids[i]).classList.toggle('active', i===n);
         document.getElementById('tabBtn'+i).classList.toggle('active', i===n);
     });
-    document.getElementById('formHeader').style.display = n === 1 ? '' : 'none';
-    document.getElementById('formActions').style.display = n === 1 ? '' : 'none';
-    if (n === 2) { updateSummaryStats(); renderClassTable(); }
-    if (n === 3) { renderDashboard(); }
+    document.getElementById('formHeader').style.display = n === 1 || n === 2 ? '' : 'none';
+    document.getElementById('formActions').style.display = n === 1 || n === 2 ? '' : 'none';
+    if (n === 1) { renderDashboard(); }
+    if (n === 3) { updateSummaryStats(); renderClassTable(); }
 }
 
 document.addEventListener('keydown', function(e) {

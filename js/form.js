@@ -77,7 +77,7 @@ export function startEdit(id) {
         b.previousElementSibling.querySelector('.section-chevron')?.classList.add('open');
     });
     setFormDirty(false);
-    switchTab(1);
+    switchTab(2);
     closeSearch(); window.scrollTo(0, 0);
 }
 

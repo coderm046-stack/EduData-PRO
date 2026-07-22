@@ -41,12 +41,12 @@
     </div>
 
     <div class="tab-bar">
-        <button class="tab-btn active" id="tabBtn1" onclick="switchTab(1)"><i class="fa-regular fa-file-lines"></i> Form</button>
-        <button class="tab-btn" id="tabBtn2" onclick="switchTab(2)"><i class="fa-solid fa-table-list"></i> Summary</button>
-        <button class="tab-btn" id="tabBtn3" onclick="switchTab(3)"><i class="fa-solid fa-chart-pie"></i> Dashboard</button>
+        <button class="tab-btn active" id="tabBtn1" onclick="switchTab(1)"><i class="fa-solid fa-chart-pie"></i> Dashboard</button>
+        <button class="tab-btn" id="tabBtn2" onclick="switchTab(2)"><i class="fa-regular fa-file-lines"></i> Form</button>
+        <button class="tab-btn" id="tabBtn3" onclick="switchTab(3)"><i class="fa-solid fa-table-list"></i> Summary</button>
     </div>
 
-    <div class="tab-panel active" id="tab-form">
+    <div class="tab-panel" id="tab-form">
         <div class="dashboard">
             <div class="stat"><h3 id="totalStudents">0</h3><p>Total</p></div>
             <div class="stat"><h3 id="boys">0</h3><p>Boys</p></div>
@@ -268,7 +268,7 @@
         </div>
     </div>
 
-    <div class="tab-panel" id="tab-dashboard">
+    <div class="tab-panel active" id="tab-dashboard">
         <div class="filter-row" style="justify-content:center;margin-bottom:14px;">
             <select id="dashboardYearFilter" onchange="renderDashboard()" class="filter-select">
                 <option value="">All Years</option>
