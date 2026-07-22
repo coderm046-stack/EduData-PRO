@@ -749,12 +749,9 @@ button:active { transform: scale(0.97); }
 
 .tab-btn {
     flex: 1;
-    min-height: 42px;
+    min-height: 52px;
     border: none;
     border-radius: var(--radius-sm);
-    font-family: 'DM Sans', sans-serif;
-    font-weight: 600;
-    font-size: 0.85rem;
     cursor: pointer;
     color: var(--text-secondary);
     background: transparent;
@@ -762,8 +759,10 @@ button:active { transform: scale(0.97); }
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 6px;
-    letter-spacing: 0.1px;
+}
+
+.tab-btn i {
+    font-size: 1.4rem;
 }
 
 .tab-btn.active {
