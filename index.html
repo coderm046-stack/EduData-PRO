@@ -266,7 +266,6 @@
         <div class="header-actions" id="formActions">
             <button class="header-btn" onclick="setupBackupHandler()" id="backupFolderBtn" title="Set auto-backup folder"><i class="fa-solid fa-folder-open"></i><span class="btn-label">Backup</span></button>
             <span id="backupStatus" class="backup-indicator" title="No backup folder set"></span>
-            <button class="header-btn" onclick="toggleDarkMode()" id="darkModeToggle" title="Toggle dark/light mode"><i class="fa-solid fa-moon"></i><span class="btn-label">Theme</span></button>
             <button class="header-btn" onclick="downloadBackup()" title="Download JSON backup"><i class="fa-solid fa-download"></i><span class="btn-label">Export</span></button>
             <button class="header-btn" onclick="restoreBackup()" title="Restore from JSON backup"><i class="fa-solid fa-upload"></i><span class="btn-label">Restore</span></button>
             <button class="header-btn" id="installBtn" style="display:none;" onclick="installApp()" title="Install EduData"><i class="fa-solid fa-mobile-screen-button"></i><span class="btn-label">Install</span></button>
@@ -292,7 +291,7 @@
 
     <div class="tab-panel" id="tab-dashboard">
         <h2 class="tab-header">📊 Dashboard</h2>
-        <div class="filter-row" style="justify-content:center;margin-bottom:14px;">
+        <div class="filter-row filter-row-dash">
             <select id="dashboardYearFilter" onchange="renderDashboard()" class="filter-select">
                 <option value="">All Years</option>
                 <option>2023-2024</option><option>2024-2025</option><option>2025-2026</option>
@@ -311,7 +310,7 @@
                 <option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option><option>H</option><option>I</option><option>J</option><option>K</option><option>L</option><option>M</option><option>N</option><option>O</option><option>P</option><option>Q</option><option>R</option><option>S</option><option>T</option>
             </select>
         </div>
-        <div class="summary-stats" style="flex-wrap:wrap;">
+        <div class="summary-stats">
             <div class="sstat kpi-total"><h3 id="d-total">0</h3><p>Total Students</p></div>
             <div class="sstat kpi-boys"><h3 id="d-boys">0</h3><p>Boys</p></div>
             <div class="sstat kpi-girls"><h3 id="d-girls">0</h3><p>Girls</p></div>
@@ -321,31 +320,32 @@
             <div class="sstat kpi-bpl"><h3 id="d-bpl">0</h3><p>BPL</p></div>
         </div>
         <div class="summary-card">
-            <h3 style="margin:0 0 14px 0;color:var(--text-primary);font-family:'Sora',sans-serif;font-size:0.92rem;font-weight:700;">Class-wise Breakdown</h3>
+            <h3>Class-wise Breakdown</h3>
             <div style="overflow-x:auto;">
-                <table style="width:100%;border-collapse:collapse;font-size:0.88rem;min-width:500px;">
-                    <thead><tr style="background:var(--primary-light);">
-                        <th style="padding:10px 8px;border:1px solid var(--border);text-align:left;color:var(--primary);font-size:0.78rem;letter-spacing:0.4px;">Class</th>
-                        <th style="padding:10px 8px;border:1px solid var(--border);text-align:center;color:var(--primary);font-size:0.78rem;letter-spacing:0.4px;">Total</th>
-                        <th style="padding:10px 8px;border:1px solid var(--border);text-align:center;color:var(--primary);font-size:0.78rem;letter-spacing:0.4px;">Boys</th>
-                        <th style="padding:10px 8px;border:1px solid var(--border);text-align:center;color:var(--primary);font-size:0.78rem;letter-spacing:0.4px;">Girls</th>
-                        <th style="padding:10px 8px;border:1px solid var(--border);text-align:center;color:var(--primary);font-size:0.78rem;letter-spacing:0.4px;">Orphan</th>
-                        <th style="padding:10px 8px;border:1px solid var(--border);text-align:center;color:var(--primary);font-size:0.78rem;letter-spacing:0.4px;">Voc./Optional</th>
-                        <th style="padding:10px 8px;border:1px solid var(--border);text-align:center;color:var(--primary);font-size:0.78rem;letter-spacing:0.4px;">Hostel</th>
-                        <th style="padding:10px 8px;border:1px solid var(--border);text-align:center;color:var(--primary);font-size:0.78rem;letter-spacing:0.4px;">BPL</th>
+                <table class="dash-table">
+                    <thead><tr>
+                        <th>Class</th>
+                        <th>Total</th>
+                        <th>Boys</th>
+                        <th>Girls</th>
+                        <th>Orphan</th>
+                        <th>Voc./Optional</th>
+                        <th>Hostel</th>
+                        <th>BPL</th>
                     </tr></thead>
                     <tbody id="d-classrows"></tbody>
                 </table>
             </div>
         </div>
-        <div style="display:flex;gap:12px;flex-wrap:wrap;max-width:960px;margin:0 auto 15px auto;">
-            <div class="summary-card" style="flex:1;min-width:240px;margin:0;"><h3 style="margin:0 0 14px 0;">Blood Group Distribution</h3><div id="d-blood"></div></div>
-            <div class="summary-card" style="flex:1;min-width:240px;margin:0;"><h3 style="margin:0 0 14px 0;">APL vs BPL</h3><div id="d-aplbpl"></div></div>
-            <div class="summary-card" style="flex:1;min-width:240px;margin:0;"><h3 style="margin:0 0 14px 0;">Voc./Optional Subjects</h3><div id="d-vocsubjects"></div></div>
+        <div class="dash-card-row">
+            <div class="summary-card dash-mini-card"><h3>Blood Group Distribution</h3><div id="d-blood"></div></div>
+            <div class="summary-card dash-mini-card"><h3>APL vs BPL</h3><div id="d-aplbpl"></div></div>
+            <div class="summary-card dash-mini-card"><h3>Voc./Optional Subjects</h3><div id="d-vocsubjects"></div></div>
         </div>
-        <div class="summary-card"><h3 style="margin:0 0 14px 0;">Class-wise Totals by Academic Year</h3><div style="overflow-x:auto;"><div id="d-cross-year"></div></div></div>
+        <div class="summary-card"><h3>Class-wise Totals by Academic Year</h3><div style="overflow-x:auto;"><div id="d-cross-year"></div></div></div>
     </div>
     <div class="tab-bar">
+        <button class="tab-btn dark-mode-tab-btn" onclick="toggleDarkMode()" id="darkModeToggle" aria-label="Toggle dark mode"><i class="fa-solid fa-moon"></i></button>
         <button class="tab-btn active" id="tabBtn1" onclick="switchTab(1)" aria-label="Home"><i class="fa-solid fa-house"></i></button>
         <button class="tab-btn" id="tabBtn2" onclick="switchTab(2)" aria-label="Dashboard"><i class="fa-solid fa-chart-pie"></i></button>
         <button class="tab-btn" id="tabBtn3" onclick="switchTab(3)" aria-label="Form"><i class="fa-regular fa-file-lines"></i></button>

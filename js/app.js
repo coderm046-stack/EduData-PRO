@@ -180,6 +180,7 @@ export function setFormDirty(v) { formDirty = v; }
 
 export function switchTab(n) {
     if (formDirty && !confirm('You have unsaved changes. Discard?')) return;
+    if (navigator.vibrate) navigator.vibrate(15);
     [1,2,3,4].forEach(i => {
         const ids = {1:'tab-home',2:'tab-dashboard',3:'tab-form',4:'tab-summary'};
         document.getElementById(ids[i]).classList.toggle('active', i===n);

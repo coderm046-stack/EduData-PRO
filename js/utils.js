@@ -94,8 +94,20 @@ export function setSelectValue(id, val) {
 
 export function showToast(m, c='#10B981') {
     const t = document.getElementById('toast');
-    t.textContent = m; t.style.background = c; t.style.display = 'block';
-    setTimeout(() => t.style.display = 'none', 3500);
+    t.textContent = m;
+    t.style.background = c;
+    let bar = document.getElementById('toast-bar');
+    if (!bar) {
+        bar = document.createElement('div');
+        bar.id = 'toast-bar';
+        t.appendChild(bar);
+    }
+    bar.style.animation = 'none';
+    void bar.offsetHeight;
+    bar.style.animation = 'toastShrink 3.4s linear forwards';
+    t.style.display = 'block';
+    clearTimeout(t._timer);
+    t._timer = setTimeout(() => { t.style.display = 'none'; }, 3500);
 }
 
 export function toggleSection(el) {

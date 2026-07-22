@@ -1,6 +1,18 @@
 import { esc } from './utils.js';
 import { getDb } from './form.js';
 
+function showDashboardSkeletons() {
+    ['d-total','d-boys','d-girls','d-orphan','d-voc','d-hostel','d-bpl'].forEach(id => {
+        document.getElementById(id).innerHTML = '<span class="skeleton skeleton-inline" style="width:50px;">&nbsp;</span>';
+    });
+    document.getElementById('d-classrows').innerHTML =
+        '<tr><td colspan="8"><div class="skeleton skeleton-block" style="height:20px;"></div></td></tr>';
+    document.getElementById('d-blood').innerHTML = '<div class="skeleton skeleton-block" style="height:80px;"></div>';
+    document.getElementById('d-aplbpl').innerHTML = '<div class="skeleton skeleton-block" style="height:80px;"></div>';
+    document.getElementById('d-vocsubjects').innerHTML = '<div class="skeleton skeleton-block" style="height:80px;"></div>';
+    document.getElementById('d-cross-year').innerHTML = '<div class="skeleton skeleton-block" style="height:60px;"></div>';
+}
+
 export function renderDashboard() {
     let db = getDb();
     const fYear  = document.getElementById('dashboardYearFilter').value;
@@ -16,6 +28,10 @@ export function renderDashboard() {
         document.getElementById('d-vocsubjects').innerHTML = '';
         return;
     }
+
+    showDashboardSkeletons();
+
+    setTimeout(() => {
 
     let total = 0, boys = 0, girls = 0, orphan = 0, voc = 0, hostel = 0, bpl = 0;
     const bgCounts = { 'A+':0,'A-':0,'B+':0,'B-':0,'AB+':0,'AB-':0,'O+':0,'O-':0 };
@@ -66,9 +82,9 @@ export function renderDashboard() {
     const years = fYear ? [fYear] : [...new Set(db.map(s => s.ACADEMIC_YEAR).filter(Boolean))].sort();
     const classes = fCls ? [fCls] : ['IX','X','XI','XII'];
     if (years.length) {
-        let cyHtml = '<table style="width:100%;border-collapse:collapse;font-size:0.82rem;"><thead><tr style="background:var(--primary-light);">';
-        cyHtml += '<th style="padding:8px;border:1px solid var(--border);text-align:left;color:var(--primary);">Class</th>';
-        years.forEach(y => { cyHtml += `<th style="padding:8px;border:1px solid var(--border);text-align:center;color:var(--primary);">${esc(y)}</th>`; });
+        let cyHtml = '<table class="dash-table">';
+        cyHtml += '<thead><tr><th>Class</th>';
+        years.forEach(y => { cyHtml += `<th>${esc(y)}</th>`; });
         cyHtml += '</tr></thead><tbody>';
         classes.forEach((cls,ci) => {
             const hasData = db.some(s => s.CLASS === cls && (!fYear || s.ACADEMIC_YEAR === fYear) && (!fDiv || s.DIVISION === fDiv));
@@ -132,4 +148,5 @@ export function renderDashboard() {
                 <span class="d-bar-count">${cnt}</span>
             </div>`).join('')
         : '<p class="voc-empty">No vocational students yet.</p>';
+    }, 150);
 }
