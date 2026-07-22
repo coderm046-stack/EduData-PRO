@@ -1,6 +1,5 @@
-import { FIELDS, getCurrentAcademicYear, normaliseDropdownValue, setSelectValue, showToast, toggleVoc, NORM_FIELDS, YN_FIELDS } from './utils.js';
+import { FIELDS, getCurrentAcademicYear, normaliseDropdownValue, setSelectValue, showToast, toggleVoc, NORM_FIELDS, YN_FIELDS, formatDate } from './utils.js';
 import { saveRecord, deleteRecord, loadAll, syncToLocalStorage, saveBackupToDisk } from './db.js';
-import { updateDashboard, setFormDirty, switchTab } from './app.js';
 
 let db = [];
 let selectedIds = new Set();
@@ -23,7 +22,7 @@ export function resetApp() {
     toggleVoc();
     document.getElementById('saveBtn').style.display = 'flex';
     document.getElementById('updateBtn').style.display = 'none';
-    setFormDirty(false);
+    window.setFormDirty(false);
 }
 
 export async function handleSave() {
@@ -50,7 +49,7 @@ export async function handleSave() {
     try { await saveRecord(record); await syncToLocalStorage(); saveBackupToDisk(db).catch(()=>{}); } catch(e) { showToast('Storage full! Export backup and clear data.', '#EF4444'); }
     resetApp();
     showToast('✅ Saved!', '#10B981');
-    updateDashboard();
+    window.updateDashboard();
 }
 
 export function startEdit(id) {
@@ -76,8 +75,8 @@ export function startEdit(id) {
         b.classList.remove('collapsed');
         b.previousElementSibling.querySelector('.section-chevron')?.classList.add('open');
     });
-    setFormDirty(false);
-    switchTab(2);
+    window.setFormDirty(false);
+    window.switchTab(3);
     closeSearch(); window.scrollTo(0, 0);
 }
 
@@ -109,14 +108,14 @@ export async function handleUpdate() {
     try { await saveRecord(db[index]); await syncToLocalStorage(); saveBackupToDisk(db).catch(()=>{}); } catch(e) { showToast('Storage full! Export backup and clear data.', '#EF4444'); }
     resetApp();
     showToast('✅ Updated!', '#10B981');
-    updateDashboard();
+    window.updateDashboard();
 }
 
 export async function handleDelete(id) {
     if (!confirm('Delete this student record?')) return;
     db = db.filter(s => s.id !== id);
     try { await deleteRecord(id); await syncToLocalStorage(); saveBackupToDisk(db).catch(()=>{}); } catch(e) { showToast('Storage full! Export backup and clear data.', '#EF4444'); }
-    performSearch(); updateDashboard();
+    performSearch(); window.updateDashboard();
 }
 
 export async function wipeDatabase() {
@@ -124,7 +123,7 @@ export async function wipeDatabase() {
     if (prompt(`Enter ${code} to confirm wiping ALL data:`) == code) {
         db = [];
         try { await import('./db.js').then(m => m.clearAll()); await syncToLocalStorage(); import('./db.js').then(m => m.saveBackupToDisk(db).catch(()=>{})); } catch(e) { showToast('Storage full! Export backup and clear data.', '#EF4444'); }
-        showToast('🗑️ All data wiped', '#EF4444'); updateDashboard();
+        showToast('🗑️ All data wiped', '#EF4444'); window.updateDashboard();
     }
 }
 
@@ -171,7 +170,6 @@ export function printAll() {
 }
 
 function buildStudentPageHTML(s, addBreak) {
-    const { formatDate, FIELDS } = window.__utils || {};
     const academicYear = s.ACADEMIC_YEAR || '-';
     const numRows = Math.ceil(FIELDS.length / 3);
     const breakClass = addBreak ? ' print-page-break' : '';

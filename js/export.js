@@ -1,6 +1,6 @@
 import { FIELDS, COLUMN_MAP, formatDate, esc, showToast, getFilteredRows, DATE_FIELDS, normaliseDropdownValue } from './utils.js';
 import { getDb, setDb, getSelectedIds } from './form.js';
-import { updateDashboard, updateBackupStatus } from './app.js';
+
 
 let selectedCols = new Set(COLUMN_MAP.map(c => c.field));
 
@@ -132,7 +132,7 @@ export async function handleImportFile(event) {
             const { upsertMany, syncToLocalStorage, saveBackupToDisk } = await import('./db.js');
             pendingRecords.forEach(r => db.push(r));
             try { await upsertMany(pendingRecords); await syncToLocalStorage(); saveBackupToDisk(db).catch(()=>{}); } catch(e) { showToast('Storage full!','#EF4444'); }
-            updateDashboard();
+            window.updateDashboard();
             const msg = skipped ? `✅ Imported ${imported} records (${skipped} blank rows skipped)` : `✅ Imported ${imported} records successfully!`;
             showToast(msg,'#065F46');
         } catch(err) {
@@ -305,7 +305,7 @@ export function downloadBackup() {
     document.body.removeChild(a);
     URL.revokeObjectURL(a.href);
     localStorage.setItem('lastBackupWrite', String(Date.now()));
-    updateBackupStatus();
+    window.updateBackupStatus();
     showToast(`✅ Downloaded ${db.length} records as JSON`);
 }
 
@@ -333,7 +333,7 @@ export async function handleRestoreFile(event) {
                 saveBackupToDisk(data).catch(()=>{});
             } catch(err) { showToast('Storage error!', '#EF4444'); return; }
             setDb(data);
-            updateDashboard();
+            window.updateDashboard();
             showToast(`✅ Restored ${db.length} records from backup!`, '#065F46');
         } catch(err) {
             console.error(err);

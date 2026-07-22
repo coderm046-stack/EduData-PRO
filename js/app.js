@@ -5,7 +5,6 @@ import { renderClassTable, changePage, onYearFilterChange, updateSummaryStats, c
 import { renderDashboard } from './dashboard.js';
 import { exportToExcel, exportFilteredData, exportToCSV, importExcel, handleImportFile, exportPhotos, openColumnSelector, closeColumnSelector, closePreview, previewSelectedColumns, printSelectedColumns, exportSelectedColumns, downloadBackup, restoreBackup, handleRestoreFile } from './export.js';
 
-window.__utils = { formatDate, FIELDS };
 let formDirty = false;
 
 export function updateDashboard() {
@@ -177,6 +176,7 @@ window.installApp = async function() {
 };
 
 export function setFormDirty(v) { formDirty = v; }
+window.setFormDirty = setFormDirty;
 
 export function switchTab(n) {
     if (formDirty && !confirm('You have unsaved changes. Discard?')) return;
@@ -275,6 +275,6 @@ window.downloadBackup = downloadBackup;
 window.restoreBackup = restoreBackup;
 window.handleRestoreFile = handleRestoreFile;
 window.switchTab = switchTab;
+window.updateBackupStatus = updateBackupStatus;
 window.toggleSection = toggleSection;
 window.toggleVoc = toggleVoc;
-window.setupBackupHandler = window.setupBackupHandler;

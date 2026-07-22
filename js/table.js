@@ -1,7 +1,6 @@
 import { FIELDS, COLUMN_MAP, formatDate, esc, showToast, getFilteredRows, NORM_FIELDS, YN_FIELDS, DATE_FIELDS } from './utils.js';
 import { upsertMany, deleteMany, syncToLocalStorage, saveBackupToDisk } from './db.js';
 import { getDb, getSelectedIds, setSelectedIds } from './form.js';
-import { updateDashboard } from './app.js';
 
 let currentPage = 1;
 const PAGE_SIZE = 50;
@@ -210,7 +209,7 @@ export async function deleteSelected() {
         saveBackupToDisk(db).catch(()=>{});
         import('./form.js').then(m => { m.setDb(db); m.setSelectedIds(selectedIds); });
     } catch(e) { showToast('Storage error!','#EF4444'); }
-    renderClassTable(); updateDashboard(); showToast(`Deleted ${ids.length} record${ids.length>1?'s':''}!`);
+    renderClassTable(); window.updateDashboard(); showToast(`Deleted ${ids.length} record${ids.length>1?'s':''}!`);
 }
 
 export function openBulkEdit() {
@@ -240,7 +239,7 @@ export async function applyBulkEdit() {
     });
     try { await upsertMany(db.filter(s => ids.includes(s.id))); await syncToLocalStorage(); saveBackupToDisk(db).catch(()=>{}); } catch(e) { showToast('Storage error!','#EF4444'); }
     document.getElementById('bulkEditModal').style.display = 'none';
-    renderClassTable(); updateDashboard(); showToast(`Updated ${changed} fields across ${ids.length} records!`);
+    renderClassTable(); window.updateDashboard(); showToast(`Updated ${changed} fields across ${ids.length} records!`);
 }
 
 export async function autoAllotRollNumbers() {
@@ -261,5 +260,5 @@ export async function autoAllotRollNumbers() {
         group.forEach((s, i) => { s.ROLL_NO = (i + 1).toString(); });
     });
     try { await upsertMany(db); await syncToLocalStorage(); saveBackupToDisk(db).catch(()=>{}); } catch(e) { showToast('Storage full!','#EF4444'); }
-    renderClassTable(); updateDashboard(); showToast('Roll numbers allotted successfully!');
+    renderClassTable(); window.updateDashboard(); showToast('Roll numbers allotted successfully!');
 }
