@@ -1,5 +1,5 @@
-import { FIELDS, getCurrentAcademicYear, normaliseDropdownValue, setSelectValue, showToast, toggleVoc, NORM_FIELDS, YN_FIELDS } from './utils.js';
-import { saveRecord, deleteRecord, loadAll, syncToLocalStorage, saveBackupToDisk } from './db.js';
+import { FIELDS, getCurrentAcademicYear, normaliseDropdownValue, setSelectValue, showToast, toggleVoc, NORM_FIELDS, formatDate } from './utils.js';
+import { saveRecord, deleteRecord, syncToLocalStorage, saveBackupToDisk } from './db.js';
 import { updateDashboard, setFormDirty, switchTab } from './app.js';
 
 let db = [];
@@ -171,7 +171,7 @@ export function printAll() {
 }
 
 function buildStudentPageHTML(s, addBreak) {
-    const { formatDate, FIELDS } = window.__utils || {};
+    const academicYear = s.ACADEMIC_YEAR || '-';
     const academicYear = s.ACADEMIC_YEAR || '-';
     const numRows = Math.ceil(FIELDS.length / 3);
     const breakClass = addBreak ? ' print-page-break' : '';

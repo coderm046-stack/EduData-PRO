@@ -5,7 +5,6 @@ import { renderClassTable, changePage, onYearFilterChange, updateSummaryStats, c
 import { renderDashboard } from './dashboard.js';
 import { exportToExcel, exportFilteredData, exportToCSV, importExcel, handleImportFile, exportPhotos, openColumnSelector, closeColumnSelector, closePreview, previewSelectedColumns, printSelectedColumns, exportSelectedColumns, downloadBackup, restoreBackup, handleRestoreFile } from './export.js';
 
-window.__utils = { formatDate, FIELDS };
 let formDirty = false;
 
 export function updateDashboard() {
@@ -277,4 +276,3 @@ window.handleRestoreFile = handleRestoreFile;
 window.switchTab = switchTab;
 window.toggleSection = toggleSection;
 window.toggleVoc = toggleVoc;
-window.setupBackupHandler = window.setupBackupHandler;
