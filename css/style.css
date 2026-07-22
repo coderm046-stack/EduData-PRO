@@ -309,16 +309,18 @@ header h2 {
 
 .header-btn {
     flex: 1;
-    max-width: 62px;
-    min-width: 48px;
-    min-height: 48px;
+    max-width: 72px;
+    min-width: 60px;
+    min-height: 60px;
     border: 1px solid var(--border);
     border-radius: var(--radius-sm);
     background: var(--surface);
     cursor: pointer;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
+    gap: 3px;
     box-shadow: var(--shadow-sm);
     transition: background 0.15s, transform 0.12s;
 }
@@ -332,7 +334,16 @@ header h2 {
 }
 
 .header-btn i {
-    font-size: 1.5rem;
+    font-size: 1.4rem;
+}
+
+.btn-label {
+    font-size: 0.6rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    line-height: 1;
 }
 
 .header-btn .fa-folder-open { color: #F59E0B; }

@@ -264,12 +264,12 @@
             <h2 style="text-align:center;width:100%;">🎓 EduData <span class="header-subtitle">(School Database)</span></h2>
         </header>
         <div class="header-actions" id="formActions">
-            <button class="header-btn" onclick="setupBackupHandler()" id="backupFolderBtn" title="Set auto-backup folder"><i class="fa-solid fa-folder-open"></i></button>
+            <button class="header-btn" onclick="setupBackupHandler()" id="backupFolderBtn" title="Set auto-backup folder"><i class="fa-solid fa-folder-open"></i><span class="btn-label">Backup</span></button>
             <span id="backupStatus" class="backup-indicator" title="No backup folder set"></span>
-            <button class="header-btn" onclick="toggleDarkMode()" id="darkModeToggle" title="Toggle dark/light mode"><i class="fa-solid fa-moon"></i></button>
-            <button class="header-btn" onclick="downloadBackup()" title="Download JSON backup"><i class="fa-solid fa-download"></i></button>
-            <button class="header-btn" onclick="restoreBackup()" title="Restore from JSON backup"><i class="fa-solid fa-upload"></i></button>
-            <button class="header-btn" id="installBtn" style="display:none;" onclick="installApp()" title="Install EduData"><i class="fa-solid fa-mobile-screen-button"></i></button>
+            <button class="header-btn" onclick="toggleDarkMode()" id="darkModeToggle" title="Toggle dark/light mode"><i class="fa-solid fa-moon"></i><span class="btn-label">Theme</span></button>
+            <button class="header-btn" onclick="downloadBackup()" title="Download JSON backup"><i class="fa-solid fa-download"></i><span class="btn-label">Export</span></button>
+            <button class="header-btn" onclick="restoreBackup()" title="Restore from JSON backup"><i class="fa-solid fa-upload"></i><span class="btn-label">Restore</span></button>
+            <button class="header-btn" id="installBtn" style="display:none;" onclick="installApp()" title="Install EduData"><i class="fa-solid fa-mobile-screen-button"></i><span class="btn-label">Install</span></button>
         </div>
         <div class="getting-started" id="gettingStarted">
             <div class="gs-header">
