@@ -1234,6 +1234,8 @@ body.dark-mode .row-selected { background: #1E3A5F !important; outline: 2px soli
     background: rgba(0,0,0,0.92); z-index: 1300;
     justify-content: center; align-items: center;
     flex-direction: column;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
 }
 .cam-content {
     background: #000; border-radius: 12px; overflow: hidden;
