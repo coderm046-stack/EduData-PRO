@@ -777,6 +777,9 @@ button:active { transform: scale(0.97); }
 
 .tab-btn.active i { color: #fff; }
 
+/* Higher-specificity override so per-tab colors don't bleed into active state */
+#tabBtn1.active i, #tabBtn2.active i, #tabBtn3.active i, #tabBtn4.active i { color: #fff; }
+
 .tab-btn:not(.active):hover {
     background: var(--primary-light);
 }
