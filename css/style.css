@@ -59,7 +59,7 @@ body {
     font-family: 'DM Sans', 'Segoe UI', sans-serif;
     background: var(--bg);
     margin: 0;
-    padding: 12px 10px 40px;
+    padding: 12px 10px 80px;
     color: var(--text-primary);
     min-height: 100vh;
     touch-action: pan-y;
@@ -442,13 +442,20 @@ button:active { transform: scale(0.98); }
 .tab-bar {
     display: flex;
     max-width: 680px;
-    margin: 0 auto 16px auto;
+    margin: 0 auto;
     background: var(--surface);
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-md) var(--radius-md) 0 0;
     padding: 5px;
     border: 1px solid var(--border);
+    border-bottom: none;
     gap: 4px;
     box-shadow: var(--shadow-sm);
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: calc(100% - 20px);
+    z-index: 100;
 }
 
 .tab-btn {
