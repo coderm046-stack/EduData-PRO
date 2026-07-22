@@ -107,6 +107,7 @@ export async function saveBackupToDisk(data) {
         const writable = await fileHandle.createWritable({ keepExistingData: false });
         await writable.write(JSON.stringify(data, null, 2));
         await writable.close();
+        localStorage.setItem('lastBackupWrite', String(Date.now()));
         window.dispatchEvent(new CustomEvent('backup-written'));
         return true;
     } catch (e) {

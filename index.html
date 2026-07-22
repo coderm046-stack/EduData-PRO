@@ -28,6 +28,13 @@
 <body>
 
 <div id="appContainer">
+    <div id="backupBanner" class="backup-banner" style="display:none;">
+        <div class="backup-banner-content">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            <span>Your data is stored only in this browser and may be lost if you clear site data. <button class="backup-banner-link" onclick="exportBackup()">Back up your data now</button> to keep it safe.</span>
+        </div>
+        <button class="backup-banner-close" onclick="dismissBackupBanner()" title="Dismiss">&times;</button>
+    </div>
     <div class="tab-panel" id="tab-form">
         <h2 class="tab-header">📋 Form</h2>
         <div class="dashboard">
@@ -61,11 +68,11 @@
                         <div class="field-group"><label>CLASS</label><select id="CLASS"><option value="">Select</option><option>IX</option><option>X</option><option>XI</option><option>XII</option></select></div>
                         <div class="field-group"><label>ACADEMIC YEAR</label><select id="ACADEMIC_YEAR"><option>2023-2024</option><option>2024-2025</option><option>2025-2026</option><option>2026-2027</option><option>2027-2028</option><option>2028-2029</option><option>2029-2030</option><option>2030-2031</option><option>2031-2032</option><option>2032-2033</option><option>2033-2034</option><option>2034-2035</option><option>2035-2036</option><option>2036-2037</option><option>2037-2038</option><option>2038-2039</option><option>2039-2040</option></select></div>
                         <div class="field-group"><label>DIVISION</label><select id="DIVISION"><option value="">Select</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option><option>H</option><option>I</option><option>J</option><option>K</option><option>L</option><option>M</option><option>N</option><option>O</option><option>P</option><option>Q</option><option>R</option><option>S</option><option>T</option></select></div>
-                        <div class="field-group"><label>ROLL NO.</label><input type="number" id="ROLL_NO"></div>
+                        <div class="field-group"><label>ROLL NO. <span class="help-tip" data-tip="Leave blank to auto-assign">?</span></label><input type="number" id="ROLL_NO"></div>
                         <div class="field-group"><label>GR NO.</label><input type="number" id="GR_NO"></div>
-                        <div class="field-group"><label>STUDENT NAME (L.C.)</label><input type="text" id="STUDENT_NAME" class="up"></div>
+                        <div class="field-group"><label>STUDENT NAME (L.C.) <span class="help-tip" data-tip="Will be automatically capitalized">?</span></label><input type="text" id="STUDENT_NAME" class="up"></div>
                         <div class="field-group"><label>DATE OF ADMISSION</label><input type="date" id="DOA"></div>
-                        <div class="field-group"><label>PREV. SCHOOL NAME</label><input type="text" id="PREV_SCHOOL" class="up"></div>
+                        <div class="field-group"><label>PREV. SCHOOL NAME <span class="help-tip" data-tip="Will be automatically capitalized">?</span></label><input type="text" id="PREV_SCHOOL" class="up"></div>
                     </div>
                 </div>
                 <div class="form-section section-personal">
@@ -77,9 +84,9 @@
                         <div class="field-group"><label>GENDER</label><select id="GENDER"><option value="">Select</option><option>Male</option><option>Female</option></select></div>
                         <div class="field-group"><label>DATE OF BIRTH (L.C.)</label><input type="date" id="DOB_LC"></div>
                         <div class="field-group"><label>PLACE OF BIRTH</label><input type="text" id="POB" class="up"></div>
-                        <div class="field-group"><label>CASTE</label><input type="text" id="CASTE" class="up"></div>
-                        <div class="field-group"><label>AADHAR NO.</label><input type="text" id="AADHAR_NO" pattern="[0-9]{12}" maxlength="12" inputmode="numeric"></div>
-                        <div class="field-group"><label>NAME ON AADHAR</label><input type="text" id="NAME_AADHAR" class="up"></div>
+                        <div class="field-group"><label>CASTE <span class="help-tip" data-tip="Will be automatically capitalized">?</span></label><input type="text" id="CASTE" class="up"></div>
+                        <div class="field-group"><label>AADHAR NO. <span class="help-tip" data-tip="Enter 12 digits, no spaces or dashes">?</span></label><input type="text" id="AADHAR_NO" pattern="[0-9]{12}" maxlength="12" inputmode="numeric"></div>
+                        <div class="field-group"><label>NAME ON AADHAR <span class="help-tip" data-tip="Will be automatically capitalized">?</span></label><input type="text" id="NAME_AADHAR" class="up"></div>
                         <div class="field-group"><label>DOB ON AADHAR</label><input type="date" id="DOB_AADHAR"></div>
                     </div>
                 </div>
@@ -89,12 +96,12 @@
                         <i class="fa-solid fa-chevron-down section-chevron"></i>
                     </div>
                     <div class="section-body collapsed">
-                        <div class="field-group"><label>FATHER NAME</label><input type="text" id="FATHER_NAME" class="up"></div>
-                        <div class="field-group"><label>MOTHER NAME</label><input type="text" id="MOTHER_NAME" class="up"></div>
-                        <div class="field-group"><label>MOBILE 1</label><input type="tel" id="MOBILE_1" pattern="[0-9]{10}" maxlength="10" inputmode="numeric"></div>
-                        <div class="field-group"><label>MOBILE 2</label><input type="tel" id="MOBILE_2" pattern="[0-9]{10}" maxlength="10" inputmode="numeric"></div>
+                        <div class="field-group"><label>FATHER NAME <span class="help-tip" data-tip="Will be automatically capitalized">?</span></label><input type="text" id="FATHER_NAME" class="up"></div>
+                        <div class="field-group"><label>MOTHER NAME <span class="help-tip" data-tip="Will be automatically capitalized">?</span></label><input type="text" id="MOTHER_NAME" class="up"></div>
+                        <div class="field-group"><label>MOBILE 1 <span class="help-tip" data-tip="Enter 10-digit mobile number">?</span></label><input type="tel" id="MOBILE_1" pattern="[0-9]{10}" maxlength="10" inputmode="numeric"></div>
+                        <div class="field-group"><label>MOBILE 2 <span class="help-tip" data-tip="Enter 10-digit mobile number">?</span></label><input type="tel" id="MOBILE_2" pattern="[0-9]{10}" maxlength="10" inputmode="numeric"></div>
                         <div class="field-group"><label>EMAIL ID</label><input type="email" id="EMAIL_ID"></div>
-                        <div class="field-group"><label>ADDRESS</label><textarea id="ADDRESS" rows="2" class="up"></textarea></div>
+                        <div class="field-group"><label>ADDRESS <span class="help-tip" data-tip="Will be automatically capitalized">?</span></label><textarea id="ADDRESS" rows="2" class="up"></textarea></div>
                     </div>
                 </div>
                 <div class="form-section section-govt">
@@ -104,10 +111,10 @@
                     </div>
                     <div class="section-body collapsed">
                         <div class="field-group"><label>BANK ACC NO.</label><input type="text" id="BANK_ACC"></div>
-                        <div class="field-group"><label>BANK NAME</label><input type="text" id="BANK_NAME" class="up"></div>
-                        <div class="field-group"><label>IFSC CODE</label><input type="text" id="IFSC" class="up"></div>
-                        <div class="field-group"><label>PEN NO.</label><input type="text" id="PEN" class="up"></div>
-                        <div class="field-group"><label>APAAR ID</label><input type="text" id="APAAR" class="up"></div>
+                        <div class="field-group"><label>BANK NAME <span class="help-tip" data-tip="Will be automatically capitalized">?</span></label><input type="text" id="BANK_NAME" class="up"></div>
+                        <div class="field-group"><label>IFSC CODE <span class="help-tip" data-tip="Will be auto-capitalized">?</span></label><input type="text" id="IFSC" class="up"></div>
+                        <div class="field-group"><label>PEN NO. <span class="help-tip" data-tip="Will be automatically capitalized">?</span></label><input type="text" id="PEN" class="up"></div>
+                        <div class="field-group"><label>APAAR ID <span class="help-tip" data-tip="Will be automatically capitalized">?</span></label><input type="text" id="APAAR" class="up"></div>
                     </div>
                 </div>
                 <div class="form-section section-medical">
@@ -116,15 +123,15 @@
                         <i class="fa-solid fa-chevron-down section-chevron"></i>
                     </div>
                     <div class="section-body collapsed">
-                        <div class="field-group"><label>HOSTEL STUDENT</label><select id="HOSTEL_STUDENT"><option>No</option><option>Yes</option></select></div>
+                        <div class="field-group"><label>HOSTEL STUDENT <span class="help-tip" data-tip="Defaults to No if left blank">?</span></label><select id="HOSTEL_STUDENT"><option>No</option><option>Yes</option></select></div>
                         <div class="field-group"><label>BLOOD GROUP</label><select id="BLOOD_GROUP"><option value="">Select</option><option>A+</option><option>A-</option><option>B+</option><option>B-</option><option>AB+</option><option>AB-</option><option>O+</option><option>O-</option></select></div>
                         <div class="field-group"><label>HEIGHT (CM)</label><input type="number" id="HEIGHT"></div>
                         <div class="field-group"><label>WEIGHT (KG)</label><input type="number" id="WEIGHT"></div>
                         <div class="field-group"><label>LAST CLASS %</label><input type="number" id="PERCENTAGE" step="0.01"></div>
                         <div class="field-group"><label>DISTANCE (KM)</label><input type="number" id="DISTANCE" step="0.1"></div>
-                        <div class="field-group"><label>ORPHAN?</label><select id="ORPHAN"><option>No</option><option>Yes</option></select></div>
-                        <div class="field-group"><label>APL/BPL</label><select id="APL_BPL"><option>APL</option><option>BPL</option></select></div>
-                        <div class="field-group"><label>REMARK</label><textarea id="REMARK" rows="1" class="up"></textarea></div>
+                        <div class="field-group"><label>ORPHAN? <span class="help-tip" data-tip="Defaults to No if left blank">?</span></label><select id="ORPHAN"><option>No</option><option>Yes</option></select></div>
+                        <div class="field-group"><label>APL/BPL <span class="help-tip" data-tip="Below Poverty Line (BPL) or Above (APL). Defaults to APL">?</span></label><select id="APL_BPL"><option>APL</option><option>BPL</option></select></div>
+                        <div class="field-group"><label>REMARK <span class="help-tip" data-tip="Will be automatically capitalized">?</span></label><textarea id="REMARK" rows="1" class="up"></textarea></div>
                     </div>
                 </div>
                 <div class="form-section section-vocational">
@@ -264,6 +271,23 @@
             <button class="header-btn" onclick="restoreBackup()" title="Restore from JSON backup"><i class="fa-solid fa-upload"></i></button>
             <button class="header-btn" id="installBtn" style="display:none;" onclick="installApp()" title="Install EduData"><i class="fa-solid fa-download"></i> Install</button>
         </div>
+        <div class="getting-started" id="gettingStarted">
+            <div class="gs-header">
+                <span class="gs-title"><i class="fa-solid fa-rocket"></i> Getting Started</span>
+                <button class="gs-toggle" onclick="toggleGettingStarted()" title="Collapse"><i class="fa-solid fa-chevron-up"></i></button>
+            </div>
+            <div class="gs-body" id="gsBody">
+                <p class="gs-intro">Welcome to EduData! Here's what you can do:</p>
+                <div class="gs-actions">
+                    <button class="gs-btn gs-btn-add" onclick="switchTab(2)"><i class="fa-solid fa-user-plus"></i><span>Add New Student</span><small>Fill in student details</small></button>
+                    <button class="gs-btn gs-btn-import" onclick="importExcel()"><i class="fa-solid fa-file-import"></i><span>Import from Excel</span><small>Bulk import records</small></button>
+                    <button class="gs-btn gs-btn-backup" onclick="setupBackupHandler()"><i class="fa-solid fa-hard-drive"></i><span>Set Auto Backup</span><small>Protect your data</small></button>
+                    <button class="gs-btn gs-btn-search" onclick="openSearch()"><i class="fa-solid fa-magnifying-glass"></i><span>Search Records</span><small>Find & edit students</small></button>
+                    <button class="gs-btn gs-btn-export" onclick="downloadBackup()"><i class="fa-solid fa-download"></i><span>Download Backup</span><small>Save a .json file</small></button>
+                    <button class="gs-btn gs-btn-help" onclick="switchTab(3)"><i class="fa-solid fa-table-list"></i><span>View Summary</span><small>Reports & analysis</small></button>
+                </div>
+            </div>
+        </div>
         <div class="filter-row" style="justify-content:center;margin-bottom:14px;">
             <select id="dashboardYearFilter" onchange="renderDashboard()" class="filter-select">
                 <option value="">All Years</option>
@@ -378,6 +402,20 @@
         <input type="text" id="searchInput" placeholder="Search by name or roll no..." onkeyup="performSearch()">
         <div id="searchResults" style="margin-top:15px;max-height:400px;overflow-y:auto;"></div>
         <button onclick="closeSearch()" style="background:var(--text-secondary);width:100%;margin-top:12px;color:white;border:none;height:44px;border-radius:var(--radius-md);font-family:'DM Sans',sans-serif;font-weight:600;cursor:pointer;">Close</button>
+    </div>
+</div>
+
+<div id="welcomeModal" class="welcome-overlay" style="display:none;">
+    <div class="welcome-modal">
+        <div class="welcome-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+        <h2 class="welcome-title">Welcome to EduData</h2>
+        <p class="welcome-text">Your complete school database manager. All data is stored locally in this browser — <strong>please back up regularly</strong> to avoid data loss.</p>
+        <div class="welcome-steps">
+            <div class="welcome-step"><i class="fa-solid fa-1"></i><span>Add student records in the <strong>Form</strong> tab</span></div>
+            <div class="welcome-step"><i class="fa-solid fa-2"></i><span>View reports in the <strong>Dashboard</strong> and <strong>Summary</strong> tabs</span></div>
+            <div class="welcome-step"><i class="fa-solid fa-3"></i><span>Set up <strong>Auto Backup</strong> to save to your device</span></div>
+        </div>
+        <button class="welcome-btn" onclick="dismissWelcome()">Get Started <i class="fa-solid fa-arrow-right"></i></button>
     </div>
 </div>
 

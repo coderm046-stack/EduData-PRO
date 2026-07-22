@@ -1,6 +1,6 @@
 import { FIELDS, COLUMN_MAP, formatDate, esc, showToast, getFilteredRows, DATE_FIELDS, normaliseDropdownValue } from './utils.js';
 import { getDb, setDb, getSelectedIds } from './form.js';
-import { updateDashboard } from './app.js';
+import { updateDashboard, updateBackupStatus } from './app.js';
 
 let selectedCols = new Set(COLUMN_MAP.map(c => c.field));
 
@@ -304,6 +304,8 @@ export function downloadBackup() {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(a.href);
+    localStorage.setItem('lastBackupWrite', String(Date.now()));
+    updateBackupStatus();
     showToast(`✅ Downloaded ${db.length} records as JSON`);
 }
 

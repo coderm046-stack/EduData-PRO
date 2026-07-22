@@ -69,10 +69,63 @@ export async function initApp() {
 
 export async function updateBackupStatus() {
     const el = document.getElementById('backupStatus');
-    if (!el) return;
+    if (!el) { showBackupBanner(); return; }
     const has = await hasBackupHandle();
-    el.innerHTML = has ? '<i class="fa-solid fa-circle-check" style="color:#34D399;"></i>' : '<i class="fa-regular fa-circle" style="color:#94A3B8;"></i>';
-    el.title = has ? 'Auto backup active' : 'No backup folder set';
+    if (!has) {
+        el.innerHTML = '<i class="fa-regular fa-circle" style="color:#94A3B8;"></i>';
+        el.title = 'No backup folder set';
+    } else {
+        const lastWrite = parseInt(localStorage.getItem('lastBackupWrite') || '0');
+        const age = Date.now() - lastWrite;
+        if (!lastWrite || age > 86400000) {
+            el.innerHTML = '<i class="fa-solid fa-circle" style="color:#F59E0B;"></i>';
+            el.title = lastWrite ? 'Backup folder set — no recent backup (>24h)' : 'Backup folder set — never written yet';
+        } else {
+            el.innerHTML = '<i class="fa-solid fa-circle-check" style="color:#34D399;"></i>';
+            el.title = 'Auto backup active and up to date';
+        }
+    }
+    showBackupBanner();
+}
+
+async function showBackupBanner() {
+    const banner = document.getElementById('backupBanner');
+    if (!banner) return;
+    if (localStorage.getItem('backupBannerDismissed') === '1') {
+        banner.style.display = 'none';
+        return;
+    }
+    const has = await hasBackupHandle();
+    banner.style.display = has ? 'none' : 'flex';
+}
+
+window.dismissBackupBanner = function() {
+    localStorage.setItem('backupBannerDismissed', '1');
+    document.getElementById('backupBanner').style.display = 'none';
+};
+
+window.exportBackup = function() {
+    downloadBackup();
+    localStorage.setItem('backupBannerDismissed', '1');
+    document.getElementById('backupBanner').style.display = 'none';
+};
+
+window.toggleGettingStarted = function() {
+    const el = document.getElementById('gettingStarted');
+    const icon = el.querySelector('.gs-toggle i');
+    el.classList.toggle('collapsed');
+    icon.className = el.classList.contains('collapsed') ? 'fa-solid fa-chevron-down' : 'fa-solid fa-chevron-up';
+};
+
+window.dismissWelcome = function() {
+    localStorage.setItem('welcomeSeen', '1');
+    document.getElementById('welcomeModal').style.display = 'none';
+};
+
+function showWelcomeIfNeeded() {
+    if (localStorage.getItem('welcomeSeen') !== '1') {
+        document.getElementById('welcomeModal').style.display = 'flex';
+    }
 }
 
 window.setupBackupHandler = async function() {
@@ -97,6 +150,7 @@ window.addEventListener('load', async () => {
     }
     await initApp();
     window.addEventListener('backup-written', updateBackupStatus);
+    showWelcomeIfNeeded();
 });
 
 let deferredPrompt = null;
