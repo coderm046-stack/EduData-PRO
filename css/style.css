@@ -86,10 +86,11 @@ header .header-subtitle {
 .header-actions {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 8px;
     flex-wrap: nowrap;
     max-width: 680px;
-    margin: -8px auto 12px auto;
+    margin: 10px auto 12px auto;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
 }
