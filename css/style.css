@@ -400,9 +400,26 @@ button {
     gap: 8px;
     transition: opacity 0.15s, transform 0.12s, box-shadow 0.15s;
     letter-spacing: 0.1px;
+    position: relative;
+    overflow: hidden;
 }
 
-button:active { transform: scale(0.98); }
+button::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(255,255,255,0.15);
+    border-radius: inherit;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+button:active::after {
+    opacity: 1;
+    transition: opacity 0s;
+}
+
+button:active { transform: scale(0.97); }
 
 .btn-add    { background: var(--secondary); box-shadow: 0 2px 8px rgba(5,150,105,0.25); }
 .btn-add:hover { opacity: 0.92; }
