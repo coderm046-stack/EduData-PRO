@@ -1,4 +1,4 @@
-import { FIELDS, COLUMN_MAP, formatDate, esc, showToast, getFilteredRows, DATE_FIELDS, normaliseDropdownValue } from './utils.js';
+import { FIELDS, COLUMN_MAP, formatDate, esc, showToast, getFilteredRows, DATE_FIELDS, normaliseDropdownValue, normaliseDate } from './utils.js';
 import { getDb, setDb, getSelectedIds } from './form.js';
 
 
@@ -110,6 +110,7 @@ export async function handleImportFile(event) {
                     } else {
                         val = String(val).trim();
                     }
+                    if (DATE_FIELDS.includes(mapped)) val = normaliseDate(val);
                     val = normaliseDropdownValue(mapped, val);
                     record[mapped] = val;
                     if (val) hasData = true;

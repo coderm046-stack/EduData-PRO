@@ -1,4 +1,4 @@
-import { FIELDS, getCurrentAcademicYear, normaliseDropdownValue, setSelectValue, showToast, toggleVoc, NORM_FIELDS, YN_FIELDS, formatDate } from './utils.js';
+import { FIELDS, getCurrentAcademicYear, normaliseDropdownValue, setSelectValue, showToast, toggleVoc, NORM_FIELDS, YN_FIELDS, formatDate, DATE_FIELDS, normaliseDate } from './utils.js';
 import { saveRecord, deleteRecord, loadAll, syncToLocalStorage, saveBackupToDisk } from './db.js';
 
 let db = [];
@@ -59,7 +59,8 @@ export function startEdit(id) {
     FIELDS.forEach(f => {
         const el = document.getElementById(f);
         if (!el) return;
-        const val = s[f] !== undefined && s[f] !== null ? s[f] : '';
+        let val = s[f] !== undefined && s[f] !== null ? s[f] : '';
+        if (DATE_FIELDS.includes(f)) val = normaliseDate(val);
         if (selectFields.includes(f)) setSelectValue(f, val);
         else el.value = val;
     });

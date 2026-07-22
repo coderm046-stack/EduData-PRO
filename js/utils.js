@@ -125,6 +125,16 @@ export function toggleVoc() {
 
 export const DATE_FIELDS = ['DOA','DOB_LC','DOB_AADHAR'];
 
+export function normaliseDate(val) {
+    if (!val) return val;
+    const s = String(val).trim();
+    let m = s.match(/^(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{4})$/);
+    if (m) return m[3] + '-' + m[2].padStart(2,'0') + '-' + m[1].padStart(2,'0');
+    m = s.match(/^(\d{4})[\/\-\.](\d{1,2})[\/\-\.](\d{1,2})$/);
+    if (m) return m[1] + '-' + m[2].padStart(2,'0') + '-' + m[3].padStart(2,'0');
+    return val;
+}
+
 export function getFilteredRows(db) {
     const fCls    = document.getElementById('tbl-class').value;
     const fDiv    = document.getElementById('tbl-div').value;
