@@ -168,12 +168,11 @@ header .header-subtitle {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    gap: 4px;
     flex-wrap: nowrap;
     max-width: 680px;
-    margin: 10px auto 12px auto;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
+    margin: 10px auto 14px auto;
+    padding: 0 4px;
 }
 
 header h2 {
@@ -309,39 +308,46 @@ header h2 {
 .gs-btn-help i { color: #6D28D9; }
 
 .header-btn {
-    background: var(--surface);
+    flex: 1;
+    max-width: 62px;
+    min-width: 48px;
+    min-height: 48px;
     border: 1px solid var(--border);
-    color: var(--text-primary);
-    padding: 8px 14px;
-    border-radius: 99px;
-    font-size: 0.85rem;
-    font-weight: 600;
+    border-radius: var(--radius-sm);
+    background: var(--surface);
     cursor: pointer;
-    font-family: 'DM Sans', sans-serif;
-    white-space: nowrap;
-    width: auto;
-    min-height: 0;
-    display: inline-flex;
+    display: flex;
     align-items: center;
-    gap: 6px;
+    justify-content: center;
     box-shadow: var(--shadow-sm);
+    transition: background 0.15s, transform 0.12s;
+}
+
+.header-btn:active {
+    transform: scale(0.92);
+}
+
+.header-btn:hover {
+    background: var(--primary-light);
 }
 
 .header-btn i {
-    font-size: 1.1rem;
+    font-size: 1.5rem;
 }
 
 .header-btn .fa-folder-open { color: #F59E0B; }
 .header-btn .fa-moon { color: #8B5CF6; }
+.header-btn .fa-sun { color: #F59E0B; }
 .header-btn .fa-download { color: #10B981; }
 .header-btn .fa-upload { color: #3B82F6; }
 
 .backup-indicator {
-    font-size: 1.3rem;
+    font-size: 1.6rem;
     line-height: 1;
     cursor: default;
     flex-shrink: 0;
     display: inline-flex;
+    margin: 0 2px;
 }
 
 .card {
