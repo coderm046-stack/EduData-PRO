@@ -200,21 +200,23 @@ document.addEventListener('keydown', function(e) {
     if (e.ctrlKey && e.key === 'f') { e.preventDefault(); openSearch(); }
 });
 
-let touchStartX, touchStartY;
+let touchStartX, touchStartY, touchStartTime;
 
 document.addEventListener('touchstart', e => {
     const tag = e.target?.tagName;
     if (tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA' || tag === 'BUTTON') return;
     touchStartX = e.touches[0].clientX;
     touchStartY = e.touches[0].clientY;
+    touchStartTime = Date.now();
 }, { passive: true });
 
 document.addEventListener('touchend', e => {
     if (touchStartX === undefined) return;
     const dx = e.changedTouches[0].clientX - touchStartX;
     const dy = e.changedTouches[0].clientY - touchStartY;
+    const elapsed = Date.now() - touchStartTime;
     touchStartX = undefined;
-    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 80) {
+    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 100 && elapsed < 300) {
         const cur = [1,2,3,4].find(i => document.getElementById('tabBtn' + i).classList.contains('active'));
         if (!cur) return;
         if (dx < 0 && cur < 4) switchTab(cur + 1);
