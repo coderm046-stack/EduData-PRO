@@ -71,7 +71,7 @@ export async function updateBackupStatus() {
     const el = document.getElementById('backupStatus');
     if (!el) return;
     const has = await hasBackupHandle();
-    el.innerHTML = has ? '<i class="fa-solid fa-circle-check" style="color:#34D399;"></i>' : '<i class="fa-regular fa-circle" style="color:rgba(255,255,255,0.5);"></i>';
+    el.innerHTML = has ? '<i class="fa-solid fa-circle-check" style="color:#34D399;"></i>' : '<i class="fa-regular fa-circle" style="color:#94A3B8;"></i>';
     el.title = has ? 'Auto backup active' : 'No backup folder set';
 }
 
