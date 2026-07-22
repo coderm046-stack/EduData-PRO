@@ -146,6 +146,24 @@ document.addEventListener('keydown', function(e) {
     if (e.ctrlKey && e.key === 'f') { e.preventDefault(); openSearch(); }
 });
 
+let touchStartX, touchStartY;
+
+document.addEventListener('touchstart', e => {
+    touchStartX = e.changedTouches[0].screenX;
+    touchStartY = e.changedTouches[0].screenY;
+}, { passive: true });
+
+document.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].screenX - touchStartX;
+    const dy = e.changedTouches[0].screenY - touchStartY;
+    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 50) {
+        const cur = [1,2,3].find(i => document.getElementById('tabBtn' + i).classList.contains('active'));
+        if (!cur) return;
+        if (dx < 0 && cur < 3) switchTab(cur + 1);
+        if (dx > 0 && cur > 1) switchTab(cur - 1);
+    }
+}, { passive: true });
+
 window.toggleDarkMode = function() {
     document.body.classList.toggle('dark-mode');
     const isDark = document.body.classList.contains('dark-mode');
