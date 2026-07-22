@@ -72,9 +72,9 @@
                 <div class="form-section section-academic">
                     <div class="section-title" onclick="toggleSection(this)">
                         <span class="section-label"><i class="fa-solid fa-graduation-cap"></i> Academic Details</span>
-                        <i class="fa-solid fa-chevron-down section-chevron open"></i>
+                        <i class="fa-solid fa-chevron-down section-chevron"></i>
                     </div>
-                    <div class="section-body">
+                    <div class="section-body collapsed">
                         <div class="field-group"><label>CLASS</label><select id="CLASS"><option value="">Select</option><option>IX</option><option>X</option><option>XI</option><option>XII</option></select></div>
                         <div class="field-group"><label>ACADEMIC YEAR</label><select id="ACADEMIC_YEAR"><option>2023-2024</option><option>2024-2025</option><option>2025-2026</option><option>2026-2027</option><option>2027-2028</option><option>2028-2029</option><option>2029-2030</option><option>2030-2031</option><option>2031-2032</option><option>2032-2033</option><option>2033-2034</option><option>2034-2035</option><option>2035-2036</option><option>2036-2037</option><option>2037-2038</option><option>2038-2039</option><option>2039-2040</option></select></div>
                         <div class="field-group"><label>DIVISION</label><select id="DIVISION"><option value="">Select</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option><option>H</option><option>I</option><option>J</option><option>K</option><option>L</option><option>M</option><option>N</option><option>O</option><option>P</option><option>Q</option><option>R</option><option>S</option><option>T</option></select></div>
@@ -88,9 +88,9 @@
                 <div class="form-section section-personal">
                     <div class="section-title" onclick="toggleSection(this)">
                         <span class="section-label"><i class="fa-solid fa-user"></i> Personal Details</span>
-                        <i class="fa-solid fa-chevron-down section-chevron open"></i>
+                        <i class="fa-solid fa-chevron-down section-chevron"></i>
                     </div>
-                    <div class="section-body">
+                    <div class="section-body collapsed">
                         <div class="field-group"><label>GENDER</label><select id="GENDER"><option value="">Select</option><option>Male</option><option>Female</option></select></div>
                         <div class="field-group"><label>DATE OF BIRTH (L.C.)</label><input type="date" id="DOB_LC"></div>
                         <div class="field-group"><label>PLACE OF BIRTH</label><input type="text" id="POB" class="up"></div>
@@ -103,9 +103,9 @@
                 <div class="form-section section-contact">
                     <div class="section-title" onclick="toggleSection(this)">
                         <span class="section-label"><i class="fa-solid fa-address-book"></i> Contact Details</span>
-                        <i class="fa-solid fa-chevron-down section-chevron open"></i>
+                        <i class="fa-solid fa-chevron-down section-chevron"></i>
                     </div>
-                    <div class="section-body">
+                    <div class="section-body collapsed">
                         <div class="field-group"><label>FATHER NAME</label><input type="text" id="FATHER_NAME" class="up"></div>
                         <div class="field-group"><label>MOTHER NAME</label><input type="text" id="MOTHER_NAME" class="up"></div>
                         <div class="field-group"><label>MOBILE 1</label><input type="tel" id="MOBILE_1" pattern="[0-9]{10}" maxlength="10" inputmode="numeric"></div>
@@ -117,9 +117,9 @@
                 <div class="form-section section-govt">
                     <div class="section-title" onclick="toggleSection(this)">
                         <span class="section-label"><i class="fa-solid fa-building-columns"></i> Govt &amp; Bank IDs</span>
-                        <i class="fa-solid fa-chevron-down section-chevron open"></i>
+                        <i class="fa-solid fa-chevron-down section-chevron"></i>
                     </div>
-                    <div class="section-body">
+                    <div class="section-body collapsed">
                         <div class="field-group"><label>BANK ACC NO.</label><input type="text" id="BANK_ACC"></div>
                         <div class="field-group"><label>BANK NAME</label><input type="text" id="BANK_NAME" class="up"></div>
                         <div class="field-group"><label>IFSC CODE</label><input type="text" id="IFSC" class="up"></div>
@@ -130,9 +130,9 @@
                 <div class="form-section section-medical">
                     <div class="section-title" onclick="toggleSection(this)">
                         <span class="section-label"><i class="fa-solid fa-heart-pulse"></i> Medical &amp; Misc</span>
-                        <i class="fa-solid fa-chevron-down section-chevron open"></i>
+                        <i class="fa-solid fa-chevron-down section-chevron"></i>
                     </div>
-                    <div class="section-body">
+                    <div class="section-body collapsed">
                         <div class="field-group"><label>HOSTEL STUDENT</label><select id="HOSTEL_STUDENT"><option>No</option><option>Yes</option></select></div>
                         <div class="field-group"><label>BLOOD GROUP</label><select id="BLOOD_GROUP"><option value="">Select</option><option>A+</option><option>A-</option><option>B+</option><option>B-</option><option>AB+</option><option>AB-</option><option>O+</option><option>O-</option></select></div>
                         <div class="field-group"><label>HEIGHT (CM)</label><input type="number" id="HEIGHT"></div>
@@ -147,9 +147,9 @@
                 <div class="form-section section-vocational">
                     <div class="section-title" onclick="toggleSection(this)">
                         <span class="section-label"><i class="fa-solid fa-screwdriver-wrench"></i> Vocational / Optional Subject</span>
-                        <i class="fa-solid fa-chevron-down section-chevron open"></i>
+                        <i class="fa-solid fa-chevron-down section-chevron"></i>
                     </div>
-                    <div class="section-body">
+                    <div class="section-body collapsed">
                         <div class="field-group"><label>IS STUDENT OPTED THE VOCATIONAL / OPTIONAL SUBJECT FOR CURRENT YEAR?</label><select id="VOC_CURRENT_YR" onchange="toggleVoc()"><option value="No">No</option><option value="Yes">Yes</option></select></div>
                         <div class="field-group" id="vocBoxCurrent" style="display:none;"><label>VOCATIONAL / OPTIONAL SUBJECT</label><input type="text" id="VOC_NAME_CURRENT" class="up" placeholder="Enter Subject Name"></div>
                     </div>
