@@ -7,6 +7,16 @@ export function renderDashboard() {
     const fCls   = document.getElementById('dashboardClassFilter').value;
     const fDiv   = document.getElementById('dashboardDivFilter').value;
 
+    if (!db.length) {
+        ['d-total','d-boys','d-girls','d-orphan','d-voc','d-hostel','d-bpl'].forEach(id => document.getElementById(id).textContent = '0');
+        document.getElementById('d-cross-year').innerHTML = '<div class="empty-state"><div class="empty-icon"><i class="fa-solid fa-database"></i></div><h3>No Students Yet</h3><p>Start by adding student records in the Form tab.</p></div>';
+        document.getElementById('d-classrows').innerHTML = '';
+        document.getElementById('d-blood').innerHTML = '';
+        document.getElementById('d-aplbpl').innerHTML = '';
+        document.getElementById('d-vocsubjects').innerHTML = '';
+        return;
+    }
+
     let total = 0, boys = 0, girls = 0, orphan = 0, voc = 0, hostel = 0, bpl = 0;
     const bgCounts = { 'A+':0,'A-':0,'B+':0,'B-':0,'AB+':0,'AB-':0,'O+':0,'O-':0 };
     const classData = {};

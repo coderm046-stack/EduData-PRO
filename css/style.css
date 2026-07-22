@@ -1174,6 +1174,33 @@ body.dark-mode #tab-form {
 .tbl-cell-long { max-width:140px; white-space:normal; }
 .tbl-name { font-weight:600; border:1px solid var(--border); }
 .tbl-empty { text-align:center; padding:25px; color:var(--text-muted); }
+
+.empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text-muted);
+}
+
+.empty-state .empty-icon {
+    font-size: 3rem;
+    margin-bottom: 12px;
+    opacity: 0.4;
+}
+
+.empty-state h3 {
+    font-family: 'Sora', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    margin: 0 0 6px 0;
+}
+
+.empty-state p {
+    font-size: 0.85rem;
+    margin: 0;
+    color: var(--text-muted);
+}
+
 .row-even { background: var(--surface); }
 .row-odd { background: var(--row-alt); }
 .search-empty { color:#888; text-align:center; padding:20px; }
