@@ -28,7 +28,7 @@
 <body>
 
 <div id="appContainer">
-    <div id="backupBanner" style="display:none;">
+    <div id="backupBanner" class="backup-banner" style="display:none;">
         <div class="backup-banner-content">
             <i class="fa-solid fa-triangle-exclamation"></i>
             <span>Your data is stored only in this browser and may be lost if you clear site data. <button class="backup-banner-link" onclick="exportBackup()">Back up your data now</button> to keep it safe.</span>
@@ -257,6 +257,7 @@
                 <button onclick="changePage(1)" style="min-height:36px;padding:6px 16px;background:var(--primary);color:white;border:none;border-radius:var(--radius-sm);cursor:pointer;width:auto;font-family:'DM Sans',sans-serif;font-weight:600;">Next &raquo;</button>
         </div>
     </div>
+</div>
 
     <div class="tab-panel active" id="tab-home">
         <header id="formHeader">
