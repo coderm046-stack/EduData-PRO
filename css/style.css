@@ -749,7 +749,7 @@ button:active { transform: scale(0.97); }
 
 .tab-btn {
     flex: 1;
-    min-height: 66px;
+    min-height: 60px;
     border: none;
     border-radius: var(--radius-sm);
     cursor: pointer;
