@@ -14,6 +14,7 @@ export function updateDashboard() {
     updateSummaryStats(); renderClassTable();
     renderDashboard();
 }
+window.updateDashboard = updateDashboard;
 
 function fixExistingData() {
     let db = getDb();
