@@ -62,6 +62,7 @@ body {
     padding: 12px 10px 40px;
     color: var(--text-primary);
     min-height: 100vh;
+    touch-action: pan-y;
 }
 
 header {
