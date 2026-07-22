@@ -180,14 +180,14 @@ export function setFormDirty(v) { formDirty = v; }
 
 export function switchTab(n) {
     if (formDirty && !confirm('You have unsaved changes. Discard?')) return;
-    [1,2,3].forEach(i => {
-        const ids = {1:'tab-dashboard',2:'tab-form',3:'tab-summary'};
+    [1,2,3,4].forEach(i => {
+        const ids = {1:'tab-home',2:'tab-dashboard',3:'tab-form',4:'tab-summary'};
         document.getElementById(ids[i]).classList.toggle('active', i===n);
         document.getElementById('tabBtn'+i).classList.toggle('active', i===n);
     });
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    if (n === 1) { renderDashboard(); }
-    if (n === 3) { updateSummaryStats(); renderClassTable(); }
+    if (n === 2) { renderDashboard(); }
+    if (n === 4) { updateSummaryStats(); renderClassTable(); }
 }
 
 document.addEventListener('keydown', function(e) {
@@ -214,9 +214,9 @@ document.addEventListener('touchend', e => {
     const dy = e.changedTouches[0].clientY - touchStartY;
     touchStartX = undefined;
     if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 40) {
-        const cur = [1,2,3].find(i => document.getElementById('tabBtn' + i).classList.contains('active'));
+        const cur = [1,2,3,4].find(i => document.getElementById('tabBtn' + i).classList.contains('active'));
         if (!cur) return;
-        if (dx < 0 && cur < 3) switchTab(cur + 1);
+        if (dx < 0 && cur < 4) switchTab(cur + 1);
         if (dx > 0 && cur > 1) switchTab(cur - 1);
     }
 }, { passive: true });
