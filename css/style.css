@@ -827,6 +827,14 @@ body.dark-mode #tab-form {
     letter-spacing: 0.3px;
 }
 
+#summaryTable tbody tr:nth-child(even) {
+    background: var(--row-alt);
+}
+
+#summaryTable tbody tr:hover {
+    background: var(--primary-light);
+}
+
 .kpi-total   { background: linear-gradient(135deg, var(--primary-dark), var(--primary)); border: none !important; }
 .kpi-boys    { background: linear-gradient(135deg, #0C4A6E, #0284C7); border: none !important; }
 .kpi-girls   { background: linear-gradient(135deg, #831843, #DB2777); border: none !important; }
