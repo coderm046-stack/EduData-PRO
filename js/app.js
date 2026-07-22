@@ -131,6 +131,7 @@ export function switchTab(n) {
         document.getElementById(ids[i]).classList.toggle('active', i===n);
         document.getElementById('tabBtn'+i).classList.toggle('active', i===n);
     });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     if (n === 1) { renderDashboard(); }
     if (n === 3) { updateSummaryStats(); renderClassTable(); }
 }
