@@ -214,7 +214,7 @@ document.addEventListener('touchend', e => {
     const dx = e.changedTouches[0].clientX - touchStartX;
     const dy = e.changedTouches[0].clientY - touchStartY;
     touchStartX = undefined;
-    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 40) {
+    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 80) {
         const cur = [1,2,3,4].find(i => document.getElementById('tabBtn' + i).classList.contains('active'));
         if (!cur) return;
         if (dx < 0 && cur < 4) switchTab(cur + 1);
