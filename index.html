@@ -28,10 +28,10 @@
 <body>
 
 <div id="appContainer">
-    <header>
-        <h2>🎓 EduData <span class="header-subtitle">(School Database)</span></h2>
+    <header id="formHeader">
+        <h2 style="text-align:center;width:100%;">🎓 EduData <span class="header-subtitle">(School Database)</span></h2>
     </header>
-    <div class="header-actions">
+    <div class="header-actions" id="formActions">
         <button class="header-btn" onclick="setupBackupHandler()" id="backupFolderBtn" title="Set auto-backup folder"><i class="fa-solid fa-folder-open"></i></button>
         <span id="backupStatus" class="backup-indicator" title="No backup folder set"></span>
         <button class="header-btn" onclick="toggleDarkMode()" id="darkModeToggle" title="Toggle dark/light mode"><i class="fa-solid fa-moon"></i></button>
