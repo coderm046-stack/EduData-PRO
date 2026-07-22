@@ -140,7 +140,7 @@ body {
     font-family: 'DM Sans', 'Segoe UI', sans-serif;
     background: var(--bg);
     margin: 0;
-    padding: 12px 10px 80px;
+    padding: 12px 10px 96px;
     color: var(--text-primary);
     min-height: 100vh;
     touch-action: pan-y;
@@ -734,10 +734,10 @@ button:active { transform: scale(0.97); }
     margin: 0 auto;
     background: var(--surface);
     border-radius: var(--radius-md) var(--radius-md) 0 0;
-    padding: 5px;
+    padding: 6px 8px;
     border: 1px solid var(--border);
     border-bottom: none;
-    gap: 4px;
+    gap: 6px;
     box-shadow: 0 -2px 12px rgba(0,0,0,0.06), var(--shadow-sm);
     position: fixed;
     bottom: 0;
@@ -749,7 +749,7 @@ button:active { transform: scale(0.97); }
 
 .tab-btn {
     flex: 1;
-    min-height: 58px;
+    min-height: 66px;
     border: none;
     border-radius: var(--radius-sm);
     cursor: pointer;
@@ -761,7 +761,7 @@ button:active { transform: scale(0.97); }
 }
 
 .tab-btn i {
-    font-size: 1.7rem;
+    font-size: 2.2rem;
     transition: transform 0.15s;
 }
 
