@@ -86,9 +86,11 @@ header .header-subtitle {
     display: flex;
     align-items: center;
     gap: 8px;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     max-width: 680px;
     margin: -8px auto 12px auto;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 header h2 {
@@ -121,10 +123,17 @@ header h2 {
 .header-btn i {
     font-size: 1.1rem;
 }
+
+.header-btn .fa-folder-open { color: #F59E0B; }
+.header-btn .fa-moon { color: #8B5CF6; }
+.header-btn .fa-download { color: #10B981; }
+.header-btn .fa-upload { color: #3B82F6; }
+
 .backup-indicator {
     font-size: 1.2rem;
     line-height: 1;
     cursor: default;
+    flex-shrink: 0;
 }
 
 .card {
