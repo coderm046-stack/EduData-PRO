@@ -138,6 +138,7 @@ export function performSearch() {
     const q = document.getElementById('searchInput').value.toLowerCase();
     const cf = document.getElementById('classFilter').value;
     const filtered = db.filter(r =>
+        r.STATUS !== 'Dropout' &&
         (!cf || r.CLASS === cf) &&
         ((r.STUDENT_NAME||'').toLowerCase().includes(q) || (r.ROLL_NO||'').toString().includes(q))
     );
@@ -176,12 +177,13 @@ export function printRecord(id) {
 }
 
 export function printAll() {
-    if (!db.length) { showToast('No records to print!', '#F59E0B'); return; }
-    if (!confirm(`Print ALL ${db.length} student form(s)?\nThis may take a moment for large batches.`)) return;
-    showToast(`⏳ Preparing ${db.length} pages...`, '#1E3A8A');
+    const activeCount = db.filter(s => s.STATUS !== 'Dropout').length;
+    if (!activeCount) { showToast('No active students to print!', '#F59E0B'); return; }
+    if (!confirm(`Print ALL ${activeCount} active student form(s)?\nThis may take a moment for large batches.`)) return;
+    showToast(`⏳ Preparing ${activeCount} pages...`, '#1E3A8A');
     setTimeout(() => {
         const classOrder = { 'XII': 0, 'XI': 1, 'X': 2, 'IX': 3 };
-        const sorted = [...db].sort((a, b) => {
+        const sorted = [...db].filter(s => s.STATUS !== 'Dropout').sort((a, b) => {
             const ca = classOrder[a.CLASS] ?? 99;
             const cb = classOrder[b.CLASS] ?? 99;
             if (ca !== cb) return ca - cb;
