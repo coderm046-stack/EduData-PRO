@@ -28,8 +28,8 @@ export const COLUMN_MAP = [
     { field: 'PERCENTAGE', label: 'Last Class %' }, { field: 'DISTANCE', label: 'Distance' },
     { field: 'ORPHAN', label: 'Orphan' }, { field: 'HOSTEL_STUDENT', label: 'Hostel' },
     { field: 'APL_BPL', label: 'APL/BPL' }, { field: 'REMARK', label: 'Remark' },
-    { field: 'VOC_CURRENT_YR', label: 'Voc. Current Yr' },
-    { field: 'VOC_NAME_CURRENT', label: 'Voc Subject' },
+    { field: 'VOC_CURRENT_YR', label: 'Voc./Optional Status' },
+    { field: 'VOC_NAME_CURRENT', label: 'Voc./Optional Sub.' },
     { field: 'ACADEMIC_YEAR', label: 'Acad. Year' },
     { field: 'STATUS', label: 'Status' }
 ];
