@@ -4,9 +4,24 @@ import { getDb, setDb, getSelectedIds } from './form.js';
 
 let selectedCols = new Set(COLUMN_MAP.map(c => c.field));
 
+function sortExportedRows(rows) {
+    const classOrder = { 'XII': 0, 'XI': 1, 'X': 2, 'IX': 3 };
+    return rows.sort((a, b) => {
+        const ca = classOrder[a.CLASS] ?? 99;
+        const cb = classOrder[b.CLASS] ?? 99;
+        if (ca !== cb) return ca - cb;
+        const da = a.DIVISION || '';
+        const dd = b.DIVISION || '';
+        if (da !== dd) return da.localeCompare(dd);
+        if ((a.GENDER || '') !== (b.GENDER || '')) return a.GENDER === 'Female' ? -1 : 1;
+        return (a.STUDENT_NAME || '').toLowerCase().localeCompare((b.STUDENT_NAME || '').toLowerCase());
+    });
+}
+
 export function exportToExcel() {
     let db = getDb();
     if (!db.length) { showToast('No data to export!','#F59E0B'); return; }
+    sortExportedRows(db);
     const exportData = db.map(s => {
         const row = {};
         COLUMN_MAP.forEach(c => row[c.label] = DATE_FIELDS.includes(c.field) ? formatDate(s[c.field]) : (s[c.field]||''));
@@ -22,6 +37,7 @@ export function exportFilteredData() {
     let db = getDb();
     const rows = getFilteredRows(db);
     if (!rows.length) { showToast('No records match current filters!','#F59E0B'); return; }
+    sortExportedRows(rows);
     const exportData = rows.map(s => {
         const row = {};
         COLUMN_MAP.forEach(c => row[c.label] = DATE_FIELDS.includes(c.field) ? formatDate(s[c.field]) : (s[c.field]||''));
@@ -39,6 +55,7 @@ export function exportFilteredData() {
 export function exportToCSV() {
     let db = getDb();
     if (!db.length) { showToast('No data to export!','#F59E0B'); return; }
+    sortExportedRows(db);
     const headers = COLUMN_MAP.map(c => c.label).join(',');
     const csvRows = db.map(s => {
         return COLUMN_MAP.map(c => {
@@ -218,6 +235,7 @@ window.toggleSelectAllColumns = function() {
 function getExportRows() {
     let db = getDb();
     const rows = getFilteredRows(db);
+    sortExportedRows(rows);
     const cb = document.getElementById('exportSelectedOnly');
     if (!cb || !cb.checked) return rows;
     const ids = [...getSelectedIds()];
