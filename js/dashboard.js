@@ -2,7 +2,7 @@ import { esc } from './utils.js';
 import { getDb } from './form.js';
 
 function showDashboardSkeletons() {
-    ['d-total','d-boys','d-girls','d-orphan','d-voc','d-hostel','d-bpl'].forEach(id => {
+    ['d-total','d-boys','d-girls','d-orphan','d-voc','d-hostel','d-bpl','d-dropout'].forEach(id => {
         document.getElementById(id).innerHTML = '<span class="skeleton skeleton-inline" style="width:50px;">&nbsp;</span>';
     });
     document.getElementById('d-classrows').innerHTML =
@@ -20,7 +20,7 @@ export function renderDashboard() {
     const fDiv   = document.getElementById('dashboardDivFilter').value;
 
     if (!db.length) {
-        ['d-total','d-boys','d-girls','d-orphan','d-voc','d-hostel','d-bpl'].forEach(id => document.getElementById(id).textContent = '0');
+        ['d-total','d-boys','d-girls','d-orphan','d-voc','d-hostel','d-bpl','d-dropout'].forEach(id => document.getElementById(id).textContent = '0');
         document.getElementById('d-cross-year').innerHTML = '<div class="empty-state"><div class="empty-icon"><i class="fa-solid fa-database"></i></div><h3>No Students Yet</h3><p>Start by adding student records in the Form tab.</p></div>';
         document.getElementById('d-classrows').innerHTML = '';
         document.getElementById('d-blood').innerHTML = '';
@@ -33,7 +33,7 @@ export function renderDashboard() {
 
     setTimeout(() => {
 
-    let total = 0, boys = 0, girls = 0, orphan = 0, voc = 0, hostel = 0, bpl = 0;
+    let total = 0, boys = 0, girls = 0, orphan = 0, voc = 0, hostel = 0, bpl = 0, dropouts = 0;
     const bgCounts = { 'A+':0,'A-':0,'B+':0,'B-':0,'AB+':0,'AB-':0,'O+':0,'O-':0 };
     const classData = {};
     const vocSubs = {};
@@ -42,6 +42,7 @@ export function renderDashboard() {
         if (fYear && s.ACADEMIC_YEAR !== fYear) return;
         if (fCls  && s.CLASS         !== fCls)  return;
         if (fDiv  && s.DIVISION      !== fDiv)  return;
+        if (s.STATUS === 'Dropout') { dropouts++; return; }
 
         total++;
         if (s.GENDER === 'Male') boys++;
@@ -78,6 +79,7 @@ export function renderDashboard() {
     document.getElementById('d-voc').textContent    = voc;
     document.getElementById('d-hostel').textContent = hostel;
     document.getElementById('d-bpl').textContent    = bpl;
+    document.getElementById('d-dropout').textContent = dropouts;
 
     const years = fYear ? [fYear] : [...new Set(db.map(s => s.ACADEMIC_YEAR).filter(Boolean))].sort();
     const classes = fCls ? [fCls] : ['IX','X','XI','XII'];

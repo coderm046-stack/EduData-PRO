@@ -6,7 +6,8 @@ export const FIELDS = [
     "BANK_ACC","BANK_NAME","IFSC","PEN","APAAR",
     "HOSTEL_STUDENT","BLOOD_GROUP","HEIGHT","WEIGHT",
     "PERCENTAGE","DISTANCE","ORPHAN","APL_BPL",
-    "REMARK","VOC_CURRENT_YR","VOC_NAME_CURRENT"
+    "REMARK","VOC_CURRENT_YR","VOC_NAME_CURRENT",
+    "STATUS"
 ];
 
 export const COLUMN_MAP = [
@@ -29,7 +30,8 @@ export const COLUMN_MAP = [
     { field: 'APL_BPL', label: 'APL/BPL' }, { field: 'REMARK', label: 'Remark' },
     { field: 'VOC_CURRENT_YR', label: 'Voc. Current Yr' },
     { field: 'VOC_NAME_CURRENT', label: 'Voc Subject' },
-    { field: 'ACADEMIC_YEAR', label: 'Acad. Year' }
+    { field: 'ACADEMIC_YEAR', label: 'Acad. Year' },
+    { field: 'STATUS', label: 'Status' }
 ];
 
 export function formatDate(val) {
@@ -78,6 +80,11 @@ export function normaliseDropdownValue(field, raw) {
         return ['A+','A-','B+','B-','AB+','AB-','O+','O-'].includes(clean) ? clean : (raw||'');
     }
     if (field === 'DIVISION') return v ? v : (raw||'');
+    if (field === 'STATUS') {
+        if (['ACTIVE','A'].includes(v)) return 'Active';
+        if (['DROPOUT','D','LEFT','TRANSFERRED'].includes(v)) return 'Dropout';
+        return raw||'Active';
+    }
     return raw||'';
 }
 
@@ -146,6 +153,7 @@ export function getFilteredRows(db) {
     const fHostel = document.getElementById('tbl-hostel').value;
     const fApl    = document.getElementById('tbl-aplbpl').value;
     return db.filter(s => {
+        if (s.STATUS === 'Dropout') return false;
         if (fCls    && s.CLASS         !== fCls)    return false;
         if (fDiv    && s.DIVISION       !== fDiv)    return false;
         if (fYear   && s.ACADEMIC_YEAR !== fYear)   return false;
@@ -159,5 +167,5 @@ export function getFilteredRows(db) {
     });
 }
 
-export const NORM_FIELDS = ['GENDER','HOSTEL_STUDENT','ORPHAN','VOC_CURRENT_YR','CLASS','APL_BPL','BLOOD_GROUP','DIVISION','ACADEMIC_YEAR'];
+export const NORM_FIELDS = ['GENDER','HOSTEL_STUDENT','ORPHAN','VOC_CURRENT_YR','CLASS','APL_BPL','BLOOD_GROUP','DIVISION','ACADEMIC_YEAR','STATUS'];
 export const YN_FIELDS = ['HOSTEL_STUDENT','ORPHAN','VOC_CURRENT_YR'];

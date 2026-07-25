@@ -21,8 +21,10 @@ function sortExportedRows(rows) {
 export function exportToExcel() {
     let db = getDb();
     if (!db.length) { showToast('No data to export!','#F59E0B'); return; }
-    sortExportedRows(db);
-    const exportData = db.map(s => {
+    const activeDb = db.filter(s => s.STATUS !== 'Dropout');
+    if (!activeDb.length) { showToast('No active students to export!','#F59E0B'); return; }
+    sortExportedRows(activeDb);
+    const exportData = activeDb.map(s => {
         const row = {};
         COLUMN_MAP.forEach(c => row[c.label] = DATE_FIELDS.includes(c.field) ? formatDate(s[c.field]) : (s[c.field]||''));
         return row;
@@ -55,9 +57,11 @@ export function exportFilteredData() {
 export function exportToCSV() {
     let db = getDb();
     if (!db.length) { showToast('No data to export!','#F59E0B'); return; }
-    sortExportedRows(db);
+    const activeDb = db.filter(s => s.STATUS !== 'Dropout');
+    if (!activeDb.length) { showToast('No active students to export!','#F59E0B'); return; }
+    sortExportedRows(activeDb);
     const headers = COLUMN_MAP.map(c => c.label).join(',');
-    const csvRows = db.map(s => {
+    const csvRows = activeDb.map(s => {
         return COLUMN_MAP.map(c => {
             let val = DATE_FIELDS.includes(c.field) ? formatDate(s[c.field]) : (s[c.field]||'');
             val = String(val).replace(/"/g,'""').replace(/\r?\n|\r/g,' ');

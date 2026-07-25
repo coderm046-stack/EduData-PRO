@@ -39,6 +39,7 @@ export async function handleSave() {
     }
     const record = { id: Date.now(), photo: document.getElementById('photoBase64').value };
     FIELDS.forEach(f => { if (document.getElementById(f)) record[f] = document.getElementById(f).value; });
+    record['STATUS'] = 'Active';
     if (!record['ROLL_NO'] || record['ROLL_NO'] === '') {
         record['ROLL_NO'] = (Math.max(0, ...db.map(s => parseInt(s.ROLL_NO) || 0)) + 1).toString();
     }
@@ -113,9 +114,11 @@ export async function handleUpdate() {
 }
 
 export async function handleDelete(id) {
-    if (!confirm('Delete this student record?')) return;
-    db = db.filter(s => s.id !== id);
-    try { await deleteRecord(id); await syncToLocalStorage(); saveBackupToDisk(db).catch(()=>{}); } catch(e) { showToast('Storage full! Export backup and clear data.', '#EF4444'); }
+    if (!confirm('Mark this student as Dropout?')) return;
+    const idx = db.findIndex(s => s.id === id);
+    if (idx === -1) { showToast('Record not found!','#F59E0B'); return; }
+    db[idx].STATUS = 'Dropout';
+    try { await saveRecord(db[idx]); await syncToLocalStorage(); saveBackupToDisk(db).catch(()=>{}); } catch(e) { showToast('Storage full! Export backup and clear data.', '#EF4444'); }
     performSearch(); window.updateDashboard();
 }
 

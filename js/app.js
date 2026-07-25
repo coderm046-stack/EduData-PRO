@@ -1,16 +1,17 @@
 import { FIELDS, getCurrentAcademicYear, normaliseDropdownValue, showToast, toggleSection, toggleVoc, NORM_FIELDS, YN_FIELDS, formatDate } from './utils.js';
 import { loadAll, syncToLocalStorage, migrateFromLocalStorage, upsertMany, setupBackup, hasBackupHandle, restoreFromDiskFile, saveBackupToDisk } from './db.js';
 import { setDb, getDb, resetApp, handleSave, handleUpdate, handleDelete, wipeDatabase, openSearch, closeSearch, performSearch, startEdit, printRecord, printAll, previewImage, startCamera, closeCamera, switchCamera, capturePhoto } from './form.js';
-import { renderClassTable, changePage, onYearFilterChange, updateSummaryStats, clearTableFilters, toggleRowSelect, toggleSelectAll, selectAllFiltered, clearSelection, deleteSelected, openBulkEdit, applyBulkEdit, autoAllotRollNumbers } from './table.js';
+import { renderClassTable, changePage, onYearFilterChange, updateSummaryStats, clearTableFilters, toggleRowSelect, toggleSelectAll, selectAllFiltered, clearSelection, deleteSelected, openBulkEdit, applyBulkEdit, autoAllotRollNumbers, renderDropoutTable, restoreDropout, restoreAllDropouts } from './table.js';
 import { renderDashboard } from './dashboard.js';
 import { exportToExcel, exportFilteredData, exportToCSV, importExcel, handleImportFile, exportPhotos, openColumnSelector, closeColumnSelector, closePreview, previewSelectedColumns, printSelectedColumns, exportSelectedColumns, downloadBackup, restoreBackup, handleRestoreFile } from './export.js';
 
 let formDirty = false;
 
 export function updateDashboard() {
-    document.getElementById('totalStudents').innerText = getDb().length;
-    document.getElementById('boys').innerText  = getDb().filter(s => s.GENDER==='Male').length;
-    document.getElementById('girls').innerText = getDb().filter(s => s.GENDER==='Female').length;
+    const active = getDb().filter(s => s.STATUS !== 'Dropout');
+    document.getElementById('totalStudents').innerText = active.length;
+    document.getElementById('boys').innerText  = active.filter(s => s.GENDER==='Male').length;
+    document.getElementById('girls').innerText = active.filter(s => s.GENDER==='Female').length;
     updateSummaryStats(); renderClassTable();
     renderDashboard();
 }
@@ -28,6 +29,7 @@ function fixExistingData() {
         });
         YN_FIELDS.forEach(f => { if (s[f] === '') { s[f] = 'No'; changed++; } });
         if (!s['APL_BPL']) { s['APL_BPL'] = 'APL'; changed++; }
+        if (!s['STATUS']) { s['STATUS'] = 'Active'; changed++; }
         if (s['VOC_NAME_CURRENT'] && s['VOC_CURRENT_YR'] === 'No') { s['VOC_CURRENT_YR'] = 'Yes'; changed++; }
     });
     if (changed > 0) {
@@ -182,14 +184,15 @@ window.setFormDirty = setFormDirty;
 export function switchTab(n) {
     if (formDirty && !confirm('You have unsaved changes. Discard?')) return;
     if (navigator.vibrate) navigator.vibrate(15);
-    [1,2,3,4].forEach(i => {
-        const ids = {1:'tab-home',2:'tab-dashboard',3:'tab-form',4:'tab-summary'};
+    [1,2,3,4,5].forEach(i => {
+        const ids = {1:'tab-home',2:'tab-dashboard',3:'tab-form',4:'tab-summary',5:'tab-dropout'};
         document.getElementById(ids[i]).classList.toggle('active', i===n);
         document.getElementById('tabBtn'+i).classList.toggle('active', i===n);
     });
     window.scrollTo({ top: 0, behavior: 'smooth' });
     if (n === 2) { renderDashboard(); }
     if (n === 4) { updateSummaryStats(); renderClassTable(); }
+    if (n === 5) { renderDropoutTable(); }
 }
 
 document.addEventListener('keydown', function(e) {
@@ -238,6 +241,9 @@ window.deleteSelected = deleteSelected;
 window.openBulkEdit = openBulkEdit;
 window.applyBulkEdit = applyBulkEdit;
 window.autoAllotRollNumbers = autoAllotRollNumbers;
+window.renderDropoutTable = renderDropoutTable;
+window.restoreDropout = restoreDropout;
+window.restoreAllDropouts = restoreAllDropouts;
 window.exportToExcel = exportToExcel;
 window.exportFilteredData = exportFilteredData;
 window.exportToCSV = exportToCSV;

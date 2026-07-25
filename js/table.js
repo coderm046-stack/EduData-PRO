@@ -28,6 +28,7 @@ export function renderClassTable() {
     const fApl    = document.getElementById('tbl-aplbpl').value;
 
     let rows = db.filter(s => {
+        if (s.STATUS === 'Dropout') return false;
         if (fCls    && s.CLASS         !== fCls)    return false;
         if (fDiv    && s.DIVISION       !== fDiv)    return false;
         if (fYear   && s.ACADEMIC_YEAR !== fYear)   return false;
@@ -200,16 +201,16 @@ export async function deleteSelected() {
     const selectedIds = getSelectedIds();
     const ids = [...selectedIds];
     if (!ids.length) { showToast('No records selected!','#F59E0B'); return; }
-    if (!confirm(`Delete ${ids.length} selected record${ids.length>1?'s':''}?`)) return;
-    db = db.filter(s => !ids.includes(s.id));
+    if (!confirm(`Mark ${ids.length} selected record${ids.length>1?'s':''} as Dropout?`)) return;
     selectedIds.clear();
     try {
-        await deleteMany(ids);
+        db.forEach(s => { if (ids.includes(s.id)) s.STATUS = 'Dropout'; });
+        await upsertMany(db.filter(s => ids.includes(s.id)));
         await syncToLocalStorage();
         saveBackupToDisk(db).catch(()=>{});
         import('./form.js').then(m => { m.setDb(db); m.setSelectedIds(selectedIds); });
     } catch(e) { showToast('Storage error!','#EF4444'); }
-    renderClassTable(); window.updateDashboard(); showToast(`Deleted ${ids.length} record${ids.length>1?'s':''}!`);
+    renderClassTable(); window.updateDashboard(); showToast(`Marked ${ids.length} record${ids.length>1?'s':''} as Dropout!`);
 }
 
 export function openBulkEdit() {
@@ -248,6 +249,7 @@ export async function autoAllotRollNumbers() {
     if (!confirm('This will reassign all roll numbers (Female A-Z first, then Male A-Z) per Class+Division. Continue?')) return;
     const groups = {};
     db.forEach(s => {
+        if (s.STATUS === 'Dropout') return;
         const key = (s.CLASS||'') + '|' + (s.DIVISION||'');
         if (!groups[key]) groups[key] = [];
         groups[key].push(s);
@@ -259,6 +261,61 @@ export async function autoAllotRollNumbers() {
         });
         group.forEach((s, i) => { s.ROLL_NO = (i + 1).toString(); });
     });
-    try { await upsertMany(db); await syncToLocalStorage(); saveBackupToDisk(db).catch(()=>{}); } catch(e) { showToast('Storage full!','#EF4444'); }
+    try { await upsertMany(db.filter(s => s.STATUS !== 'Dropout')); await syncToLocalStorage(); saveBackupToDisk(db).catch(()=>{}); } catch(e) { showToast('Storage full!','#EF4444'); }
     renderClassTable(); window.updateDashboard(); showToast('Roll numbers allotted successfully!');
+}
+
+export function renderDropoutTable() {
+    let db = getDb();
+    const dropouts = db.filter(s => s.STATUS === 'Dropout');
+    const classOrder = { 'XII': 0, 'XI': 1, 'X': 2, 'IX': 3 };
+    dropouts.sort((a, b) => {
+        const ca = classOrder[a.CLASS] ?? 99;
+        const cb = classOrder[b.CLASS] ?? 99;
+        if (ca !== cb) return ca - cb;
+        const da = a.DIVISION || '';
+        const dd = b.DIVISION || '';
+        if (da !== dd) return da.localeCompare(dd);
+        return (a.STUDENT_NAME||'').toLowerCase().localeCompare((b.STUDENT_NAME||'').toLowerCase());
+    });
+    document.getElementById('dropoutTableBody').innerHTML = dropouts.length
+        ? dropouts.map((r, i) => `
+            <tr class="${i%2===0?'row-even':'row-odd'}">
+                <td class="tbl-cell tbl-center">${i+1}</td>
+                <td class="tbl-cell tbl-center">${esc(r.CLASS||'-')}</td>
+                <td class="tbl-cell tbl-center">${esc(r.DIVISION||'-')}</td>
+                <td class="tbl-cell tbl-center">${esc(r.ROLL_NO||'-')}</td>
+                <td class="tbl-cell tbl-name">${esc(r.STUDENT_NAME||'-')}</td>
+                <td class="tbl-cell tbl-center">${esc(r.GENDER||'-')}</td>
+                <td class="tbl-cell tbl-center">${esc(r.ACADEMIC_YEAR||'-')}</td>
+                <td class="tbl-cell tbl-center">
+                    <button onclick="import('./js/table.js').then(m => m.restoreDropout(${r.id}))" style="background:var(--primary);color:white;border:none;padding:6px 12px;border-radius:5px;cursor:pointer;font-size:0.78rem;"><i class="fa-solid fa-rotate-left"></i> Restore</button>
+                </td>
+            </tr>`).join('')
+        : `<tr><td colspan="8" class="tbl-empty">No dropout students.</td></tr>`;
+    document.getElementById('dropoutCount').textContent = dropouts.length
+        ? `Total dropout students: ${dropouts.length}`
+        : 'No students have been marked as dropouts.';
+}
+
+export async function restoreDropout(id) {
+    let db = getDb();
+    const s = db.find(r => r.id === id);
+    if (!s) { showToast('Record not found!','#F59E0B'); return; }
+    if (!confirm(`Restore "${s.STUDENT_NAME||'Unknown'}" to active students?`)) return;
+    s.STATUS = 'Active';
+    try { await upsertMany([s]); await syncToLocalStorage(); saveBackupToDisk(db).catch(()=>{}); } catch(e) { showToast('Storage error!','#EF4444'); }
+    renderDropoutTable(); window.updateDashboard();
+    showToast(`✅ Restored ${s.STUDENT_NAME||'Unknown'}!`);
+}
+
+export async function restoreAllDropouts() {
+    let db = getDb();
+    const dropouts = db.filter(s => s.STATUS === 'Dropout');
+    if (!dropouts.length) { showToast('No dropout students to restore!','#F59E0B'); return; }
+    if (!confirm(`Restore all ${dropouts.length} dropout student${dropouts.length>1?'s':''}?`)) return;
+    dropouts.forEach(s => s.STATUS = 'Active');
+    try { await upsertMany(dropouts); await syncToLocalStorage(); saveBackupToDisk(db).catch(()=>{}); } catch(e) { showToast('Storage error!','#EF4444'); }
+    renderDropoutTable(); window.updateDashboard();
+    showToast(`✅ Restored ${dropouts.length} student${dropouts.length>1?'s':''}!`);
 }

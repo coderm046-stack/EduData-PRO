@@ -259,6 +259,25 @@
     </div>
     </div>
 
+    <div class="tab-panel" id="tab-dropout">
+        <h2 class="tab-header">🚶 Dropout Students</h2>
+        <div class="summary-card">
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:12px;">
+                <h3 style="margin:0;">Dropout List</h3>
+                <button onclick="restoreAllDropouts()" class="filter-clear-btn" style="background:var(--primary);color:#fff;"><i class="fa-solid fa-rotate-left"></i> Restore All</button>
+            </div>
+            <div class="summary-table-wrap">
+                <table style="min-width:800px;width:100%;border-collapse:collapse;font-size:0.8rem;">
+                    <thead><tr>
+                        <th>#</th><th>Class</th><th>Div</th><th>Roll</th><th>Student Name</th><th>Gender</th><th>Acad. Year</th><th>Action</th>
+                    </tr></thead>
+                    <tbody id="dropoutTableBody"></tbody>
+                </table>
+            </div>
+            <p id="dropoutCount" style="margin-top:8px;font-size:0.85rem;color:var(--text-secondary);"></p>
+        </div>
+    </div>
+
     <div class="tab-panel active" id="tab-home">
         <header id="formHeader">
             <h2 style="text-align:center;width:100%;">🎓 EduData <span class="header-subtitle">(School Database)</span></h2>
@@ -319,6 +338,7 @@
             <div class="sstat kpi-voc"><h3 id="d-voc">0</h3><p>Voc./Optional</p></div>
             <div class="sstat kpi-hostel"><h3 id="d-hostel">0</h3><p>Hostel</p></div>
             <div class="sstat kpi-bpl"><h3 id="d-bpl">0</h3><p>BPL</p></div>
+            <div class="sstat" style="background:var(--error);color:white;"><h3 id="d-dropout">0</h3><p>Dropouts</p></div>
         </div>
         <div class="summary-card">
             <h3>Class-wise Breakdown</h3>
@@ -350,6 +370,7 @@
         <button class="tab-btn" id="tabBtn2" onclick="switchTab(2)" aria-label="Dashboard"><i class="fa-solid fa-chart-pie"></i></button>
         <button class="tab-btn" id="tabBtn3" onclick="switchTab(3)" aria-label="Form"><i class="fa-regular fa-file-lines"></i></button>
         <button class="tab-btn" id="tabBtn4" onclick="switchTab(4)" aria-label="Summary"><i class="fa-solid fa-table-list"></i></button>
+        <button class="tab-btn" id="tabBtn5" onclick="switchTab(5)" aria-label="Dropouts"><i class="fa-solid fa-user-slash"></i></button>
         <button class="dark-mode-tab-btn" onclick="toggleDarkMode()" id="darkModeToggle" aria-label="Toggle dark mode"><i class="fa-solid fa-moon"></i></button>
     </div>
 </div>
