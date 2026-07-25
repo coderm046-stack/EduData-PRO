@@ -141,6 +141,18 @@ export function performSearch() {
         (!cf || r.CLASS === cf) &&
         ((r.STUDENT_NAME||'').toLowerCase().includes(q) || (r.ROLL_NO||'').toString().includes(q))
     );
+    const classOrder = { 'XII': 0, 'XI': 1, 'X': 2, 'IX': 3 };
+    filtered.sort((a, b) => {
+        const ca = classOrder[a.CLASS] ?? 99;
+        const cb = classOrder[b.CLASS] ?? 99;
+        if (ca !== cb) return ca - cb;
+        const da = a.DIVISION || '';
+        const dd = b.DIVISION || '';
+        if (da !== dd) return da.localeCompare(dd);
+        const ra = parseInt(a.ROLL_NO) || 0;
+        const rb = parseInt(b.ROLL_NO) || 0;
+        return ra - rb;
+    });
     document.getElementById('searchResults').innerHTML = filtered.map(r => `
         <div class="search-item">
             <strong>${esc(r.STUDENT_NAME||'-')}</strong> &nbsp;(Roll: ${esc(r.ROLL_NO||'-')})<br>
@@ -168,7 +180,19 @@ export function printAll() {
     if (!confirm(`Print ALL ${db.length} student form(s)?\nThis may take a moment for large batches.`)) return;
     showToast(`⏳ Preparing ${db.length} pages...`, '#1E3A8A');
     setTimeout(() => {
-        document.getElementById('printArea').innerHTML = db.map((s, i) => buildStudentPageHTML(s, i < db.length - 1)).join('');
+        const classOrder = { 'XII': 0, 'XI': 1, 'X': 2, 'IX': 3 };
+        const sorted = [...db].sort((a, b) => {
+            const ca = classOrder[a.CLASS] ?? 99;
+            const cb = classOrder[b.CLASS] ?? 99;
+            if (ca !== cb) return ca - cb;
+            const da = a.DIVISION || '';
+            const dd = b.DIVISION || '';
+            if (da !== dd) return da.localeCompare(dd);
+            const ra = parseInt(a.ROLL_NO) || 0;
+            const rb = parseInt(b.ROLL_NO) || 0;
+            return ra - rb;
+        });
+        document.getElementById('printArea').innerHTML = sorted.map((s, i) => buildStudentPageHTML(s, i < sorted.length - 1)).join('');
         setTimeout(() => window.print(), 200);
     }, 300);
 }
