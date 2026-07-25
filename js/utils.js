@@ -11,8 +11,8 @@ export const FIELDS = [
 ];
 
 export const COLUMN_MAP = [
-    { field: 'CLASS', label: 'Class' }, { field: 'DIVISION', label: 'Division' },
-    { field: 'ROLL_NO', label: 'Roll No' }, { field: 'GR_NO', label: 'GR No' },
+    { field: 'CLASS', label: 'Class' }, { field: 'DIVISION', label: 'Div' },
+    { field: 'ROLL_NO', label: 'Roll' }, { field: 'GR_NO', label: 'GR No' },
     { field: 'STUDENT_NAME', label: 'Student Name' }, { field: 'DOA', label: 'DOA' },
     { field: 'PREV_SCHOOL', label: 'Prev School' }, { field: 'GENDER', label: 'Gender' },
     { field: 'DOB_LC', label: 'DOB' }, { field: 'POB', label: 'POB' },
@@ -30,8 +30,7 @@ export const COLUMN_MAP = [
     { field: 'APL_BPL', label: 'APL/BPL' }, { field: 'REMARK', label: 'Remark' },
     { field: 'VOC_CURRENT_YR', label: 'Voc./Optional Status' },
     { field: 'VOC_NAME_CURRENT', label: 'Voc./Optional Sub.' },
-    { field: 'ACADEMIC_YEAR', label: 'Acad. Year' },
-    { field: 'STATUS', label: 'Status' }
+    { field: 'ACADEMIC_YEAR', label: 'Acad. Year' }
 ];
 
 export function formatDate(val) {

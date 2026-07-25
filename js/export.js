@@ -103,6 +103,7 @@ export async function handleImportFile(event) {
             }
             const fieldMap = {};
             FIELDS.forEach(f => { fieldMap[norm(f)] = f; });
+            COLUMN_MAP.forEach(c => { fieldMap[norm(c.label)] = c.field; });
             const aliases = {
                 'VOCSUBJECTCURRENT': 'VOC_NAME_CURRENT',
                 'VOCCURRENTYEARSSUBJECT': 'VOC_NAME_CURRENT',
