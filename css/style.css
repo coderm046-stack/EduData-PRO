@@ -849,6 +849,7 @@ body.dark-mode .dark-mode-tab-btn i {
 #tabBtn2 i { color: var(--secondary); }
 #tabBtn3 i { color: var(--warning); }
 #tabBtn4 i { color: var(--btn-print); }
+#tabBtn5 i { color: var(--error); }
 
 .tab-btn.active {
     background: var(--primary-light);
@@ -1411,11 +1412,12 @@ body.dark-mode #tab-form {
 .kpi-voc     { background: linear-gradient(135deg, #064E3B, #059669); border: none !important; }
 .kpi-hostel  { background: linear-gradient(135deg, #4C1D95, #7C3AED); border: none !important; }
 .kpi-bpl     { background: linear-gradient(135deg, #7F1D1D, #DC2626); border: none !important; }
+.kpi-dropout { background: linear-gradient(135deg, #991B1B, #EF4444); border: none !important; }
 
 #tab-dashboard .kpi-total h3, #tab-dashboard .kpi-boys h3,
 #tab-dashboard .kpi-girls h3, #tab-dashboard .kpi-orphan h3,
 #tab-dashboard .kpi-voc h3, #tab-dashboard .kpi-hostel h3,
-#tab-dashboard .kpi-bpl h3 { color: #fff; }
+#tab-dashboard .kpi-bpl h3, #tab-dashboard .kpi-dropout h3 { color: #fff; }
 
 #tab-dashboard .kpi-total p  { color: #bfdbfe; }
 #tab-dashboard .kpi-boys p   { color: #bae6fd; }
@@ -1424,6 +1426,7 @@ body.dark-mode #tab-form {
 #tab-dashboard .kpi-voc p    { color: #a7f3d0; }
 #tab-dashboard .kpi-hostel p { color: #ddd6fe; }
 #tab-dashboard .kpi-bpl p    { color: #fecaca; }
+#tab-dashboard .kpi-dropout p { color: #fecaca; }
 
 #tableCount {
     font-size: 0.72rem;
@@ -1871,6 +1874,7 @@ body.dark-mode .kpi-orphan  { background: linear-gradient(135deg, #78350F, #F59E
 body.dark-mode .kpi-voc     { background: linear-gradient(135deg, #064E3B, #10B981) !important; }
 body.dark-mode .kpi-hostel  { background: linear-gradient(135deg, #4C1D95, #8B5CF6) !important; }
 body.dark-mode .kpi-bpl     { background: linear-gradient(135deg, #7F1D1D, #EF4444) !important; }
+body.dark-mode .kpi-dropout { background: linear-gradient(135deg, #7F1D1D, #EF4444) !important; }
 body.dark-mode .filter-clear-btn { background: var(--text-muted); }
 body.dark-mode .btn-photo { background: var(--text-muted); }
 body.dark-mode .btn-photo:hover { background: var(--text-secondary); }
