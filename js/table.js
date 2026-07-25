@@ -285,6 +285,7 @@ export function renderDropoutTable() {
                 <td class="tbl-cell tbl-center">${esc(r.CLASS||'-')}</td>
                 <td class="tbl-cell tbl-center">${esc(r.DIVISION||'-')}</td>
                 <td class="tbl-cell tbl-center">${esc(r.ROLL_NO||'-')}</td>
+                <td class="tbl-cell tbl-center">${esc(r.GR_NO||'-')}</td>
                 <td class="tbl-cell tbl-name">${esc(r.STUDENT_NAME||'-')}</td>
                 <td class="tbl-cell tbl-center">${esc(r.GENDER||'-')}</td>
                 <td class="tbl-cell tbl-center">${esc(r.ACADEMIC_YEAR||'-')}</td>
@@ -292,7 +293,7 @@ export function renderDropoutTable() {
                     <button onclick="import('./js/table.js').then(m => m.restoreDropout(${r.id}))" style="background:var(--primary);color:white;border:none;padding:6px 12px;border-radius:5px;cursor:pointer;font-size:0.78rem;"><i class="fa-solid fa-rotate-left"></i> Restore</button>
                 </td>
             </tr>`).join('')
-        : `<tr><td colspan="8" class="tbl-empty">No dropout students.</td></tr>`;
+        : `<tr><td colspan="9" class="tbl-empty">No dropout students.</td></tr>`;
     document.getElementById('dropoutCount').textContent = dropouts.length
         ? `Total dropout students: ${dropouts.length}`
         : 'No students have been marked as dropouts.';
