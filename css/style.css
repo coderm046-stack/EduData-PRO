@@ -849,7 +849,6 @@ body.dark-mode .dark-mode-tab-btn i {
 #tabBtn2 i { color: var(--secondary); }
 #tabBtn3 i { color: var(--warning); }
 #tabBtn4 i { color: var(--btn-print); }
-#tabBtn5 { background: rgba(220,38,38,0.08); border-radius: 50%; }
 #tabBtn5 i { color: var(--error); }
 #tab-dropout .tab-header i { color: var(--error); }
 
