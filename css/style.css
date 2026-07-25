@@ -850,6 +850,7 @@ body.dark-mode .dark-mode-tab-btn i {
 #tabBtn3 i { color: var(--warning); }
 #tabBtn4 i { color: var(--btn-print); }
 #tabBtn5 i { color: var(--error); }
+#tab-dropout .tab-header i { color: var(--error); }
 
 .tab-btn.active {
     background: var(--primary-light);
