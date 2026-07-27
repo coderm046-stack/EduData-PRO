@@ -78,6 +78,11 @@ export function normaliseDropdownValue(field, raw) {
         const clean = v.replace(/\s/g,'');
         return ['A+','A-','B+','B-','AB+','AB-','O+','O-'].includes(clean) ? clean : (raw||'');
     }
+    if (field === 'ACADEMIC_YEAR') {
+        const m = v.match(/^(\d{4})-(\d{4})$/);
+        if (m && parseInt(m[2]) === parseInt(m[1]) + 1) return raw;
+        return getCurrentAcademicYear();
+    }
     if (field === 'DIVISION') return v ? v : (raw||'');
     if (field === 'STATUS') {
         if (['ACTIVE','A'].includes(v)) return 'Active';
