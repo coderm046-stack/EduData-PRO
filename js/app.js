@@ -17,7 +17,7 @@ export function updateDashboard() {
 }
 window.updateDashboard = updateDashboard;
 
-function fixExistingData() {
+async function fixExistingData() {
     let db = getDb();
     let changed = 0;
     db.forEach(s => {
@@ -33,7 +33,12 @@ function fixExistingData() {
         if (s['VOC_NAME_CURRENT'] && s['VOC_CURRENT_YR'] === 'No') { s['VOC_CURRENT_YR'] = 'Yes'; changed++; }
     });
     if (changed > 0) {
-        try { localStorage.setItem('eduDB_v4_final', JSON.stringify(db)); upsertMany(db).catch(() => {}); } catch(e) { showToast('Storage full!','#EF4444'); }
+        try {
+            localStorage.setItem('eduDB_v4_final', JSON.stringify(db));
+            await upsertMany(db);
+        } catch(e) {
+            showToast('Storage full! Export backup and clear data.', '#EF4444');
+        }
         console.log(`Fixed ${changed} fields.`);
     }
 }
@@ -61,7 +66,7 @@ export async function initApp() {
         }
     }
     setDb(db);
-    fixExistingData();
+    await fixExistingData();
     document.getElementById('appContainer').style.display = 'block';
     updateBackupStatus();
     document.getElementById('ACADEMIC_YEAR').value = getCurrentAcademicYear();

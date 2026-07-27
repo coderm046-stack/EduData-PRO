@@ -116,7 +116,7 @@ export async function handleImportFile(event) {
 
             rows.forEach((row, i) => {
                 const record = {
-                    id   : Date.now() + i * 7 + Math.floor(Math.random()*999),
+                    id   : Date.now() + '-' + i + '-' + Math.floor(Math.random()*999999),
                     photo: ''
                 };
                 let hasData = false;

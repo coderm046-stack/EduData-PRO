@@ -37,7 +37,7 @@ export async function handleSave() {
     if (rollVal && classVal && db.some(s => s.ROLL_NO === rollVal && s.CLASS === classVal && s.DIVISION === divVal && s.id !== editId)) {
         showToast('Warning: Roll No already exists in this class/division!', '#F59E0B');
     }
-    const record = { id: Date.now(), photo: document.getElementById('photoBase64').value };
+    const record = { id: Date.now() + '-' + Math.floor(Math.random()*999999), photo: document.getElementById('photoBase64').value };
     FIELDS.forEach(f => { if (document.getElementById(f)) record[f] = document.getElementById(f).value; });
     record['STATUS'] = 'Active';
     if (!record['ROLL_NO'] || record['ROLL_NO'] === '') {
