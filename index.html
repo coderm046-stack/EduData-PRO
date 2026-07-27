@@ -13,7 +13,6 @@
     <title>EduData</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
@@ -43,27 +42,7 @@
             <div class="stat"><h3 id="girls">0</h3><p>Girls</p></div>
         </div>
         <div class="card">
-            <div class="photo-actions">
-                <button type="button" class="btn-photo-action btn-search-action" onclick="openSearch()"><i class="fa-solid fa-magnifying-glass"></i> Search</button>
-                <button type="button" class="btn-photo-action btn-edit-action" onclick="openSearch()"><i class="fa-solid fa-pen"></i> Edit</button>
-                <button type="button" class="btn-photo-action btn-delete-action" onclick="openSearch()"><i class="fa-solid fa-trash"></i> Delete</button>
-            </div>
-            <div class="photo-container">
-                <div id="photo-preview"><span>3.5 x 4.5 cm Photo<br>Required</span></div>
-                <div style="display:flex;gap:10px;">
-                    <button class="btn-photo" onclick="document.getElementById('fileInput').click()">Gallery</button>
-                    <button class="btn-photo" onclick="startCamera()">Camera</button>
-                </div>
-                <input type="file" id="fileInput" hidden accept="image/*" onchange="previewImage(event)">
-                <input type="hidden" id="photoBase64">
-            </div>
-            <form id="studentForm" onsubmit="return false;">
-                <input type="hidden" id="editID">
-                <div class="form-section section-academic">
-                    <div class="section-title" onclick="toggleSection(this)">
-                        <span class="section-label"><i class="fa-solid fa-graduation-cap"></i> Academic Details</span>
-                        <i class="fa-solid fa-chevron-down section-chevron"></i>
-                    </div>
+            
                     <div class="section-body collapsed">
                         <div class="field-group"><label>CLASS</label><select id="CLASS"><option value="">Select</option><option>IX</option><option>X</option><option>XI</option><option>XII</option></select></div>
                         <div class="field-group"><label>ACADEMIC YEAR</label><select id="ACADEMIC_YEAR"><option>2023-2024</option><option>2024-2025</option><option>2025-2026</option><option>2026-2027</option><option>2027-2028</option><option>2028-2029</option><option>2029-2030</option><option>2030-2031</option><option>2031-2032</option><option>2032-2033</option><option>2033-2034</option><option>2034-2035</option><option>2035-2036</option><option>2036-2037</option><option>2037-2038</option><option>2038-2039</option><option>2039-2040</option></select></div>
@@ -448,23 +427,6 @@
 
 <div id="toast"></div>
 
-<div id="cameraModal" style="display:none;">
-    <div class="cam-content">
-        <div class="cam-header">
-            <span><i class="fa-solid fa-camera"></i> Capture Photo</span>
-            <button onclick="closeCamera()">&times;</button>
-        </div>
-        <div class="cam-view">
-            <video id="camVideo" autoplay playsinline></video>
-            <div class="cam-guide"><div class="cam-guide-inner"></div></div>
-        </div>
-        <div class="cam-footer">
-            <button onclick="switchCamera()"><i class="fa-solid fa-arrows-rotate"></i> Flip</button>
-            <button class="cam-capture-btn" onclick="capturePhoto()">Capture</button>
-            <button onclick="closeCamera()">Cancel</button>
-        </div>
-    </div>
-</div>
 
 <div id="bulkEditModal" style="display:none;position:fixed;inset:0;background:rgba(15,23,42,0.75);backdrop-filter:blur(4px);z-index:1000;padding:15px;justify-content:center;align-items:flex-start;overflow-y:auto;">
     <div class="modal-content" style="max-width:400px;">

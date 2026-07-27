@@ -1,9 +1,9 @@
 import { FIELDS, getCurrentAcademicYear, normaliseDropdownValue, showToast, toggleSection, toggleVoc, NORM_FIELDS, YN_FIELDS, formatDate } from './utils.js';
 import { loadAll, syncToLocalStorage, migrateFromLocalStorage, upsertMany, setupBackup, hasBackupHandle, restoreFromDiskFile, saveBackupToDisk } from './db.js';
-import { setDb, getDb, resetApp, handleSave, handleUpdate, handleDelete, wipeDatabase, openSearch, closeSearch, performSearch, startEdit, printRecord, printAll, previewImage, startCamera, closeCamera, switchCamera, capturePhoto } from './form.js';
+import { setDb, getDb, resetApp, handleSave, handleUpdate, handleDelete, wipeDatabase, openSearch, closeSearch, performSearch, startEdit, printRecord, printAll } from './form.js';
 import { renderClassTable, changePage, onYearFilterChange, updateSummaryStats, clearTableFilters, toggleRowSelect, toggleSelectAll, selectAllFiltered, clearSelection, deleteSelected, openBulkEdit, applyBulkEdit, autoAllotRollNumbers, renderDropoutTable, restoreDropout, restoreAllDropouts } from './table.js';
 import { renderDashboard } from './dashboard.js';
-import { exportToExcel, exportFilteredData, exportToCSV, importExcel, handleImportFile, exportPhotos, openColumnSelector, closeColumnSelector, closePreview, previewSelectedColumns, printSelectedColumns, exportSelectedColumns, downloadBackup, restoreBackup, handleRestoreFile } from './export.js';
+import { exportToExcel, exportFilteredData, exportToCSV, importExcel, handleImportFile, openColumnSelector, closeColumnSelector, closePreview, previewSelectedColumns, printSelectedColumns, exportSelectedColumns, downloadBackup, restoreBackup, handleRestoreFile } from './export.js';
 
 let formDirty = false;
 let backupBannerDismissed = false;
@@ -30,6 +30,7 @@ async function fixExistingData() {
             if (s[f] !== orig) changed++;
         });
         YN_FIELDS.forEach(f => { if (s[f] === '') { s[f] = 'No'; changed++; } });
+        if (s.photo) { delete s.photo; changed++; }
         if (!s['APL_BPL']) { s['APL_BPL'] = 'APL'; changed++; }
         if (!s['STATUS']) { s['STATUS'] = 'Active'; changed++; }
         if (s['VOC_NAME_CURRENT'] && s['VOC_CURRENT_YR'] === 'No') { s['VOC_CURRENT_YR'] = 'Yes'; changed++; }
@@ -228,7 +229,7 @@ document.addEventListener('keydown', function(e) {
         if (document.getElementById('updateBtn').style.display !== 'none') handleUpdate();
         else handleSave();
     }
-    if (e.key === 'Escape') { closeSearch(); closeColumnSelector(); closePreview(); closeCamera(); }
+    if (e.key === 'Escape') { closeSearch(); closeColumnSelector(); closePreview(); }
     if (e.ctrlKey && e.key === 'f') { e.preventDefault(); openSearch(); }
 });
 
@@ -250,11 +251,6 @@ window.performSearch = performSearch;
 window.startEdit = startEdit;
 window.printRecord = printRecord;
 window.printAll = printAll;
-window.previewImage = previewImage;
-window.startCamera = startCamera;
-window.closeCamera = closeCamera;
-window.switchCamera = switchCamera;
-window.capturePhoto = capturePhoto;
 window.resetApp = resetApp;
 window.renderClassTable = renderClassTable;
 window.renderDashboard = renderDashboard;
@@ -277,7 +273,6 @@ window.exportFilteredData = exportFilteredData;
 window.exportToCSV = exportToCSV;
 window.importExcel = importExcel;
 window.handleImportFile = handleImportFile;
-window.exportPhotos = exportPhotos;
 window.openColumnSelector = openColumnSelector;
 window.closeColumnSelector = closeColumnSelector;
 window.closePreview = closePreview;

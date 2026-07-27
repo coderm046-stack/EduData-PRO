@@ -16,8 +16,6 @@ export function resetApp() {
         b.previousElementSibling.querySelector('.section-chevron')?.classList.add('open');
     });
     document.getElementById('ACADEMIC_YEAR').value = getCurrentAcademicYear();
-    document.getElementById('photo-preview').innerHTML = '<span>3.5 x 4.5 cm Photo<br>Required</span>';
-    document.getElementById('photoBase64').value = '';
     document.getElementById('editID').value = '';
     toggleVoc();
     document.getElementById('saveBtn').style.display = 'flex';
@@ -37,7 +35,7 @@ export async function handleSave() {
     if (rollVal && classVal && db.some(s => s.ROLL_NO === rollVal && s.CLASS === classVal && s.DIVISION === divVal && s.id !== editId)) {
         showToast('Warning: Roll No already exists in this class/division!', '#F59E0B');
     }
-    const record = { id: Date.now() + '-' + Math.floor(Math.random()*999999), photo: document.getElementById('photoBase64').value };
+    const record = { id: Date.now() + '-' + Math.floor(Math.random()*999999) };
     FIELDS.forEach(f => { if (document.getElementById(f)) record[f] = document.getElementById(f).value; });
     record['STATUS'] = 'Active';
     if (!record['ROLL_NO'] || record['ROLL_NO'] === '') {
@@ -65,10 +63,6 @@ export function startEdit(id) {
         if (selectFields.includes(f)) setSelectValue(f, val);
         else el.value = val;
     });
-    if (s.photo) {
-        document.getElementById('photo-preview').innerHTML = `<img src="${s.photo}">`;
-        document.getElementById('photoBase64').value = s.photo;
-    }
     document.getElementById('editID').value = id;
     document.getElementById('saveBtn').style.display = 'none';
     document.getElementById('updateBtn').style.display = 'flex';
@@ -106,7 +100,6 @@ export async function handleUpdate() {
         const el = document.getElementById(f);
         if (el) db[index][f] = el.value;
     });
-    db[index].photo = document.getElementById('photoBase64').value;
     try { await saveRecord(db[index]); await syncToLocalStorage(); saveBackupToDisk(db).catch(()=>{}); } catch(e) { showToast('Storage full! Export backup and clear data.', '#EF4444'); }
     resetApp();
     showToast('✅ Updated!', '#10B981');
@@ -204,10 +197,7 @@ function buildStudentPageHTML(s, addBreak) {
     const numRows = Math.ceil(FIELDS.length / 3);
     const breakClass = addBreak ? ' print-page-break' : '';
     const dateFields = ['DOA','DOB_LC','DOB_AADHAR'];
-    const photoHtml = s.photo
-        ? `<img src="${s.photo}" class="print-photo">`
-        : `<div class="print-photo-placeholder">AFFIX<br>PHOTO</div>`;
-    const cells = FIELDS.map(f => {
+    const photoHtml = '<div class="print-photo-placeholder">AFFIX<br>PHOTO</div>';
         const val = dateFields.includes(f) ? formatDate(s[f]) : (s[f] || '-');
         return `
         <div class="print-cell">
@@ -229,90 +219,3 @@ function buildStudentPageHTML(s, addBreak) {
         </div>
         <div class="footer-sign">Headmaster's Signature</div>
     </div>`;
-}
-
-export function previewImage(event) {
-    const file = event.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        const img = new Image();
-        img.onload = function() {
-            const canvas = document.createElement('canvas');
-            canvas.width = img.width;
-            canvas.height = img.height;
-            canvas.getContext('2d').drawImage(img, 0, 0);
-            applyPhoto(canvas);
-        };
-        img.src = e.target.result;
-    };
-    reader.readAsDataURL(file);
-    event.target.value = '';
-}
-
-function applyPhoto(srcCanvas) {
-    const outW = 350, outH = 450;
-    const outCanvas = document.createElement('canvas');
-    outCanvas.width = outW;
-    outCanvas.height = outH;
-    const outCtx = outCanvas.getContext('2d');
-    const sAspect = srcCanvas.width / srcCanvas.height;
-    const dAspect = outW / outH;
-    let sx = 0, sy = 0, sWidth = srcCanvas.width, sHeight = srcCanvas.height;
-    if (sAspect > dAspect) {
-        sWidth = srcCanvas.height * dAspect;
-        sx = (srcCanvas.width - sWidth) / 2;
-    } else {
-        sHeight = srcCanvas.width / dAspect;
-        sy = (srcCanvas.height - sHeight) / 2;
-    }
-    outCtx.drawImage(srcCanvas, sx, sy, sWidth, sHeight, 0, 0, outW, outH);
-    const base64 = outCanvas.toDataURL('image/jpeg', 0.85);
-    document.getElementById('photo-preview').innerHTML = '<img src="' + base64 + '">';
-    document.getElementById('photoBase64').value = base64;
-    showToast('Photo applied (350x450)', '#10B981');
-}
-
-let mediaStream = null;
-let currentFacing = 'environment';
-
-export function startCamera() { openCamera(currentFacing); }
-
-async function openCamera(facing) {
-    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        showToast('Camera API not supported. Use Gallery instead.', '#EF4444');
-        return;
-    }
-    try {
-        if (mediaStream) { mediaStream.getTracks().forEach(t => t.stop()); }
-        const constraints = {
-            video: { facingMode: facing, width: { ideal: 1280 }, height: { ideal: 960 } },
-            audio: false
-        };
-        mediaStream = await navigator.mediaDevices.getUserMedia(constraints);
-        document.getElementById('camVideo').srcObject = mediaStream;
-        document.getElementById('cameraModal').style.display = 'flex';
-    } catch (err) {
-        showToast('Camera not available. Use Gallery instead.', '#EF4444');
-    }
-}
-
-export function closeCamera() {
-    if (mediaStream) { mediaStream.getTracks().forEach(t => t.stop()); mediaStream = null; }
-    document.getElementById('cameraModal').style.display = 'none';
-}
-
-export function switchCamera() {
-    currentFacing = currentFacing === 'environment' ? 'user' : 'environment';
-    openCamera(currentFacing);
-}
-
-export async function capturePhoto() {
-    const video = document.getElementById('camVideo');
-    const canvas = document.createElement('canvas');
-    canvas.width = video.videoWidth || 1280;
-    canvas.height = video.videoHeight || 960;
-    canvas.getContext('2d').drawImage(video, 0, 0);
-    closeCamera();
-    applyPhoto(canvas);
-}

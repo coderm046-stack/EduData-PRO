@@ -116,8 +116,7 @@ export async function handleImportFile(event) {
 
             rows.forEach((row, i) => {
                 const record = {
-                    id   : Date.now() + '-' + i + '-' + Math.floor(Math.random()*999999),
-                    photo: ''
+                    id   : Date.now() + '-' + i + '-' + Math.floor(Math.random()*999999)
                 };
                 let hasData = false;
 
@@ -164,35 +163,6 @@ export async function handleImportFile(event) {
         }
     };
     reader.readAsArrayBuffer(file);
-}
-
-export function exportPhotos() {
-    let db = getDb();
-    const withPhotos = db.filter(s => s.photo);
-    if (!withPhotos.length) { showToast('No photos to export!','#F59E0B'); return; }
-    if (typeof JSZip === 'undefined') { showToast('JSZip library not loaded!','#EF4444'); return; }
-    const zip = new JSZip();
-    let count = 0;
-    withPhotos.forEach(s => {
-        const folder = `${s.CLASS||'Unknown'}-${s.ACADEMIC_YEAR||'Unknown'}`;
-        const roll = s.ROLL_NO || '0';
-        const firstName = (s.STUDENT_NAME||'Unknown').split(' ')[0];
-        const ext = s.photo.includes('image/png') ? 'png' : 'jpg';
-        const name = `${roll}-${firstName}.${ext}`;
-        const base64 = s.photo.split(',')[1];
-        if (base64) { zip.folder(folder).file(name, base64, {base64: true}); count++; }
-    });
-    if (!count) { showToast('No valid photos found!','#F59E0B'); return; }
-    zip.generateAsync({type:'blob'}).then(blob => {
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = `Photos_${new Date().toISOString().slice(0,10)}.zip`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(a.href);
-        showToast(`✅ Downloaded ${count} photos as ZIP`);
-    });
 }
 
 export function openColumnSelector() {

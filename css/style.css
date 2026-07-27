@@ -397,88 +397,21 @@ header h2 {
     box-shadow: var(--shadow-sm);
 }
 
-.photo-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 24px;
-    gap: 12px;
-}
 
-#photo-preview {
-    width: 35mm;
-    height: 45mm;
-    border: 2px dashed var(--border-strong);
-    background: var(--bg);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    border-radius: var(--radius-sm);
-    text-align: center;
-    font-size: 0.68rem;
-    color: var(--text-muted);
-    font-weight: 500;
-    transition: border-color 0.2s;
-}
 
-#photo-preview:hover { border-color: var(--primary); }
-#photo-preview img { width: 100%; height: 100%; object-fit: cover; }
 
-.btn-photo {
-    padding: 8px 16px;
-    font-size: 0.78rem;
-    font-weight: 600;
-    background: var(--text-secondary);
-    border-radius: var(--radius-sm);
-    color: white;
-    border: none;
-    cursor: pointer;
-    font-family: 'DM Sans', sans-serif;
-    transition: background 0.2s;
-    min-height: 36px;
-}
 
-.btn-photo:hover { background: var(--text-primary); }
 
-.photo-actions {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 16px;
-    width: 100%;
-}
 
-.photo-actions .btn-photo-action {
-    flex: 1;
-    padding: 8px 12px;
-    font-size: 0.78rem;
-    font-weight: 600;
-    border: none;
-    border-radius: var(--radius-sm);
-    color: white;
-    cursor: pointer;
-    font-family: 'DM Sans', sans-serif;
-    transition: opacity 0.15s, transform 0.12s;
-    min-height: 36px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 5px;
-}
 
-.photo-actions .btn-photo-action:active { transform: scale(0.98); }
-.photo-actions .btn-search-action { background: var(--primary); box-shadow: 0 2px 8px rgba(26,63,171,0.25); }
-.photo-actions .btn-edit-action   { background: var(--warning); box-shadow: 0 2px 8px rgba(217,119,6,0.25); }
-.photo-actions .btn-delete-action { background: var(--error); box-shadow: 0 2px 8px rgba(220,38,38,0.20); }
-.photo-actions .btn-photo-action:hover { opacity: 0.92; }
 
-.section-title {
-    font-family: 'Sora', sans-serif;
-    font-weight: 700;
-    font-size: 0.72rem;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-}
+
+
+
+
+
+
+
 
 .field-group { margin-bottom: 12px; position: relative; }
 
@@ -1877,8 +1810,8 @@ body.dark-mode .kpi-hostel  { background: linear-gradient(135deg, #4C1D95, #8B5C
 body.dark-mode .kpi-bpl     { background: linear-gradient(135deg, #7F1D1D, #EF4444) !important; }
 body.dark-mode .kpi-dropout { background: linear-gradient(135deg, #7F1D1D, #EF4444) !important; }
 body.dark-mode .filter-clear-btn { background: var(--text-muted); }
-body.dark-mode .btn-photo { background: var(--text-muted); }
-body.dark-mode .btn-photo:hover { background: var(--text-secondary); }
+body.dark-mode 
+body.dark-mode 
 body.dark-mode #columnModal .col-checkbox-item { background: var(--bg); border-color: var(--border); }
 body.dark-mode #columnModal .col-checkbox-item:hover { background: var(--primary-light); }
 body.dark-mode #columnModal .col-checkbox-item.selected { background: var(--primary-light); }
@@ -1890,78 +1823,20 @@ body.dark-mode #columnModal .col-select-all-row { border-bottom-color: var(--bor
 body.dark-mode #columnModal .col-select-all-row label { color: var(--text-primary); }
 body.dark-mode .row-selected { background: #1E3A5F !important; outline: 2px solid #60A5FA; outline-offset: -2px; border-radius:4px; }
 
-#cameraModal {
-    display: none; position: fixed; inset: 0;
-    background: rgba(0,0,0,0.92); z-index: 1300;
-    justify-content: center; align-items: center;
-    flex-direction: column;
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-}
-.cam-content {
-    background: #000; border-radius: 12px; overflow: hidden;
-    max-width: 100vw; max-height: 100vh;
-    display: flex; flex-direction: column;
-}
-.cam-header {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 10px 16px; background: #111; color: #fff;
-    font-family: 'Sora', sans-serif; font-weight: 700; font-size: 0.9rem;
-}
-.cam-header button {
-    background: transparent; border: none; color: #fff;
-    font-size: 1.3rem; cursor: pointer; padding: 2px 10px;
-    border-radius: 6px; line-height: 1;
-}
-.cam-header button:hover { background: rgba(255,255,255,0.1); }
-.cam-view {
-    position: relative; overflow: hidden;
-    max-width: 95vw; max-height: 70vh;
-    display: flex; justify-content: center; align-items: center;
-    background: #000;
-}
-.cam-view video { display: block; max-width: 95vw; max-height: 70vh; }
-.cam-guide {
-    position: absolute; inset: 12%; border: 2px dashed rgba(255,255,255,0.35);
-    border-radius: 4px; pointer-events: none;
-    box-shadow: 0 0 0 999px rgba(0,0,0,0.3);
-}
-.cam-guide-inner {
-    position: absolute; inset: -1px;
-    border: 1px solid rgba(255,255,255,0.15);
-}
-.cam-footer {
-    display: flex; justify-content: center; align-items: center;
-    gap: 24px; padding: 12px 16px; background: #111;
-}
-.cam-capture-btn {
-    width: 60px; height: 60px; border-radius: 50%;
-    background: #fff; border: 4px solid rgba(255,255,255,0.3);
-    cursor: pointer; display: flex; align-items: center;
-    justify-content: center; font-size: 0; position: relative;
-    transition: transform 0.15s;
-}
-.cam-capture-btn::after {
-    content: ''; width: 46px; height: 46px; border-radius: 50%;
-    background: #fff; display: block;
-}
-.cam-capture-btn:active { transform: scale(0.92); }
-.cam-footer button:not(.cam-capture-btn) {
-    background: rgba(255,255,255,0.1); color: #fff; border: none;
-    padding: 8px 18px; border-radius: 8px; cursor: pointer;
-    font-family: 'DM Sans', sans-serif; font-weight: 600; font-size: 0.82rem;
-}
-.cam-footer button:not(.cam-capture-btn):hover { background: rgba(255,255,255,0.2); }
 
-#printSummaryArea { display: none; }
 
-@media print {
-    #printSummaryArea {
-        display: block !important;
-        width: 100%;
-        padding: 10mm;
-        font-family: 'Segoe UI', sans-serif;
-    }
+
+
+
+
+
+
+
+
+
+
+
+
     #printSummaryArea h2 {
         font-size: 14pt;
         margin: 0 0 4px 0;
@@ -2001,7 +1876,7 @@ body.dark-mode .row-selected { background: #1E3A5F !important; outline: 2px soli
         font-size: 8pt;
         color: #888;
     }
-}
+
 
 #printArea { display:none; }
 
@@ -2049,16 +1924,8 @@ body.dark-mode .row-selected { background: #1E3A5F !important; outline: 2px soli
         margin:5px 0 0 0; font-size:12pt; font-weight:800;
         color:#1E3A8A; display:block !important;
     }
-    .print-photo {
-        width:35mm; height:45mm; border:1px solid #000;
-        object-fit:cover; flex-shrink:0 !important; display:block !important;
-    }
-    .print-photo-placeholder {
-        width:35mm; height:45mm; border:1px solid #000;
-        flex-shrink:0 !important; display:flex !important;
-        align-items:center !important; justify-content:center !important;
-        font-size:7pt; text-align:center; color:#666; line-height:1.4;
-    }
+    
+    
     .print-grid {
         display:grid !important;
         grid-template-columns:repeat(3,1fr) !important;
