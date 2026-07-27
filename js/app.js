@@ -32,6 +32,7 @@ async function fixExistingData() {
         YN_FIELDS.forEach(f => { if (s[f] === '') { s[f] = 'No'; changed++; } });
         if (!s['APL_BPL']) { s['APL_BPL'] = 'APL'; changed++; }
         if (!s['STATUS']) { s['STATUS'] = 'Active'; changed++; }
+        if (!s['ACADEMIC_YEAR']) { s['ACADEMIC_YEAR'] = getCurrentAcademicYear(); changed++; }
         if (s['VOC_NAME_CURRENT'] && s['VOC_CURRENT_YR'] === 'No') { s['VOC_CURRENT_YR'] = 'Yes'; changed++; }
     });
     if (changed > 0) {

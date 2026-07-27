@@ -1,4 +1,4 @@
-import { FIELDS, COLUMN_MAP, formatDate, esc, showToast, getFilteredRows, DATE_FIELDS, normaliseDropdownValue, normaliseDate } from './utils.js';
+import { FIELDS, COLUMN_MAP, formatDate, esc, showToast, getFilteredRows, DATE_FIELDS, normaliseDropdownValue, normaliseDate, getCurrentAcademicYear } from './utils.js';
 import { getDb, setDb, getSelectedIds } from './form.js';
 
 
@@ -143,6 +143,7 @@ export async function handleImportFile(event) {
                     if (!record[f]) record[f] = 'No';
                 });
                 if (!record['APL_BPL']) record['APL_BPL'] = 'APL';
+                if (!record['ACADEMIC_YEAR']) record['ACADEMIC_YEAR'] = getCurrentAcademicYear();
                 if (record['VOC_NAME_CURRENT'] && record['VOC_CURRENT_YR'] === 'No') record['VOC_CURRENT_YR'] = 'Yes';
 
                 if (hasData) { imported++; pendingRecords.push(record); }
