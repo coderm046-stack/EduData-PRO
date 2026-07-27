@@ -67,8 +67,8 @@ export function renderClassTable() {
 
     document.getElementById('classTableBody').innerHTML = rows.length
         ? pageRows.map((r,i) => `
-            <tr class="${(i+(currentPage-1)*PAGE_SIZE)%2===0?'row-even':'row-odd'}${selectedIds.has(r.id)?' row-selected':''}" style="cursor:pointer;" onclick="import('./js/form.js').then(m => m.startEdit(${r.id}))">
-                <td class="tbl-cell tbl-center"><input type="checkbox" class="row-select" value="${r.id}" ${selectedIds.has(r.id)?'checked':''} onclick="event.stopPropagation();toggleRowSelect(this,${r.id})"></td>
+            <tr class="${(i+(currentPage-1)*PAGE_SIZE)%2===0?'row-even':'row-odd'}${selectedIds.has(r.id)?' row-selected':''}" style="cursor:pointer;" onclick="import('./js/form.js').then(m => m.startEdit('${r.id}'))">
+                <td class="tbl-cell tbl-center"><input type="checkbox" class="row-select" value="${r.id}" ${selectedIds.has(r.id)?'checked':''} onclick="event.stopPropagation();toggleRowSelect(this,'${r.id}')"></td>
                 ${td((currentPage-1)*PAGE_SIZE+i+1,true)}
                 ${td(r.CLASS,true)} ${td(r.DIVISION,true)} ${td(r.ROLL_NO,true)} ${td(r.GR_NO,true)}
                 <td class="tbl-cell tbl-name">${esc(r.STUDENT_NAME||'-')}</td>
@@ -290,7 +290,7 @@ export function renderDropoutTable() {
                 <td class="tbl-cell tbl-center">${esc(r.GENDER||'-')}</td>
                 <td class="tbl-cell tbl-center">${esc(r.ACADEMIC_YEAR||'-')}</td>
                 <td class="tbl-cell tbl-center">
-                    <button onclick="import('./js/table.js').then(m => m.restoreDropout(${r.id}))" style="background:var(--primary);color:white;border:none;padding:6px 12px;border-radius:5px;cursor:pointer;font-size:0.78rem;"><i class="fa-solid fa-rotate-left"></i> Restore</button>
+                    <button onclick="import('./js/table.js').then(m => m.restoreDropout('${r.id}'))" style="background:var(--primary);color:white;border:none;padding:6px 12px;border-radius:5px;cursor:pointer;font-size:0.78rem;"><i class="fa-solid fa-rotate-left"></i> Restore</button>
                 </td>
             </tr>`).join('')
         : `<tr><td colspan="9" class="tbl-empty">No dropout students.</td></tr>`;
