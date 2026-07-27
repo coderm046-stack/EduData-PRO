@@ -6,14 +6,16 @@ import { renderDashboard } from './dashboard.js';
 import { exportToExcel, exportFilteredData, exportToCSV, importExcel, handleImportFile, exportPhotos, openColumnSelector, closeColumnSelector, closePreview, previewSelectedColumns, printSelectedColumns, exportSelectedColumns, downloadBackup, restoreBackup, handleRestoreFile } from './export.js';
 
 let formDirty = false;
+let backupBannerDismissed = false;
 
-export function updateDashboard() {
+export async function updateDashboard() {
     const active = getDb().filter(s => s.STATUS !== 'Dropout');
     document.getElementById('totalStudents').innerText = active.length;
     document.getElementById('boys').innerText  = active.filter(s => s.GENDER==='Male').length;
     document.getElementById('girls').innerText = active.filter(s => s.GENDER==='Female').length;
     updateSummaryStats(); renderClassTable();
     renderDashboard();
+    await updateBackupStatus();
 }
 window.updateDashboard = updateDashboard;
 
@@ -34,10 +36,15 @@ async function fixExistingData() {
     });
     if (changed > 0) {
         try {
-            localStorage.setItem('eduDB_v4_final', JSON.stringify(db));
             await upsertMany(db);
         } catch(e) {
             showToast('Storage full! Export backup and clear data.', '#EF4444');
+            return;
+        }
+        try {
+            localStorage.setItem('eduDB_v4_final', JSON.stringify(db));
+        } catch(e) {
+            console.warn('localStorage sync failed:', e);
         }
         console.log(`Fixed ${changed} fields.`);
     }
@@ -76,12 +83,29 @@ export async function initApp() {
 
 export async function updateBackupStatus() {
     const el = document.getElementById('backupStatus');
-    if (!el) { showBackupBanner(); return; }
+    const btn = document.getElementById('backupFolderBtn');
+    const hasData = getDb().length > 0;
     const has = await hasBackupHandle();
+    if (!el) { showBackupBanner(has); return; }
     if (!has) {
         el.innerHTML = '<i class="fa-regular fa-circle" style="color:#94A3B8;"></i>';
         el.title = 'No backup folder set';
+        if (btn && hasData) {
+            btn.style.position = 'relative';
+            btn.style.boxShadow = '0 0 8px rgba(239,68,68,0.5)';
+            if (!btn.querySelector('.backup-alert-dot')) {
+                const dot = document.createElement('span');
+                dot.className = 'backup-alert-dot';
+                dot.style.cssText = 'position:absolute;top:2px;right:2px;width:8px;height:8px;background:#EF4444;border-radius:50%;';
+                btn.appendChild(dot);
+            }
+        }
     } else {
+        if (btn) {
+            btn.style.boxShadow = '';
+            const dot = btn.querySelector('.backup-alert-dot');
+            if (dot) dot.remove();
+        }
         const lastWrite = parseInt(localStorage.getItem('lastBackupWrite') || '0');
         const age = Date.now() - lastWrite;
         if (!lastWrite || age > 86400000) {
@@ -92,28 +116,27 @@ export async function updateBackupStatus() {
             el.title = 'Auto backup active and up to date';
         }
     }
-    showBackupBanner();
+    showBackupBanner(has, hasData);
 }
 
-async function showBackupBanner() {
+async function showBackupBanner(has, hasData) {
     const banner = document.getElementById('backupBanner');
     if (!banner) return;
-    if (localStorage.getItem('backupBannerDismissed') === '1') {
+    if (backupBannerDismissed) {
         banner.style.display = 'none';
         return;
     }
-    const has = await hasBackupHandle();
-    banner.style.display = has ? 'none' : 'flex';
+    banner.style.display = (!has && hasData) ? 'flex' : 'none';
 }
 
 window.dismissBackupBanner = function() {
-    localStorage.setItem('backupBannerDismissed', '1');
+    backupBannerDismissed = true;
     document.getElementById('backupBanner').style.display = 'none';
 };
 
 window.exportBackup = function() {
     downloadBackup();
-    localStorage.setItem('backupBannerDismissed', '1');
+    backupBannerDismissed = true;
     document.getElementById('backupBanner').style.display = 'none';
 };
 
