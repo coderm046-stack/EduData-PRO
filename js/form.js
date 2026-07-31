@@ -1,4 +1,4 @@
-import { FIELDS, getCurrentAcademicYear, normaliseDropdownValue, setSelectValue, showToast, toggleVoc, NORM_FIELDS, YN_FIELDS, formatDate, DATE_FIELDS, normaliseDate } from './utils.js';
+import { FIELDS, getCurrentAcademicYear, normaliseDropdownValue, setSelectValue, showToast, toggleVoc, NORM_FIELDS, YN_FIELDS, formatDate, DATE_FIELDS, normaliseDate, sid } from './utils.js';
 import { saveRecord, deleteRecord, loadAll, syncToLocalStorage, saveBackupToDisk } from './db.js';
 
 let db = [];
@@ -26,15 +26,15 @@ export function resetApp() {
 }
 
 export async function handleSave() {
-    const editId = parseInt(document.getElementById('editID').value) || 0;
+    const editId = document.getElementById('editID').value;
     const aadharVal = document.getElementById('AADHAR_NO').value.trim();
-    if (aadharVal && db.some(s => s.AADHAR_NO === aadharVal && s.id !== editId)) {
+    if (aadharVal && db.some(s => s.AADHAR_NO === aadharVal && sid(s.id) !== sid(editId))) {
         showToast('Warning: Aadhar number already exists!', '#F59E0B');
     }
     const rollVal = document.getElementById('ROLL_NO').value.trim();
     const classVal = document.getElementById('CLASS').value;
     const divVal = document.getElementById('DIVISION').value;
-    if (rollVal && classVal && db.some(s => s.ROLL_NO === rollVal && s.CLASS === classVal && s.DIVISION === divVal && s.id !== editId)) {
+    if (rollVal && classVal && db.some(s => s.ROLL_NO === rollVal && s.CLASS === classVal && s.DIVISION === divVal && sid(s.id) !== sid(editId))) {
         showToast('Warning: Roll No already exists in this class/division!', '#F59E0B');
     }
     const record = { id: Date.now() + '-' + Math.floor(Math.random()*999999), photo: document.getElementById('photoBase64').value };
@@ -54,7 +54,7 @@ export async function handleSave() {
 }
 
 export function startEdit(id) {
-    const s = db.find(x => x.id === id);
+    const s = db.find(x => sid(x.id) === sid(id));
     if (!s) { showToast('Record not found', '#EF4444'); return; }
     const selectFields = ['CLASS','ACADEMIC_YEAR','DIVISION','GENDER','HOSTEL_STUDENT','BLOOD_GROUP','ORPHAN','APL_BPL','VOC_CURRENT_YR'];
     FIELDS.forEach(f => {
@@ -83,18 +83,18 @@ export function startEdit(id) {
 }
 
 export async function handleUpdate() {
-    const id = parseInt(document.getElementById('editID').value);
+    const id = document.getElementById('editID').value;
     const aadharVal = document.getElementById('AADHAR_NO').value.trim();
-    if (aadharVal && db.some(s => s.AADHAR_NO === aadharVal && s.id !== id)) {
+    if (aadharVal && db.some(s => s.AADHAR_NO === aadharVal && sid(s.id) !== sid(id))) {
         showToast('Warning: Aadhar number already exists!', '#F59E0B');
     }
     const rollVal = document.getElementById('ROLL_NO').value.trim();
     const classVal = document.getElementById('CLASS').value;
     const divVal = document.getElementById('DIVISION').value;
-    if (rollVal && classVal && db.some(s => s.ROLL_NO === rollVal && s.CLASS === classVal && s.DIVISION === divVal && s.id !== id)) {
+    if (rollVal && classVal && db.some(s => s.ROLL_NO === rollVal && s.CLASS === classVal && s.DIVISION === divVal && sid(s.id) !== sid(id))) {
         showToast('Warning: Roll No already exists in this class/division!', '#F59E0B');
     }
-    const index = db.findIndex(s => s.id === id);
+    const index = db.findIndex(s => sid(s.id) === sid(id));
     if (index === -1) { showToast('Record not found', '#EF4444'); return; }
     NORM_FIELDS.forEach(f => {
         if (!document.getElementById(f)) return;
@@ -115,7 +115,7 @@ export async function handleUpdate() {
 
 export async function handleDelete(id) {
     if (!confirm('Mark this student as Dropout?')) return;
-    const idx = db.findIndex(s => s.id === id);
+    const idx = db.findIndex(s => sid(s.id) === sid(id));
     if (idx === -1) { showToast('Record not found!','#F59E0B'); return; }
     db[idx].STATUS = 'Dropout';
     try { await saveRecord(db[idx]); await syncToLocalStorage(); saveBackupToDisk(db).catch(()=>{}); } catch(e) { showToast('Storage full! Export backup and clear data.', '#EF4444'); }
@@ -159,9 +159,9 @@ export function performSearch() {
             <strong>${esc(r.STUDENT_NAME||'-')}</strong> &nbsp;(Roll: ${esc(r.ROLL_NO||'-')})<br>
             Class: ${esc(r.CLASS||'-')} &nbsp;|&nbsp; Year: ${esc(r.ACADEMIC_YEAR||'-')}
             <div style="display:flex;gap:5px;margin-top:5px;">
-                <button style="flex:1;background:var(--warning);color:white;border:none;padding:8px;border-radius:5px;" onclick="import('./js/form.js').then(m => m.startEdit('${r.id}'))">Edit</button>
-                <button style="flex:1;background:var(--primary);color:white;border:none;padding:8px;border-radius:5px;" onclick="import('./js/form.js').then(m => m.printRecord('${r.id}'))">Print</button>
-                <button style="flex:1;background:var(--error);color:white;border:none;padding:8px;border-radius:5px;" onclick="import('./js/form.js').then(m => m.handleDelete('${r.id}'))">Del</button>
+                <button style="flex:1;background:var(--warning);color:white;border:none;padding:8px;border-radius:5px;" onclick="import('./js/form.js').then(m => m.startEdit('${sid(r.id)}'))">Edit</button>
+                <button style="flex:1;background:var(--primary);color:white;border:none;padding:8px;border-radius:5px;" onclick="import('./js/form.js').then(m => m.printRecord('${sid(r.id)}'))">Print</button>
+                <button style="flex:1;background:var(--error);color:white;border:none;padding:8px;border-radius:5px;" onclick="import('./js/form.js').then(m => m.handleDelete('${sid(r.id)}'))">Del</button>
             </div>
         </div>
     `).join('') || '<p class="search-empty">No records found.</p>';
@@ -170,7 +170,7 @@ export function performSearch() {
 function esc(str) { return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
 
 export function printRecord(id) {
-    const s = db.find(x => x.id === id);
+    const s = db.find(x => sid(x.id) === sid(id));
     if (!s) { showToast('Record not found', '#EF4444'); return; }
     document.getElementById('printArea').innerHTML = buildStudentPageHTML(s, false);
     setTimeout(() => window.print(), 100);

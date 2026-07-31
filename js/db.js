@@ -227,8 +227,8 @@ export async function migrateFromLocalStorage() {
     const local = JSON.parse(localStorage.getItem('eduDB_v4_final')) || [];
     if (!local.length) return 0;
     const existing = await loadAll();
-    const existingIds = new Set(existing.map(r => r.id));
-    const newRecords = local.filter(r => !existingIds.has(r.id));
+    const existingIds = new Set(existing.map(r => String(r.id)));
+    const newRecords = local.filter(r => !existingIds.has(String(r.id)));
     if (newRecords.length) {
         await upsertMany(newRecords);
     }

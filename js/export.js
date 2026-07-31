@@ -1,4 +1,4 @@
-import { FIELDS, COLUMN_MAP, formatDate, esc, showToast, getFilteredRows, DATE_FIELDS, normaliseDropdownValue, normaliseDate, getCurrentAcademicYear } from './utils.js';
+import { FIELDS, COLUMN_MAP, formatDate, esc, showToast, getFilteredRows, DATE_FIELDS, normaliseDropdownValue, normaliseDate, getCurrentAcademicYear, sid } from './utils.js';
 import { getDb, setDb, getSelectedIds } from './form.js';
 
 
@@ -245,7 +245,7 @@ function getExportRows() {
     const cb = document.getElementById('exportSelectedOnly');
     if (!cb || !cb.checked) return rows;
     const ids = [...getSelectedIds()];
-    return rows.filter(s => ids.includes(s.id));
+    return rows.filter(s => ids.includes(sid(s.id)));
 }
 
 export function previewSelectedColumns() {

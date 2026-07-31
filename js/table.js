@@ -1,4 +1,4 @@
-import { FIELDS, COLUMN_MAP, formatDate, esc, showToast, getFilteredRows, NORM_FIELDS, YN_FIELDS, DATE_FIELDS } from './utils.js';
+import { FIELDS, COLUMN_MAP, formatDate, esc, showToast, getFilteredRows, NORM_FIELDS, YN_FIELDS, DATE_FIELDS, sid } from './utils.js';
 import { upsertMany, deleteMany, syncToLocalStorage, saveBackupToDisk } from './db.js';
 import { getDb, getSelectedIds, setSelectedIds } from './form.js';
 
@@ -67,8 +67,8 @@ export function renderClassTable() {
 
     document.getElementById('classTableBody').innerHTML = rows.length
         ? pageRows.map((r,i) => `
-            <tr class="${(i+(currentPage-1)*PAGE_SIZE)%2===0?'row-even':'row-odd'}${selectedIds.has(r.id)?' row-selected':''}" style="cursor:pointer;" onclick="import('./js/form.js').then(m => m.startEdit('${r.id}'))">
-                <td class="tbl-cell tbl-center"><input type="checkbox" class="row-select" value="${r.id}" ${selectedIds.has(r.id)?'checked':''} onclick="event.stopPropagation();toggleRowSelect(this,'${r.id}')"></td>
+            <tr class="${(i+(currentPage-1)*PAGE_SIZE)%2===0?'row-even':'row-odd'}${selectedIds.has(sid(r.id))?' row-selected':''}" style="cursor:pointer;" onclick="import('./js/form.js').then(m => m.startEdit('${sid(r.id)}'))">
+                <td class="tbl-cell tbl-center"><input type="checkbox" class="row-select" value="${sid(r.id)}" ${selectedIds.has(sid(r.id))?'checked':''} onclick="event.stopPropagation();toggleRowSelect(this,'${sid(r.id)}')"></td>
                 ${td((currentPage-1)*PAGE_SIZE+i+1,true)}
                 ${td(r.CLASS,true)} ${td(r.DIVISION,true)} ${td(r.ROLL_NO,true)} ${td(r.GR_NO,true)}
                 <td class="tbl-cell tbl-name">${esc(r.STUDENT_NAME||'-')}</td>
@@ -95,7 +95,7 @@ export function renderClassTable() {
     document.getElementById('pageInfo').textContent = `Page ${currentPage} of ${totalPages} (${rows.length} records)`;
     document.getElementById('paginationControls').style.display = rows.length > PAGE_SIZE ? 'flex' : 'none';
     populateVocSubjectFilter();
-    const allFilteredIds = new Set(rows.map(r => r.id));
+    const allFilteredIds = new Set(rows.map(r => sid(r.id)));
     document.getElementById('selectAll').checked = allFilteredIds.size > 0 && [...allFilteredIds].every(id => selectedIds.has(id));
     const sel = document.getElementById('selectedCount');
     sel.textContent = selectedIds.size ? `✓ ${selectedIds.size} record${selectedIds.size>1?'s':''} selected for bulk action` : '';
@@ -170,7 +170,7 @@ export function toggleSelectAll(el) {
     const selectedIds = getSelectedIds();
     const rows = getFilteredRows(db);
     if (el.checked) {
-        rows.forEach(r => selectedIds.add(r.id));
+        rows.forEach(r => selectedIds.add(sid(r.id)));
     } else {
         selectedIds.clear();
     }
@@ -182,7 +182,7 @@ export function selectAllFiltered() {
     const selectedIds = getSelectedIds();
     const rows = getFilteredRows(db);
     if (!rows.length) { showToast('No records match current filters!','#F59E0B'); return; }
-    rows.forEach(r => selectedIds.add(r.id));
+    rows.forEach(r => selectedIds.add(sid(r.id)));
     renderClassTable();
     showToast(`Selected ${rows.length} record${rows.length>1?'s':''} for bulk action`);
 }
@@ -204,8 +204,8 @@ export async function deleteSelected() {
     if (!confirm(`Mark ${ids.length} selected record${ids.length>1?'s':''} as Dropout?`)) return;
     selectedIds.clear();
     try {
-        db.forEach(s => { if (ids.includes(s.id)) s.STATUS = 'Dropout'; });
-        await upsertMany(db.filter(s => ids.includes(s.id)));
+        db.forEach(s => { if (ids.includes(sid(s.id))) s.STATUS = 'Dropout'; });
+        await upsertMany(db.filter(s => ids.includes(sid(s.id))));
         await syncToLocalStorage();
         saveBackupToDisk(db).catch(()=>{});
         import('./form.js').then(m => { m.setDb(db); m.setSelectedIds(selectedIds); });
@@ -230,15 +230,15 @@ export async function applyBulkEdit() {
         const val = document.getElementById('bulk-'+f).value;
         if (!val) return;
         db.forEach(s => {
-            if (ids.includes(s.id)) { s[f] = val; changed++; }
+            if (ids.includes(sid(s.id))) { s[f] = val; changed++; }
         });
     });
     if (!changed) { showToast('No changes applied (select values to change).','#F59E0B'); return; }
     db.forEach(s => {
-        if (!ids.includes(s.id)) return;
+        if (!ids.includes(sid(s.id))) return;
         if (s.VOC_NAME_CURRENT && s.VOC_CURRENT_YR === 'No') { s.VOC_CURRENT_YR = 'Yes'; changed++; }
     });
-    try { await upsertMany(db.filter(s => ids.includes(s.id))); await syncToLocalStorage(); saveBackupToDisk(db).catch(()=>{}); } catch(e) { showToast('Storage error!','#EF4444'); }
+    try { await upsertMany(db.filter(s => ids.includes(sid(s.id)))); await syncToLocalStorage(); saveBackupToDisk(db).catch(()=>{}); } catch(e) { showToast('Storage error!','#EF4444'); }
     document.getElementById('bulkEditModal').style.display = 'none';
     renderClassTable(); window.updateDashboard(); showToast(`Updated ${changed} fields across ${ids.length} records!`);
 }
@@ -290,7 +290,7 @@ export function renderDropoutTable() {
                 <td class="tbl-cell tbl-center">${esc(r.GENDER||'-')}</td>
                 <td class="tbl-cell tbl-center">${esc(r.ACADEMIC_YEAR||'-')}</td>
                 <td class="tbl-cell tbl-center">
-                    <button onclick="import('./js/table.js').then(m => m.restoreDropout('${r.id}'))" style="background:var(--primary);color:white;border:none;padding:6px 12px;border-radius:5px;cursor:pointer;font-size:0.78rem;"><i class="fa-solid fa-rotate-left"></i> Restore</button>
+                    <button onclick="import('./js/table.js').then(m => m.restoreDropout('${sid(r.id)}'))" style="background:var(--primary);color:white;border:none;padding:6px 12px;border-radius:5px;cursor:pointer;font-size:0.78rem;"><i class="fa-solid fa-rotate-left"></i> Restore</button>
                 </td>
             </tr>`).join('')
         : `<tr><td colspan="9" class="tbl-empty">No dropout students.</td></tr>`;
@@ -301,7 +301,7 @@ export function renderDropoutTable() {
 
 export async function restoreDropout(id) {
     let db = getDb();
-    const s = db.find(r => r.id === id);
+    const s = db.find(r => sid(r.id) === sid(id));
     if (!s) { showToast('Record not found!','#F59E0B'); return; }
     if (!confirm(`Restore "${s.STUDENT_NAME||'Unknown'}" to active students?`)) return;
     s.STATUS = 'Active';

@@ -40,6 +40,10 @@ export function formatDate(val) {
     return parts[2] + '-' + parts[1] + '-' + parts[0];
 }
 
+export function sid(id) {
+    return String(id);
+}
+
 export function esc(str) {
     return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 }
