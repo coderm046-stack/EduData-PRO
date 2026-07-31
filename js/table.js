@@ -95,11 +95,21 @@ export function renderClassTable() {
     document.getElementById('pageInfo').textContent = `Page ${currentPage} of ${totalPages} (${rows.length} records)`;
     document.getElementById('paginationControls').style.display = rows.length > PAGE_SIZE ? 'flex' : 'none';
     populateVocSubjectFilter();
-    const allFilteredIds = new Set(rows.map(r => sid(r.id)));
-    document.getElementById('selectAll').checked = allFilteredIds.size > 0 && [...allFilteredIds].every(id => selectedIds.has(id));
-    const sel = document.getElementById('selectedCount');
-    sel.textContent = selectedIds.size ? `✓ ${selectedIds.size} record${selectedIds.size>1?'s':''} selected for bulk action` : '';
+    updateSelectionUI();
     updateSummaryStats();
+}
+
+function updateSelectionUI() {
+    const selectedIds = getSelectedIds();
+    const sel = document.getElementById('selectedCount');
+    if (sel) {
+        sel.textContent = selectedIds.size ? `✓ ${selectedIds.size} record${selectedIds.size>1?'s':''} selected for bulk action` : '';
+    }
+    const allCheck = document.getElementById('selectAll');
+    if (allCheck) {
+        const allFilteredIds = new Set(getFilteredRows(getDb()).map(r => sid(r.id)));
+        allCheck.checked = allFilteredIds.size > 0 && [...allFilteredIds].every(id => selectedIds.has(id));
+    }
 }
 
 function populateVocSubjectFilter() {
@@ -163,6 +173,7 @@ export function toggleRowSelect(cb, id) {
     const selectedIds = getSelectedIds();
     if (cb.checked) selectedIds.add(id); else selectedIds.delete(id);
     cb.closest('tr').classList.toggle('row-selected', cb.checked);
+    updateSelectionUI();
 }
 
 export function toggleSelectAll(el) {
