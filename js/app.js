@@ -1,7 +1,7 @@
 import { FIELDS, getCurrentAcademicYear, normaliseDropdownValue, showToast, toggleSection, toggleVoc, NORM_FIELDS, YN_FIELDS, formatDate } from './utils.js';
 import { loadAll, syncToLocalStorage, migrateFromLocalStorage, upsertMany, setupBackup, hasBackupHandle, restoreFromDiskFile, saveBackupToDisk } from './db.js';
 import { setDb, getDb, resetApp, handleSave, handleUpdate, handleDelete, wipeDatabase, openSearch, closeSearch, performSearch, startEdit, printRecord, printAll, previewImage, startCamera, closeCamera, switchCamera, capturePhoto } from './form.js';
-import { renderClassTable, changePage, onYearFilterChange, updateSummaryStats, clearTableFilters, toggleRowSelect, toggleSelectAll, selectAllFiltered, clearSelection, deleteSelected, openBulkEdit, applyBulkEdit, autoAllotRollNumbers, renderDropoutTable, restoreDropout, restoreAllDropouts } from './table.js';
+import { renderClassTable, changePage, onYearFilterChange, updateSummaryStats, clearTableFilters, toggleRowSelect, toggleSelectAll, selectAllFiltered, clearSelection, deleteSelected, openBulkEdit, applyBulkEdit, autoAllotRollNumbers, renderDropoutTable, restoreDropout, restoreAllDropouts, deletePermanently, deleteAllDropouts } from './table.js';
 import { renderDashboard } from './dashboard.js';
 import { exportToExcel, exportFilteredData, exportToCSV, importExcel, handleImportFile, exportPhotos, openColumnSelector, closeColumnSelector, closePreview, previewSelectedColumns, printSelectedColumns, exportSelectedColumns, downloadBackup, restoreBackup, handleRestoreFile } from './export.js';
 
@@ -273,6 +273,8 @@ window.autoAllotRollNumbers = autoAllotRollNumbers;
 window.renderDropoutTable = renderDropoutTable;
 window.restoreDropout = restoreDropout;
 window.restoreAllDropouts = restoreAllDropouts;
+window.deletePermanently = deletePermanently;
+window.deleteAllDropouts = deleteAllDropouts;
 window.exportToExcel = exportToExcel;
 window.exportFilteredData = exportFilteredData;
 window.exportToCSV = exportToCSV;

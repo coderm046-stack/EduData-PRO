@@ -1,6 +1,6 @@
 import { FIELDS, COLUMN_MAP, formatDate, esc, showToast, getFilteredRows, NORM_FIELDS, YN_FIELDS, DATE_FIELDS, sid } from './utils.js';
 import { upsertMany, deleteMany, syncToLocalStorage, saveBackupToDisk } from './db.js';
-import { getDb, getSelectedIds, setSelectedIds } from './form.js';
+import { getDb, setDb, getSelectedIds, setSelectedIds } from './form.js';
 
 let currentPage = 1;
 const PAGE_SIZE = 50;
@@ -300,8 +300,9 @@ export function renderDropoutTable() {
                 <td class="tbl-cell tbl-name">${esc(r.STUDENT_NAME||'-')}</td>
                 <td class="tbl-cell tbl-center">${esc(r.GENDER||'-')}</td>
                 <td class="tbl-cell tbl-center">${esc(r.ACADEMIC_YEAR||'-')}</td>
-                <td class="tbl-cell tbl-center">
+                <td class="tbl-cell tbl-center" style="white-space:nowrap;">
                     <button onclick="import('./js/table.js').then(m => m.restoreDropout('${sid(r.id)}'))" style="background:var(--primary);color:white;border:none;padding:6px 12px;border-radius:5px;cursor:pointer;font-size:0.78rem;"><i class="fa-solid fa-rotate-left"></i> Restore</button>
+                    <button onclick="import('./js/table.js').then(m => m.deletePermanently('${sid(r.id)}'))" style="background:#EF4444;color:white;border:none;padding:6px 12px;border-radius:5px;cursor:pointer;font-size:0.78rem;margin-left:4px;"><i class="fa-solid fa-trash-can"></i> Delete Permanently</button>
                 </td>
             </tr>`).join('')
         : `<tr><td colspan="9" class="tbl-empty">No dropout students.</td></tr>`;
@@ -330,4 +331,35 @@ export async function restoreAllDropouts() {
     try { await upsertMany(dropouts); await syncToLocalStorage(); saveBackupToDisk(db).catch(()=>{}); } catch(e) { showToast('Storage error!','#EF4444'); }
     renderDropoutTable(); window.updateDashboard();
     showToast(`✅ Restored ${dropouts.length} student${dropouts.length>1?'s':''}!`);
+}
+
+export async function deletePermanently(id) {
+    let db = getDb();
+    const s = db.find(r => sid(r.id) === sid(id));
+    if (!s) { showToast('Record not found!','#F59E0B'); return; }
+    if (!confirm(`⚠️ This will PERMANENTLY delete "${s.STUDENT_NAME||'Unknown'}". This action CANNOT be undone.\n\nAre you sure?`)) return;
+    try {
+        await deleteMany([s.id]);
+        setDb(db.filter(r => sid(r.id) !== sid(id)));
+        await syncToLocalStorage();
+        saveBackupToDisk(getDb()).catch(()=>{});
+    } catch(e) { showToast('Storage error!','#EF4444'); }
+    renderDropoutTable(); window.updateDashboard();
+    showToast(`Deleted "${s.STUDENT_NAME||'Unknown'}" permanently.`,'#EF4444');
+}
+
+export async function deleteAllDropouts() {
+    let db = getDb();
+    const dropouts = db.filter(s => s.STATUS === 'Dropout');
+    if (!dropouts.length) { showToast('No dropout students to delete!','#F59E0B'); return; }
+    if (!confirm(`⚠️ This will PERMANENTLY delete all ${dropouts.length} dropout student${dropouts.length>1?'s':''}. This action CANNOT be undone.\n\nAre you sure?`)) return;
+    try {
+        await deleteMany(dropouts.map(s => s.id));
+        const ids = new Set(dropouts.map(s => sid(s.id)));
+        setDb(db.filter(r => !ids.has(sid(r.id))));
+        await syncToLocalStorage();
+        saveBackupToDisk(getDb()).catch(()=>{});
+    } catch(e) { showToast('Storage error!','#EF4444'); }
+    renderDropoutTable(); window.updateDashboard();
+    showToast(`Deleted ${dropouts.length} student${dropouts.length>1?'s':''} permanently.`,'#EF4444');
 }
